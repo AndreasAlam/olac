@@ -1,9 +1,4 @@
-.PHONY: data venv requirements clean
-
-## Download most recent data
-data:
-	echo "No data download set"
-
+.PHONY: venv requirements data clean
 ## Make virtual environment
 venv: 
 	brew update
@@ -34,6 +29,13 @@ venv:
 ## Update requirements in requirements.txt
 requirements: 
 	pip freeze > requirements.txt
+
+## Download a number of datasets
+data:
+	path="$(pwd)/data/raw"
+	kaggle datasets download -d mlg-ulb/creditcardfraud -p $path
+	kaggle datasets download -d ntnu-testimon/paysim1 -p $path
+	kaggle datasets download -d ntnu-testimon/banksim1 -p $path
 
 ## Delete all compiled Python files
 clean:
