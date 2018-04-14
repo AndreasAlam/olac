@@ -1,0 +1,329 @@
+bplist00Ň_WebMainResource_WebSubresourcesŐ	
+^WebResourceURL_WebResourceFrameName_WebResourceData_WebResourceMIMEType_WebResourceTextEncodingName_#http://lisp.vse.cz/pkdd99/berka.htmPO*ś<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1250">
+<title>Financial Data description:</title>
+</head>
+<body bgcolor="#FFFFFF">
+<img src="razitko.gif" width="170" height="162" align="LEFT" hspace="9" vspace="-10">
+
+<p>&nbsp;&nbsp;</p>
+<h1>PKDD'99 Discovery Challenge</h1>
+<h1>Guide to the Financial Data Set</h1>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<h2>Domain</h2>
+
+<p>Once upon a time, there was a bank offering services to private
+persons. The services include managing of accounts, offering loans, etc. 
+
+&nbsp;
+</p><h2>Task description</h2>
+
+The bank wants to improve their services. 
+<!--
+by finding interesting groups of clients (e.g. to
+differentiate between good and bad clients). 
+-->
+For instance, the bank managers have only vague idea,
+who is a good client (whom to offer some additional services) and who is a bad
+client (whom to watch
+carefully to minimize the bank loses). Fortunately, the bank stores data
+about their clients, the
+accounts (transactions within several months), the loans already granted,
+the credit cards issued
+The bank managers hope to improve their understanding of customers and seek
+specific actions to improve services.
+<!-- They search advice which would convince them to apply specific actions.
+-->
+A mere application of a discovery tool will not be convincing for them.
+<p></p>
+
+
+&nbsp;
+<h2>Data description</h2>
+
+<img src="data.gif" align="CENTER">
+ 
+ 
+<p>The data about the clients and their accounts consist of following
+relations:</p>
+ 
+<ul>
+<li>relation<b> account</b> (4500 objects in the file ACCOUNT.ASC) - each
+record describes static characteristics of an account,
+</li><li>relation <b>client</b> (5369 objects in the file CLIENT.ASC) - each
+record describes characteristics of a client,
+</li><li>relation <b>disposition</b> (5369 objects in the file DISP.ASC) - each
+record relates together  a client with an account i.e. this relation
+describes the rights of clients to operate accounts,
+</li><li>relation <b>permanent order</b> (6471 objects in the file ORDER.ASC) -
+each record describes characteristics of  a payment order,
+</li><li>relation <b>transaction</b> (1056320 objects in the file TRANS.ASC) -
+each record describes  one transaction on an account,
+</li><li>relation <b>loan</b> (682 objects in the file LOAN.ASC) - each record
+describes a loan granted  for a given account,
+</li><li>relation <b>credit card</b>  (892 objects in the file CARD.ASC) - each
+record describes a  credit card issued to an account,
+</li><li>relation <b>demographic data</b> (77 objects in the file DISTRICT.ASC) -
+each record describes  demographic characteristics of a district.
+</li></ul>
+ 
+<p>Each account has both static characteristics (e.g. date of creation,
+address of the branch) given
+in relation "account" and dynamic characteristics (e.g. payments debited or
+credited, balances) given
+in relations "permanent order" and "transaction". Relation "client"
+describes characteristics of
+persons who can manipulate with the accounts. One client can have more
+accounts, more clients can
+manipulate with single account; clients and accounts are related together in
+relation "disposition".
+Relations "loan" and  "credit card" describe some services which the bank
+offers to its clients;
+more credit cards can be issued to an account, at most one loan can be
+granted for an account. Relation
+"demographic data" gives some publicly available information about the
+districts (e.g. the
+unemployment rate); additional information about the clients can be deduced
+from this.</p>
+
+&nbsp;
+<h3>Relation account</h3>
+<table cellspacing="0" border="" cellpadding="4" width="85%">
+<tbody><tr><th>item</th><th>meaning</th><th>remark</th></tr>
+<tr><td>account_id</td><td>identification of the account</td><td> </td></tr>
+<tr><td>district_id</td><td>location of the branch</td><td> </td></tr>
+<tr><td>date</td><td>date of creating of the account</td><td>in the form
+YYMMDD</td></tr>
+<tr><td>frequency</td><td>frequency of issuance of statements</td>
+<td>"POPLATEK MESICNE" stands for monthly issuance<p></p>
+"POPLATEK TYDNE" stands for weekly issuance<p></p>
+"POPLATEK PO OBRATU" stands for issuance after transaction</td>
+</tr>
+</tbody></table>
+&nbsp;
+&nbsp;
+&nbsp;
+ 
+<h3>Relation client</h3>
+<p>
+</p><table cellspacing="0" border="" cellpadding="4" width="85%">
+<tbody><tr><th>item</th><th>meaning</th><th>remark</th></tr>
+<tr><td>client_id</td><td>client identifier</td><td></td></tr>
+<!-- <FONT SIZE=2> -->
+<tr><td>birth number</td><td>birthday and sex</td>
+<td>the number is in the form YYMMDD for men,<br>
+the  number is in the form YYMM+50DD for women,<br>
+<p>where YYMMDD is the date of birth</p></td>
+</tr>
+<tr><td>district_id</td><td>address of the client</td><td></td></tr>
+</tbody></table>
+&nbsp;
+&nbsp;
+&nbsp;
+ 
+<h3>Relation disposition</h3>
+<table cellspacing="0" border="" cellpadding="4" width="85%">
+<tbody><tr><th>item</th><th>meaning</th><th>remark</th></tr>
+<tr><td>disp_id</td><td>record identifier</td><td></td></tr>
+<tr><td>client_id</td><td>identification of a client</td><td></td></tr>
+<tr><td>account_id</td><td>identification of an account</td><td></td></tr>
+<tr><td>type</td><td>type of disposition (owner/user)</td>
+<td>only owner can issue permanent orders and ask for a loan</td></tr>
+</tbody></table>
+&nbsp;
+&nbsp;
+&nbsp;
+
+<h3>Relation permanent order (debits only)</h3>
+<table cellspacing="0" border="" cellpadding="4" width="85%">
+<tbody><tr><th>item</th><th>meaning</th><th>remark</th></tr>
+<tr><td>order_id</td><td>record identifier</td><td></td></tr>
+<tr><td>account_id</td><td>account, the order is issued
+for</td><td></td></tr>
+<tr><td>bank_to</td><td>bank of the recipient</td>
+<td>each bank has unique two-letter code</td></tr>
+<tr><td>account_to</td><td>account of the recipient</td><td></td></tr>
+<tr><td>amount</td><td>debited amount</td><td></td></tr>
+<tr><td>K_symbol</td><td>characterization of the payment</td>
+<td>
+"POJISTNE" stands for insurrance payment<p></p>
+"SIPO" stands for household payment<p></p>
+"LEASING" stands for leasing<p></p>
+"UVER" stands for loan payment<p></p>
+</td>
+</tr>
+</tbody></table>
+&nbsp;
+&nbsp;
+&nbsp;
+ 
+<h3>Relation Transaction</h3>
+<p>
+</p><table cellspacing="0" border="" cellpadding="4" width="85%">
+<tbody><tr><th>item</th><th>meaning</th><th>remark</th></tr>
+<tr><td>trans_id</td><td>record identifier</td><td></td></tr>
+<tr><td>account_id</td><td>account, the transation deals
+with</td><td></td></tr>
+<tr><td>date</td><td>date of transaction</td><td>in the form
+YYMMDD</td></tr>
+<tr><td>type</td><td>+/- transaction</td>
+<td>"PRIJEM" stands for credit<p></p>"VYDAJ" stands for withdrawal</td></tr>
+<tr><td>operation</td><td>mode of  transaction</td>
+<!-- <FONT SIZE=2> -->
+<td>
+"VYBER KARTOU" credit card withdrawal<p></p>
+"VKLAD" credit in cash<p></p>
+"PREVOD Z UCTU" collection from another bank<p></p>
+"VYBER" withdrawal in cash<p></p>
+"PREVOD NA UCET" remittance to another bank</td>
+</tr>
+<tr><td>amount</td><td>amount of money</td><td></td></tr>
+<tr><td>balance</td><td>balance after transaction</td></tr>
+<tr><td>k_symbol</td><td>characterization of the transaction</td>
+<td>
+"POJISTNE" stands for insurrance payment<p></p>
+"SLUZBY" stands for payment for statement<p></p>
+"UROK" stands for interest credited<p></p>
+"SANKC. UROK" sanction interest if negative balance<p></p>
+"SIPO" stands for household<p></p>
+<!-- 'SOC. DAVKA' stands for unemployment compensation or old-age
+pension</P> -->
+"DUCHOD" stands for old-age pension<p></p>
+<!-- 'LEASING' stands for leasing</P> -->
+"UVER" stands for loan payment<p></p>
+</td>
+</tr>
+<tr><td>bank</td><td>bank of the partner</td>
+<td>each bank has unique two-letter code</td></tr>
+<tr><td>account</td><td>account of the partner</td><td></td></tr>
+</tbody></table>
+&nbsp;
+&nbsp;
+&nbsp;
+ 
+<h3>Relation Loan</h3>
+<table cellspacing="0" border="" cellpadding="4" width="85%">
+<tbody><tr><th>item</th><th>meaning</th><th>remark</th></tr>
+<tr><td>loan_id</td><td>record identifier</td><td></td></tr>
+<tr><td>account_id</td><td>identification of the account</td><td></td></tr>
+<tr><td>date</td><td>date when the loan was granted</td><td> in the form
+YYMMDD </td></tr>
+<!-- <TR><TD>purpose</TD><TD>purpose of the loan</TD><TD></TD></TR> -->
+<tr><td>amount</td><td>amount of money</td><td></td></tr>
+<tr><td>duration</td><td>duration of the loan</td><td></td></tr>
+<tr><td>payments</td><td>monthly payments</td><td></td></tr>
+<tr><td>status</td><td>status of paying off the loan</td>
+<td>'A' stands for contract finished, no problems,<p></p>
+'B' stands for contract finished, loan not payed,<p></p>
+'C' stands for running contract, OK so far,<p></p>
+'D' stands for running contract, client in debt</td>
+<!-- <TD> possible values are "A", "B", "C", "D"</TD> -->
+</tr>
+</tbody></table>
+&nbsp;
+&nbsp;
+&nbsp;
+
+<h3>Relation Credit card</h3>
+<table cellspacing="0" border="" cellpadding="4" width="85%">
+<tbody><tr><th>item</th><th>meaning</th><th>remark</th></tr>
+<tr><td>card_id</td><td>record identifier</td><td></td></tr>
+<tr><td>disp_id</td><td>disposition to an account</td><td></td></tr>
+<tr><td>type</td><td>type of card</td>
+<td>possible values are "junior", "classic", "gold"</td></tr>
+<tr><td>issued</td><td>issue date</td><td>in the form YYMMDD</td></tr>
+<!-- <TR><TD>expire</TD><TD>expiration date</TD><TD></TD></TR> -->
+</tbody></table>
+&nbsp;
+&nbsp;
+&nbsp;
+
+<h3>Relation Demographic data</h3>
+<table cellspacing="0" border="" cellpadding="4" width="85%">
+<tbody><tr><th>item</th>
+<th>meaning</th>
+<th>remark</th>
+</tr>
+<tr><td>A1 = district_id</td><td>district code</td><td></td></tr>
+<tr><td>A2</td><td>district name</td><td></td></tr>
+<tr><td>A3</td><td>region</td><td></td></tr>
+<tr><td>A4</td><td>no. of inhabitants</td><td></td></tr>
+<tr><td>A5</td><td>no. of municipalities with inhabitants &lt;
+499</td><td></td></tr>
+<tr><td>A6</td><td>no. of municipalities with inhabitants
+500-1999</td><td></td></tr>
+<tr><td>A7</td><td>no. of municipalities with inhabitants
+2000-9999</td><td></td></tr>
+<tr><td>A8</td><td>no. of municipalities with inhabitants
+&gt;10000</td><td></td></tr>
+<tr><td>A9</td><td>no. of cities</td><td></td></tr>
+<tr><td>A10</td><td>ratio of urban inhabitants</td><td></td></tr>
+<tr><td>A11</td><td>average salary</td><td></td></tr>
+<tr><td>A12</td><td>unemploymant rate '95</td><td></td></tr>
+<tr><td>A13</td><td>unemploymant rate '96</td><td></td></tr>
+<tr><td>A14</td><td>no. of enterpreneurs per 1000
+inhabitants</td><td></td></tr>
+<tr><td>A15</td><td>no. of commited crimes '95</td><td></td></tr>
+<tr><td>A16</td><td>no. of commited crimes '96</td><td></td></tr>
+</tbody></table>
+
+<p>&nbsp;</p>
+<b>This database was prepared by Petr Berka and Marta Sochorova.</b><br>
+For possible questions on the data and task description contact Petr Berka. 
+All questions and answers will be publihked as appendixes to this
+document.
+
+&nbsp;
+<hr>
+<h2>Asked Questions</h2>
+<ul>
+</ul>
+
+
+</body></html>Ytext/htmlUUTF-8˘Ô_WebResourceResponse_%http://lisp.vse.cz/pkdd99/razitko.gifO€bplist00ÔjkX$versionX$objectsY$archiverT$top † Ż#)*0123MNOPQRSTUVWXYZ[\]^_`aeU$nullÝ	
+ !"___nsurlrequest_proto_prop_obj_6___nsurlrequest_proto_prop_obj_3R$2___nsurlrequest_proto_prop_obj_0R$3___nsurlrequest_proto_prop_obj_4V$class___nsurlrequest_proto_prop_obj_1R$4R$0___nsurlrequest_proto_prop_obj_5___nsurlrequest_proto_prop_obj_2R$1€€€	€€€€ €Ó$% '(WNS.base[NS.relative€ €€_%http://lisp.vse.cz/pkdd99/razitko.gifŇ+,-.Z$classnameX$classesUNSURL˘-/XNSObject#AŔ@CŐ—> ČÓ456ALWNS.keysZNS.objectsŞ789:;<=>?@€	€
+€€€€€€€€ŞBDEFGHIJK€€€€€€€€€€€VServer\Content-TypeTEtag]Last-ModifiedX__hhaa__TDate]Accept-Ranges^Content-LengthZKeep-AliveZConnection_:Apache/2.2.6 (Unix) PHP/5.2.4 mod_ssl/2.2.6 OpenSSL/0.9.7dYimage/gif_"8180a-13e5-e4705c80"_Tue, 14 Jan 2003 17:09:54 GMT_D
+
+YnBsaXN0MDDZAQIDBAUGBwgJCgwOEBIUFhgaWkNvbm5lY3Rpb25WU2VydmVyXENvbnRlbnQtVHlwZV1MYXN0LU1vZGlmaWVkXUFjY2VwdC1SYW5nZXNURGF0ZV5Db250ZW50LUxlbmd0aFpLZWVwLUFsaXZlVEV0YWehC1pLZWVwLUFsaXZloQ1fEDpBcGFjaGUvMi4yLjYgKFVuaXgpIFBIUC81LjIuNCBtb2Rfc3NsLzIuMi42IE9wZW5TU0wvMC45LjdkoQ9ZaW1hZ2UvZ2lmoRFfEB1UdWUsIDE0IEphbiAyMDAzIDE3OjA5OjU0IEdNVKETVWJ5dGVzoRVfEB1GcmksIDEzIEFwciAyMDE4IDEzOjI1OjAxIEdNVKEXVDUwOTOhGV8QEnRpbWVvdXQ9NSwgbWF4PTEwMKEbXxAVIjgxODBhLTEzZTUtZTQ3MDVjODAiAAgAGwAmAC0AOgBIAFYAWwBqAHUAegB8AIcAiQDGAMgA0gDUAPQA9gD8AP4BHgEgASUBJwE8AT4AAAAAAAACAQAAAAAAAAAcAAAAAAAAAAAAAAAAAAABVg==_Fri, 13 Apr 2018 13:25:01 GMTUbytesT5093_timeout=5, max=100ZKeep-AliveŇ+,bc_NSMutableDictionaryŁbd/\NSDictionaryŇ+,fg_NSHTTPURLResponseŁhi/_NSHTTPURLResponse]NSURLResponse_NSKeyedArchiverŃlm_WebResourceResponse€    # - 2 7 Y _ z ś ľ Á ă ć147Y{~€‚„†ŠŚŽŹ‘“•—ž¦˛´¶¸ŕĺđů˙'2=?ACEGIKMOQ\^`bdfhjlnpry†‹™˘§µÄĎÚ!9YˇÁÇĚáěń15IWil‚             n              „OĺGIF89aú ú ÷˙    €   € €€   €€ € €€ŔŔŔŔÜŔ¤Čđ			
+
+
+   !!!"""###$$$%%%&&&'''((()))***+++,,,---...///000111222444555666777888999:::;;;<<<===>>>???@@@AAABBBCCCDDDEEEFFFGGGHHHIIIJJJKKKLLLMMMNNNOOOPPPQQQRRRSSSTTTUUUVVVWWWXXXYYYZZZ[[[\\\]]]^^^___```aaabbbcccdddeeeggghhhiiijjjkkklllmmmnnnooopppqqqrrrssstttuuuvvvwwwxxxyyyzzz{{{|||}}}~~~‚‚‚„„„………†††‡‡‡‰‰‰ŠŠŠ‹‹‹ŚŚŚŤŤŤŽŽŽŹŹŹ‘‘‘’’’“““”””•••–––———™™™ššš›››śśśťťťžžžźźź   ˇˇˇ˘˘˘ŁŁŁ¤¤¤ĄĄĄ¦¦¦§§§¨¨¨©©©ŞŞŞ«««¬¬¬­­­®®®ŻŻŻ°°°±±±˛˛˛łłł´´´µµµ¶¶¶···¸¸¸ąąąşşş»»»ĽĽĽ333˝˝˝ľľľżżżÁÁÁÂÂÂĂĂĂÄÄÄĹĹĹĆĆĆÇÇÇČČČÉÉÉĘĘĘËËËĚĚĚÍÍÍÎÎÎĎĎĎĐĐĐŃŃŃŇŇŇÓÓÓÔÔÔŐŐŐÖÖÖ×××ŘŘŘŮŮŮÚÚÚŰŰŰÜÜÜÝÝÝŢŢŢßßßŕŕŕáááâââăăăäääĺĺĺćććçççfffčččéééęęęëëëěěěíííîîî˙űđ  ¤€€€˙   ˙ ˙˙   ˙˙ ˙ ˙˙˙˙˙!ů  ˙ ,    ú ú  ˙ ˙	H° Á*\Č°ˇĂ‡#JśH±˘Ĺ‹3jÜČ±ŁÇŹ CŠI˛¤É“(SŞ\É˛ĄË—0cĘśIł¦Í›8sęÜÉł§Ďź@
+J´¨ŃŁH“*]Ę´©Ó§PŁJťJµŞŐ«XłjÝĘµ«×Ż`ĂŠK¶¬ŮłhÓŞ]Ë¶­Ű·păĘťK·®Ý»xóęÝË·Żßż€L¸°áĂ+^Ě¸±ăÇ#KžLą˛ĺË3kŢĚąłçĎ C‹Mş´éÓ]GR¸uŃ.âŕşč»ő±iŕÚµcŽS€ń˙.Đg<‡ őţ9h p—°fÁWşp‰  Č˙˙XôĎG•‰h×`D €-âüeŔ’ě+Łç°ŕŰ"čâAC,ü€âŐ"^â1óĎ1´AŔwRŕŇ;Ćś  ~¸gŽxtDÎ?Ż @$îĄł^*ňç€´Ý`"f$Î@Éx€(č@ŕóŹüĂmłĐ6ŤqŁ”A[6 l‚yCe2 lđ8ŁÔX‘<¸ř=Ć	ós¦üp;\ŕ ůOw´ đNoôË
+ëüł ×( Ç4Ýü“ $ŹĂyąP Pđ1 ĐňĎŔ‰W¤" „ňĎb(T
+ ĺ$$yüó\ˇc<P	 (˙€†Ł	Ŕ+Ě?čŚ'ĐęáP=:„M}r ´"dÜ?đŕP¤{®ž9LIŃdÜ°
+tËyÍ¤ÍŽ ´B®Äp!@ Đ ĽD¸Őé@ôŔ DŘůO xr łávŔ27Ýń¬x˝ĹGď?i pcNřĎ |óđ?d‹“ę¸Á?Ž7Â?ÜP·ńMČ—
+ ź‚6 PÍĘ6ÉS¨Ŕ©c\68ç 5ÁhnĐ8Y Á?Ź Ň: Ů.Ô/™2-AÔ‡5NĎdą &|]‹·˝_x|  ô  âIÚ¬–č´^¨â˙ l4KČ˝năÄóÍÖî@ŐöÄ	­ ¨A÷„BČ0ő ^ŠAPę±Pĺ,ąS#ŠĹŃCHÖř±ő?ç@ú@âpÁ ú Í?˙)VA¬Ďx” ,p†@ë‘Z'”üCů?”  oá‹§ G,đÇ?{0žö@DÇ‡šSďŇÁ(V3đ1 ś$í J=¤SŚ18 Š{ćŻ´ä˙Ĺúç—zPĂg#{Ŕě"r	 Ěă;Ů5 PLPĎ8Ć`ňÖ&“}qBdĘa’WŕŔ‚ ’šgýăÉ€A0v/ĐDŽř‡ŚĂÂ\`"08˙Îp5P@ů(	„$ř/Ü &ÄĐPĹÖÜĹ ůŔdoüéEőf·é	ä€BB>Á
+ipâŢĄ,oÄ hŔĽdŇ h7 ®P¨Ě ôřA–°4păńŻ"eÄß‹‰‚FŻ÷ †< ry$„	CÇ@úxČH íČ2ęÓšĽˇpD8ĽX“r €ěxÇ÷ň ¤Ż!ŔÎ@ ¸‡<oŔB„ë„siÁ6n˘ľýŁ¸ę‹*Â†D=är H¨“L ‡*·ťüa/Ç˙DşÄĘŠ˙Č„D&đÂ„qF”âłid]’Ă‰q4–ľ>ńĺż‹>ĹăŽxł!‰ Č¨’`ő”Boipć?<`śíńe\€@ ’<Ä;č§@´ŕ‚R!ď•zŚ5 fŘ‹Š2ă4Á‘…ŇÔ*đŕ]¤0H-`ÉgPŔ8x€NßRÂ~®GeőˇAq˛† hdAđ@žü  čđ–@”—Pí@îRČß*Čâ &m:ĚXBpÁ'ÂH=Ľ@‰Ť¶ĺ^ř\A§vˇĘU  «É€5%ňś hbő©G*đ‚ z4Î <ě®·  ˙ţŁŔ<
+˘	ě"» @Ţ~ŇNţL,/¨0Kó• ta ¤@J €ŃÄĎuH' ÂźĽ#[Ó`n^6q
+7YB2
+%‘®dĐCQ†!¬Ö “°lKnQźôĹmŰđUAÎ;yţB čhA„ˇ e2„ H–@Ö  gŕ ° #Hˇ«»8á7Ę5HdĐţ„Ö%ČZđžeKúmIçž'ŘĄĆŮAŕ`>ú11*ÎlŇG‹.DĆäTŚYB$Ŕ›¸‹űţK…Ř@
+…óFm%&	(ŕÍS¸áŚ^6ÔÉ€„Ľ`˙S±Q^7dŞ	YÓX-đ¤zQĂđHĽ{Á gŕŔ?¶›Ź ń €+Â TR'~Č#žß’ĽDČcĎ˙ UrŚ¶„ (”˘~°‡č *Č‰ÔĽVR¸/©Ç~KČ„ D·Ră! HŞM €‹däB<u­Ë0Śę1) AŘ@ú…‰X#Ĺ§nOCÚˇŁj—¤őh‡ŔëşĽĂçLM'ěçPy«‡‚:+Dŕ~‰BĽVĆĄ†ąŇ‡„Ă Ř€@dŔ t» Š(An±€†5$z„LŐ—ŇĄ%˙€%’ů& «Ş)U“RˇT3ŹO?#¦D˘_~âĺ7ű‡%L<xŠ áĐx‰n¶Tŕ–¸,Y!H÷ëšC’—ťh„rÉ±ÁĄgńM[  ‚Ë‚‚0íť™B  'oäâ%Č9âugAâZ±_"W$# |]ÜEm0‡#őč€ůćĎ1 °h$^řÔ ˇXŔŃcâ˘<Ö…6!°F
+üŤ7 ŔVë?@R‚Â8ł(( 0˘`¬/‘ĂęĹSeą  ]p ÂÜp@Ŕ¦É„żŚŁ‰ž:†8Č˙”m)tĘ%ŕuľc ÂĎ"™GŔÝP„´mU÷˙ÇČâŻ…vł©Ŕ čđő×ő0TŃ «Gvˇ­VĐn1°6—(‡}s!ő~#Ap`ń<3+ˇk˙ [qdpzA.ĆW`  Ă *€wŃ4dvĹp{Y—	v0`Ăä>Ds1PWŕđZq ?(&‘<0S%E:eńÁ`d §€   @-)  % "ô0%pŤ`Á y"Ú7<aPă0;Ř@{#QĘŔ™DV4Pgçw$!˙@HAP]đQ đX˙ 
+ŘD0TkĆ°Nplńj H°	Íw;ŔAaJř,Ť$f+Xq#Ŕ xL`)s±o.ńŁŔ9¨†Mń2^¸ 
+P˛bP?Ňk ‹ÁőŔ+`D¸łő0±6ŻĐ  @X5Ń(dACRB.- ěP†Q!ńË 3dł% !@đđ9î’tÚ˘…˙†Ń+Đ‡qÇ€ĆĐ<Ńŕ?P	Î†<řzpOGh`‰ŔŽá ű×t¦,Ë$ŽA	ÎT×Pg˙01™·đQ0@`!”Ę2A)–
+ ôV=ŠX ‰1a @7ŃS‰g€.7|UÖeCăÓ !•4± 0\
+1PĄ‡0š(G@’Ć1e•q	°O6ŃWP! <OµŔh”á>  —5a ŕ`‘„‘\(ĺ3Ôđń°^Jđv5Á NČ°â
+Ě mńR7y5™ŕL´Q YÚ yq…Ő1!ěçâŽ‰ň`éĚ°iČŁ‹ńŹó!ÉéŘ;ĐŠ`g7ŔC8đ‚i6—Ŕ «˙°\€YĆQq  PŹ!¸YuA
+ß´r¸)P„)s4FđžŹá;!´·(2€9Ř0JqŚő&”bŠĆ‚Đ”˙ ń
+ {„­ßŮ,µ }°ă´˙q˘ˇ|µ^‡;+Vw”j†őň‰<Q‘ŕ—!Oó 2( ‡jr‚°—Ů]P9-B]Ý¨Ł¤—$¸vPKQ9Bť-…	Đ{î}#X’™˘0ř< n…7iÇbM$P	W0™aB  ź?`?@‘v'~ŃaĎĆY˙đ.tj®€«“¸p’CQ/™š, @*Ůbz6š@± Evŕz‘/đ'đ m‡a@tŠ‘<ćdĂs‘ac¸á> 0:đkP|‰‘_ JóthEá đ‹B:¨ ő@hŚ¬Ô =Ź€mNđ°QPŇ71ę ) = °MG‘bş/“6:  UĎÚ 0ëáZ§j PH4v¶ =ĽÄ¤Ŕ €IÁŔ†ń7ĆqC‚PŹg‘0žH±?ŕ¬Á0§  nxˇ©Ň7h‡H1m°k0‡ľ¸!˙b9° ů2|JáĘIjĆ‘/) $–YKc…#  :Ćń @ŚK–îˇ pŠŕ Ô§Đ¨J÷Uc©%Đn
+ ëŐí€soŢ  >š€jm0VéĎ·‹`JU0©+ ±·j·´aŚ(†h[8 gŔ`× ±a+D!Łd±ö ¦Ł±u2ú °őp9ˇ GsX˙0˙ ľ0®Ş› pXĆ:UPő±[jŕdQÁ Č0Ć!
+NGP'˛fq·á	ĆAŁ˙€GJ  Ť×AtSjúżZ#‡đh˘÷˙)8‡Šŕ @‚ 2ëÁ–áâ|÷&?Ž#a0GH @ë1ˇĆ!G˛2~`1 A.Ň   1	Ôg+Ě ĺ	xäRą1őÇŮU1ˇ žŇp O´8ÎRB»K'O6 ŕť  ľ×°?XĂľŕ=$a řW:•%ńp%2TßQ6ó™ĘńI đźšE& ±p5ŕ < ‡‚x\R|ź}Ř+“żaRźîC¦˙€&‚ŻÔ] EÁ
+Ö«¨Ą2đÂ F€Łhś2â&aâYąrĆ˙đ7Áˇ	03°: ř  ŠôÇ
+
+Ń€› sPâ6RŔKY öU /·hÉŃđrcăP˙)”â6['ť@9^ qĂ«ĘaJ @  D×  6 ěéËĚÜĚÎüĚĐÍŇ<ÍÔ\ÍÖ|ÍŘśÍÚĽÍÜÜÍŢüÍŕÎâ<Îä\Îć|ÎčśÎęĽÎěÜÎîüÎđĎň<Ďô\Ďö|ĎřśĎúĽĎüÜĎţüĎ Đ=Đ]Đ}ĐÍĚ ; Yimage/gifÔ_"http://lisp.vse.cz/pkdd99/data.gifO}bplist00ÔjkX$versionX$objectsY$archiverT$top † Ż#)*0123MNOPQRSTUVWXYZ[\]^_`aeU$nullÝ	
+ !"___nsurlrequest_proto_prop_obj_6___nsurlrequest_proto_prop_obj_3R$2___nsurlrequest_proto_prop_obj_0R$3___nsurlrequest_proto_prop_obj_4V$class___nsurlrequest_proto_prop_obj_1R$4R$0___nsurlrequest_proto_prop_obj_5___nsurlrequest_proto_prop_obj_2R$1€€€	€€€€ €Ó$% '(WNS.base[NS.relative€ €€_"http://lisp.vse.cz/pkdd99/data.gifŇ+,-.Z$classnameX$classesUNSURL˘-/XNSObject#AŔ@CŐ¦ ČÓ456ALWNS.keysZNS.objectsŞ789:;<=>?@€	€
+€€€€€€€€ŞBDEFGHIJK€€€€€€€€€€€VServer\Content-TypeTEtag]Last-ModifiedX__hhaa__TDate]Accept-Ranges^Content-LengthZKeep-AliveZConnection_:Apache/2.2.6 (Unix) PHP/5.2.4 mod_ssl/2.2.6 OpenSSL/0.9.7dYimage/gif_"817ec-112c-e4335380"_Tue, 14 Jan 2003 17:09:50 GMT_D
+
+YnBsaXN0MDDZAQIDBAUGBwgJCgwOEBIUFhgaWkNvbm5lY3Rpb25WU2VydmVyXENvbnRlbnQtVHlwZV1MYXN0LU1vZGlmaWVkXUFjY2VwdC1SYW5nZXNURGF0ZV5Db250ZW50LUxlbmd0aFpLZWVwLUFsaXZlVEV0YWehC1pLZWVwLUFsaXZloQ1fEDpBcGFjaGUvMi4yLjYgKFVuaXgpIFBIUC81LjIuNCBtb2Rfc3NsLzIuMi42IE9wZW5TU0wvMC45LjdkoQ9ZaW1hZ2UvZ2lmoRFfEB1UdWUsIDE0IEphbiAyMDAzIDE3OjA5OjUwIEdNVKETVWJ5dGVzoRVfEB1GcmksIDEzIEFwciAyMDE4IDEzOjI1OjAxIEdNVKEXVDQzOTahGV8QEnRpbWVvdXQ9NSwgbWF4PTEwMKEbXxAVIjgxN2VjLTExMmMtZTQzMzUzODAiAAgAGwAmAC0AOgBIAFYAWwBqAHUAegB8AIcAiQDGAMgA0gDUAPQA9gD8AP4BHgEgASUBJwE8AT4AAAAAAAACAQAAAAAAAAAcAAAAAAAAAAAAAAAAAAABVg==_Fri, 13 Apr 2018 13:25:01 GMTUbytesT4396_timeout=5, max=100ZKeep-AliveŇ+,bc_NSMutableDictionaryŁbd/\NSDictionaryŇ+,fg_NSHTTPURLResponseŁhi/_NSHTTPURLResponse]NSURLResponse_NSKeyedArchiverŃlm_WebResourceResponse€    # - 2 7 Y _ z ś ľ Á ă ć147Y{~€‚„†ŠŚŽŹ‘“•—ž¦˛´¶¸Ýâíöü˙$/:<>@BDFHJLNY[]_acegikmov–ź¤˛ÁĚ×6VžľÄÉŢéî.2FTfi             n              O,GIF89aű*€     ˙˙˙,    ű* űŚŹ©ËíŁś´Ú‹łŢĽű†âH–ć‰¦ęĘ¶îÇňL×öŤçúÎ÷ţ
+‡Ä˘ńL*—Ě¦ó	ŤJ§ÔŞőŠÍj·Ü®÷‹Çä˛ůŚ¦Öě¶űŹËçôxÚXĎë÷|÷˝Ŕř74¸dH…´ŘÓxé(%IT9ysYy5ČÉéłř©‰°&AJqĘPšdŘşëę‚; ›»p[Q‰K»ąË¬Ł{€;Ękęë \ä©điÚf°
+óm"=č‰ť»úĆÜŕg>˝ýÔŤě.~˝ű-Ł˝>Ňž:<îŢ(ÉOŤź9{MđŮŠO`6‚jŞŰ÷nĽ‡çEĽTűŹa&‡'^łŘ±–FzËQ“dÄrđŽÁ8’®cŕPÎČsA‡3?ö[ö®ćÁ—0sóńÖ·”8945zA©Kqŕ–&…d-)ŐjV‹Bň´á×aĹŽR–äŮiŐ®ýŃváŰqĺÎ}$č.·‚zńęK˘îÁ€ťć-‚pĹ10Vńxnd¶ŤqL¦[ůĂeĚ™kl.ńůkčŔť=.­aô=Ô7OłŽĘ÷µÝW˛Ç®˝Ř5nT·wCÖíűjĂe×|ÂqäÉ)˙maąéĄ©ë„˝7öŐĎ·łŇî„őÔáż/ßa|őĐŘŰFźř|y÷°á‹oüM1}ZţJ*Jš}Ěq†J2®D”fŚí××dŔx`H¦·W„†%S5µÔR:+ťňKs 6˘OÝ”`>ŐL8 …ëAŃ‰A!â?4AŘLa˙ ˘EKáCcPşxÝV)ĂăO	5Uv0XĹŽ6É3‹.Iä‹2"H“’Ř¤pő&e—>MY‚ńeiŰ–>ňÄăI*©ç,Ú@IE™Z˝ů’”űxŘ"›Ş\u&†áôčI4ö‚ă :šÇ!9	ŮČh…‚ć¨Äť$BĘ›1—>)źŹŘixJĆRbÚ §Ń*inź:šé­’JŰ¬˙uGë­ůĺŞ«~űˇ:ł)®Ä+,Ż»’éę±ČŠZ+¨Łţęěł^U»¬Żt*k-µxŘŞ—źŃvŰě·Ň2k,(ä–{¸w‰ěşůHo˝|¸‹*/öîËŻňžq*%˙’pLĐÁě l­ÂN8Ěp1±‹s[1›Ź›ńĄÇŰ±ĆĹ†,čÇŘ’lńČ(i˛ş+ł¬ňË¶l®ĚŇÜ®Í7Ç¬3|8[ŇóĚ<ŢĎÂíóĐHcg4XK'=íÓŢ5Ť–Ôó)mµoTG“őÔXw]ŰÖpÍô×d[ÖoÚýâ•ÚnŰëś7oĎ}Ż1tßťGŐ;ą*Ç ±›ł©ŕÉB1ŕ¬‚ ·5ű[6¸§{C[äă÷Ą»řF…›F ˘°}.KNŁŕ§@;ľ(•\źŽćl|÷JŢĽ–šř¶©—ĄRXôU©P,ˇĽSr~řś“ŻIŕ¶H?<ă™lŞz_ŮŁéŃ/:ŽR}ŠŢ<ë/2c˝VFjh˘˘‚©2Ő[•a÷äś¦ć˛[^¦TB‰_Ľ_YÁ!‡}Nä&˙‡—9ü%éKíź÷70ŃÉ Ň0“—¸¤VÜÎ?pŠ‘GFĂ»’Đ$4Ýô% f«u™›S•`äAćŤŻ~Y`5»#E!Är\čđ·%çťn‡â Aň#–r#ÜžMŽw¤)90yű	LÓ;ŘĂ˘Ă‡,zźTxÄ”ĚHVcëĎ’¶x" Â©'˙Ë^ëŇ?3h‹Ä‰›_Ř@/Ą‘{lÔá’¨D˘P‡pˇŠŔD9U…'ô#˘µ$żîi+‚LŃtÜČ=ěu¨*Š$SŮ‹ŐY.s dŁ0¨7żň=’5iĺ•ňŠ—S\çÇW^s‚k%~DiF#â˛Ť”3‡űTÇJ[ş–¨$ĺ.¨&—©ňË<Y.ŤILdž2pÍt&é˘YĂľaÓ”U]-WIKý¸GS+d&7i6Aaú®Ś·Ô4­)Ín­šĘôË(SYÄwÖ3vžŰ&0÷yÇüUü2zĂ!§6áÉÄdV.ŕlČŤşâ¦_ľ.źŔ›g­P|"43”b˙YĚŠ~Ž…Óô&=*‹Ž˘$
+ýÍ+uéĎrösŁ Ąć#¸!2®óĄúD)/eiQ†š“•r*űäI>žŠ4”m©I79ÔpŇ´—ě´)?ťT©NUŁ>5dO­KŚvu1ĺ*XCŞÔłĆťwlh;·*Ö´>őŞ%ÍŞYŐzŇą>s©¨kj]GšW˝^®3ýŞ`×Ú¸·v§Q*EńzÎ‡Ô+~5+Ë–şµ°|[R%Ń¶UV±ŽD«ľ¸ůÍ˛ĆµŞ‡M¨ĄÔr6›÷ě,Y3ęUŰűÚł˛•úS±˘ŘŞňŹSśÔ"e·ĆGöu±­mk#ű'ý±+7­Zd¤E*Ĺń´qBm`űXÖÚ±yŚ˘•žVř˝‘“GdVÝ9XÜŇ–„Ť ¸A6¦ÁDR“tęD¤†ŞĚđ^!«\Éî	‡§|čEŐ+ŔŘxŢ;h[U;[ń‚—‹kŚUWä$ánň|Ťd¤$+ś\™ň eµoź$Ćx»_}o;ÖYvĽ4-c¬bůXČ†/‚­bęňł@¶pjb…dˇv‰í1‘ëä#ß•Ç:ÖíŠqścŞ&řĆ?ž1–ß+ć&“´Q"Q§é‹űá2ÓŐ—Fž/çĚ
+6sq˝pŢď»śĐËžą°“eę}ĽZ@Ë8Čvn4Y¸[gox·Č2ýĄžťQč˘cŢ«žô47ĹK#şT°âô÷„2INĄřĎLÎ0Ąé4#±†ő«*áŁ0+C$Ę†ś«hGÍq×„Hž…Të&wEĆ]r¨'-ëČ%w5Z)KółędăçŹ¬c{Ë‡ćpŰşyÜ	Nż­ß7«›—ŘíRµ!ýë,{|ó‹0)úoj›$94··',DqŻŰĎ˘ę÷ń6đ'ŠÚĄţĄŢÝKđÜ:zrîĆ§yĄ5×9Ł['}ŐnöÖµÇű^A?ŽÜĆÉjx·żnŚ¬üôJy'á×Ś{ŮĚĽÎd…'ů#•÷Ř·ć[ĎőxÜD•Đ—\¸nń­ĆRř¸}NŻ“¨mr0b\H-Ţí”Çg‰—Ź’—41Ë1ŮëťËLÄŢú<ýs§]ěCs´G˝\Ó}ĂVß»ˇżL(ßď„źŽŕ5ľď_řĐ~ĎűâŻ<čĆ{ě…ç‰ńěÚ‰‹çđzŹŻÝ#Ży./Zŕ^ÇüÝ7çx-Ź»ň€§ĽäQOŇĐóÝóŞwu˝údfÚő˛o5Á4zŘ˙ë•¦µšő}|V~đÇN>ó‹>üÖ‡]ńĆ2>ŃsoűÄ_ćwÎGű|öS/[ČcźI|şw­çěŕz˙úBÜ´ÜsÚvŞhîËz•ë^{ŇĂ¤Ţ…h]×]j}%÷AyD(!ÄlŃŐ}öçffFf·3b^KTE:·vÁgmË3u:•v¨|Ś6o÷xź7~ćSůµG^‰÷zřrÄ†rhâtĐV‚´~$ř}W·`§u*rľ$"4V7Ă–_”$u'!(o§Wz#8vÚeIćW(Bb_RQ…îbćg…&Â‚¸Yr†ú7€ŇWah™§„“}e…L†9ř|˘‚gč„7ř„ÔWB¸dĚ—…‹Áyx‡r‡ßű%‚¬‡‡6HtŘ„k8{-Ř†o‡j¨‡ńT‰‘‰vŘ‡źWŤ8†ëw‰¨UpČ‡iŠľ'~U×{ŕgŠn¸€†Č¬ŠŹh†’(e­‹ ©Č~˛hzľ¸‹‡8‰Ż¨µ{{‹Ąř‹±h‰”¸™(Š(†ÖŘfÖHeˇRŤÓ×ŚŔXŚş‹›HŽyŘŤ/†l5Ž‰(Ť´HŤ¶ČŚéxář\Ó¨ŠżxŽĽHŠŕxŠâ(Ś˙čŚŤlhŹĎěŚířŽËXŹ…HŚýŘ‰ÇXŽî¸Šé‰ťW‘IŹ	‰y‘Q¦4ř‘ĆŘ‘y˝’Św‹ňčü‚8s3'€ó“2™’ŻR“+ge–“#×bóS¬”2”i6găŠwP”ń”	aÓ”}÷KůQ‰a@•i•)Y‰’[‰‰Oi`I’dŕ•#I–łčgąŽiÉ•X	•n©‘iŔ–)—j)–ŻQ—eĂ	{É‰wů–`ŕ—sxÉi’…y“Y€ţ¨÷¸ŤÉ‘Ź‘Ś—”i‘y™_ ™ĐČ™źŮ™c!š›éĄ)‘śY™Š`šŞ	’‡Ůš®i‘°9–˛é”´©—¶y›šY›şą¬Ů›ľąšť›ÂÉŹ–śĆ©’¸)”Ę9śV€š[¦›ŃůšFAťü¨qťłiťÎ	™Zť5ĺ›ßŮť1!ž7Ń“56“Ěç‰žđťXžË9š Y‡ťÁbéÉ›"Ů–Khźđ
+ůŘ’aůA÷‡‰ůśQňY—7väžŐˇk…]—Ő&¸›ó9 %‰ź%źităYźň‰ˇk=2Q×†vçŔižćGŠś–â_őaŠ˛>\‘jń¦ť#zS‘?T;Ăsçw^ß—b>Ý5m˙w9ĺ?˘•ÁŁH(‡DQ4Ą†ŘˇÇ™M<ds!„pRÚ¸|ÁĄ„ôQ@dB	HlŻĺ˘Ŕ	Ł‘¤RµS:2řĄu5¦ZŁČöm>‚]tEü)¨xYÚ*U€(xBL¤Éx•­RTF…¦é“jľvmňĄ˙I>P¶l×Ă…î§t+ĺŮźŁ¨ĄÄ	Ş¤Zş“Í)Ş‚Ú ş¤	Mq§»qźD*­şš„™©Ł¤éź}i«ű9—şŞ–ZŞŔš”ď9¬ľZ¬vi”ˇŞŤÄŞźĚZ–Gi¬"ú˘,É”şĘ«ÉŠ	 š­ÁH­Ňú›¤­9­QC|Ýú«â
+‘™1«‹ę™ëj®Ľ§ŞĎŞ¬ĺú—çŠ.öŞ®Ë:Żí
+Ą˝ÚŻřJA‰ď* ů‰­U¬Î:}¬ęŻůJŻČĘŻ“ŕ­{¬ÂZ±§)Ż°Ť°Úę¦«•ű¸Żü­$ű•üé®¤5ă
+ťľ‡{IYmę¤'«˛jŞ;Q–¶oˇłAKž©
+}Jçh}\ą{{+Ąö~íéw…y¦6˙“SKmĆ†~ ¦~ÂÁžg7–DŘĄěŐkŮ´ÖÚ˛Ń•¤ľµ?€Z…Č®ł˛˘ýtn1čŠš›ĺeq˙÷©ş«Dů ÷p0`/Exsc»uŻ"#¶x?Ču"°l[~8ç¶)w¶ * F(©6Ú…‰â!Ťd¸?y…¦˘żö…úC«%ó’y+Ş®»É‰ŽYňŞŇ°‡Ëř¤Á˛P3»¶űşőŠŤ"ĽÄëŤĆ[Ľ°»Ľ0sĽ\ŰĽ)óĽ˝;3˝›ĽÂ{˝i»˝ť;ĽĐ›˝,óµts3ăKľÜ‰ľé«ľëËľíëľďżń+żóKżőkż÷‹żů«żűËżýëż˙Ŕ,ŔLŔlŔŚŔ	,—  !ţĺThis file was created by    Graphic Workshop for Windows 1.1mfrom Alchemy Mindworks Inc.P.O. Box 500Beeton, OntarioL0G 1A0 CANADAThis image may have been created bya party other than Alchemy Mindworks Inc.Use no hooks ;    1 < K b t Š ¨ Î Ď+o+y++‚+‹+ˇ+É3MG6G@GIGnNď                           `
