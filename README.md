@@ -27,9 +27,25 @@ Set the environment
 5. `pyenv local olac_base`
 
 ## Data
+See Docs/datasets for the documentation and exploration of the datasets.
 
+#### [Credit Card Fraud Detection - Kaggle](https://www.kaggle.com/mlg-ulb/creditcardfraud)
+##### CCFD0
+The datasets contains transactions made by credit cards in September 2013 by european cardholders. This dataset presents transactions that occurred in two days, where we have 492 frauds out of 284,807 transactions. The dataset is highly unbalanced, the positive class (frauds) account for 0.172% of all transactions.
 
-See Docs/data_exploration for more detailed information
+#### [Synthetic Financial Datasets For Fraud Detection - Kaggle](https://www.kaggle.com/ntnu-testimon/paysim1)
+##### SMMT0
+We present a synthetic dataset generated using the simulator called PaySim as an approach to such a problem. PaySim uses aggregated data from the private dataset to generate a synthetic dataset that resembles the normal operation of transactions and injects malicious behaviour to later evaluate the performance of fraud detection methods.
+
+#### [Synthetic data from a financial payment system - Kaggle](https://www.kaggle.com/ntnu-testimon/banksim1)
+##### SFPTO
+BankSim is an agent-based simulator of bank payments based on a sample of aggregated transactional data provided by a bank in Spain. The main purpose of BankSim is the generation of synthetic data that can be used for fraud detection research.
+
+#### Kagle API
+'To use the Kaggle API, sign up for a Kaggle account at https://www.kaggle.com. Then go to the 'Account' tab of your user profile (https://www.kaggle.com/<username>/account)
+and select 'Create API Token'. This will trigger the download of kaggle.json, a file containing your API credentials. Place this file in the location ~/.kaggle/kaggle.json.'
+
+See the [kagle api](https://github.com/Kaggle/kaggle-api) for more details.
 
 ## Authors
 * John Paton [paton.john@kpmg.nl]
