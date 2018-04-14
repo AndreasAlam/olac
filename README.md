@@ -37,10 +37,6 @@ The datasets contains transactions made by credit cards in September 2013 by eur
 ##### SMMT0
 We present a synthetic dataset generated using the simulator called PaySim as an approach to such a problem. PaySim uses aggregated data from the private dataset to generate a synthetic dataset that resembles the normal operation of transactions and injects malicious behaviour to later evaluate the performance of fraud detection methods.
 
-#### [Synthetic data from a financial payment system - Kaggle](https://www.kaggle.com/ntnu-testimon/banksim1)
-##### SFPTO
-BankSim is an agent-based simulator of bank payments based on a sample of aggregated transactional data provided by a bank in Spain. The main purpose of BankSim is the generation of synthetic data that can be used for fraud detection research.
-
 #### Kagle API
 'To use the Kaggle API, sign up for a Kaggle account at https://www.kaggle.com. Then go to the 'Account' tab of your user profile (https://www.kaggle.com/<username>/account)
 and select 'Create API Token'. This will trigger the download of kaggle.json, a file containing your API credentials. Place this file in the location ~/.kaggle/kaggle.json.'
