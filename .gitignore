@@ -107,3 +107,8 @@ ENV/
 
 # Ignore datastore, mac meta
 .DS_Store
+
+# Various data formats
+*.arff
+*.csv
+*.asc
