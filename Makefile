@@ -32,10 +32,8 @@ requirements:
 
 ## Download a number of datasets
 data:
-	path="$(pwd)/data/raw"
-	kaggle datasets download -d mlg-ulb/creditcardfraud -p $path
-	kaggle datasets download -d ntnu-testimon/paysim1 -p $path
-	kaggle datasets download -d ntnu-testimon/banksim1 -p $path
+	kaggle datasets download -d mlg-ulb/creditcardfraud -p olac/data/raw
+	kaggle datasets download -d ntnu-testimon/paysim1 -p olac/data/raw
 
 ## Delete all compiled Python files
 clean:

@@ -112,3 +112,4 @@ ENV/
 *.arff
 *.csv
 *.asc
+*.zip
