@@ -10,7 +10,7 @@ For convenience the repo contains a `Makefile`  that facilitates:
 `make venv` assumes `homebrew` is installed and either `zsh` or `bash` is the default shell ($SHELL).
 If the above conditions are not met or if you want to use a different environment/package-manager please see the dependencies
 and manual installation section.
-Pyenv will automatically 'activate' the local environment when entering the directory.
+Pyenv will automatically 'activate' the local environment when entering the directory. Moreover, the makefile install ipython kernel based on the local virtualenv.
 
 ### Manual installation
 #### Dependencies
@@ -25,6 +25,8 @@ Pyenv will automatically 'activate' the local environment when entering the dire
 Set the environment
 4. `pyenv virtualenv 3.6.5 olac_base `
 5. `pyenv local olac_base`
+6. `pip install ipykernel`
+7. `ipython kernel install --user --name=olac_base`
 
 ## Data
 See Docs/datasets for the documentation and exploration of the datasets.
