@@ -5,24 +5,10 @@ venv:
 	brew install pyenv
 	brew install pyenv-virtualenv
 	# Set a few settings in the shell config to auto-activate the environment
-	if [ $SHELL == "/bin/zsh" ]; then
-	  echo 'eval "$(pyenv init -)"' >> ~/.zshrc
-	  echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.zshrc
-	  echo 'if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi' >> ~/.zshrc
-	  echo 'export PATH="/Users/username/.pyenv:$PATH"' >> ~/.zshrc
-	  source ~/.zshrc
-	else
-	  echo 'eval "$(pyenv init -)"' >> ~/.bash_profile
-	  echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.bash_profile
-	  echo 'if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi' >> ~/.bash_profile
-	  echo 'export PATH="/Users/username/.pyenv:$PATH"' >> ~/.bash_profile
-	  source ~/.bash_profile
-	fi
-	
+	bash build/pyenv_path.sh
 	pyenv install 3.6.5
 	pyenv virtualenv 3.6.5 olac_base
 	pyenv local olac_base
-	
 	pip install --upgrade pip
 	pip install -r requirements.txt
 
