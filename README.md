@@ -39,6 +39,16 @@ The datasets contains transactions made by credit cards in September 2013 by eur
 ##### SMMT0
 We present a synthetic dataset generated using the simulator called PaySim as an approach to such a problem. PaySim uses aggregated data from the private dataset to generate a synthetic dataset that resembles the normal operation of transactions and injects malicious behaviour to later evaluate the performance of fraud detection methods.
 
+#### [German Credit Risk - Kaggle](https://www.kaggle.com/uciml/german-credit)
+##### CCFD1
+
+The original dataset contains 1000 entries with 20 categorial/symbolic attributes prepared by Prof. Hofmann. In this dataset, each entry represents a person who takes a credit by a bank. Each person is classified as good or bad credit risks according to the set of attributes. The link to the original dataset can be found below.
+
+#### [PKDD99 Berka](http://lisp.vse.cz/pkdd99/berka.htm)
+##### CCFD2
+Data from a real Czech bank from 1999. The data contains bank transactions, account info, and loan records released for PKDD'99 Discovery Challenge.
+
+
 #### Kagle API
 'To use the Kaggle API, sign up for a Kaggle account at https://www.kaggle.com. Then go to the 'Account' tab of your user profile (https://www.kaggle.com/<username>/account)
 and select 'Create API Token'. This will trigger the download of kaggle.json, a file containing your API credentials. Place this file in the location ~/.kaggle/kaggle.json.'
