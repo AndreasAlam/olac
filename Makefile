@@ -11,6 +11,8 @@ venv:
 	pyenv local olac_base
 	pip install --upgrade pip
 	pip install -r requirements.txt
+	pip install ipykernel
+	ipython kernel install --user --name=olac_base
 
 ## Update requirements in requirements.txt
 requirements: 
