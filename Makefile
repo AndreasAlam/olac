@@ -22,7 +22,7 @@ requirements:
 data:
 	kaggle datasets download -d mlg-ulb/creditcardfraud -p olac/data/raw
 	kaggle datasets download -d ntnu-testimon/paysim1 -p olac/data/raw
-	kaggle datasets download -d uciml/german-credit -p olac/data/raw
+	wget -P olac/data/raw https://www.kaggle.com/uciml/german-credit/downloads/german-credit-risk.zip
 
 ## Delete all compiled Python files
 clean:
