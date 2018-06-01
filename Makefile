@@ -5,7 +5,6 @@ venv:
 	brew install pyenv
 	brew install pyenv-virtualenv
 	# Set a few settings in the shell config to auto-activate the environment
-	bash build/pyenv_path.sh
 	pyenv install 3.6.5
 	pyenv virtualenv 3.6.5 olac_base
 	pyenv local olac_base
