@@ -24,7 +24,10 @@ def set_path(level=1, change_path=True):
     if level == 1:
         base = os.path.normpath(os.getcwd() + os.sep + os.pardir)
     elif level == 2:
-        base = os.path.normpath(os.path.normpath(os.getcwd() + os.sep + os.pardir) + os.sep + os.pardir + '/olac')
+        base = os.path.normpath(
+            os.path.normpath(os.getcwd() + os.sep + os.pardir)
+            + os.sep + os.pardir + '/olac'
+        )
     else:
         raise Exception('Level {0} is not a valid value'.format(level))
     if change_path:

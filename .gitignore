@@ -86,6 +86,8 @@ celerybeat-schedule
 .venv
 venv/
 ENV/
+activate
+.python-version
 
 # Spyder project settings
 .spyderproject
@@ -107,8 +109,14 @@ ENV/
 # Ignore datastore, mac meta
 .DS_Store
 
+# Pycharm
+.idea*
+
 # Various data formats
 *.arff
 *.csv
 *.asc
 *.zip
+
+# Shortcuts
+github
