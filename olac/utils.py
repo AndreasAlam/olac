@@ -1,6 +1,24 @@
 # general
 import os
 import sys
+import numpy as np
+
+
+def rotation_matrix(theta: float):
+    """
+    Generates a rotation matrix to rotate a 2d vector by theta.
+
+    Parameters
+    ----------
+    theta : float
+
+    Returns
+    -------
+    The 2x2 rotation matrix
+
+    """
+    return np.array([[ np.cos(theta), np.sin(theta)],
+                     [-np.sin(theta), np.cos(theta)]])
 
 
 def set_path(level=1, change_path=True):
