@@ -3,7 +3,7 @@ from .utils import rotation_matrix
 
 
 def roving_balls(steps=1000, period=1000, radius=5, var1=1, var2=1,
-                   center=(0, 0)):
+                 center=(0, 0)):
     """
     Generator for the roving balls dataset.
 
@@ -57,4 +57,4 @@ def roving_balls(steps=1000, period=1000, radius=5, var1=1, var2=1,
         locs = locs @ rot  # rotate cluster centers by dtheta
         lab = np.random.choice([0, 1])  # choose a ball to draw from
         x = np.random.normal(loc=locs[lab], scale=scales[lab])
-        yield np.hstack([x, lab])
+        yield np.hstack((x, lab,))
