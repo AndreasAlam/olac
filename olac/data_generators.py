@@ -23,7 +23,8 @@ def roving_balls(balls=2, steps=1000, period=1000, radius=5, vars=1,
     radius : int
         Radius of the entire dataset
     vars : float or iterable
-        The variances of the balls. If float, each ball will have the same var
+        The variances of the balls. If iterable, must have length at least
+        equal to number of balls.
     center : tuple
         The center of the entire dataset
 
