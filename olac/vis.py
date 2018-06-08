@@ -83,7 +83,7 @@ def get_new_accuracy(data, labels, model=None, weights=None):
         w1, b1, w2, b2 = weights
         predictions = pc.prediction(data, w1, b1, w2, b2)
 
-    accuracy = np.equal(predictions[:, 0].round(), labels).mean()
+    accuracy = np.equal(predictions[:, 0].round(), labels[:, 0]).mean()
 
     return predictions[:, 0].round(), accuracy
 

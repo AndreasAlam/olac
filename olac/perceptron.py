@@ -116,7 +116,7 @@ def train_network(X, labels, step, nr_epochs, n_hidden):
         if ((epoch % 10) == 0) or (epoch == (nr_epochs - 1)):
             # print(curr_pred.round())
             # print((labels == curr_pred.round()).sum())
-            accuracy = np.mean(np.equal(curr_pred[:, 0].round(), labels))  # current accuracy on entire set
+            accuracy = np.mean(np.equal(curr_pred[:, 0].round(), labels[:, 0]))  # current accuracy on entire set
             print('Training accuracy after epoch {}: {:.4%}'.format(epoch, accuracy))
 
     return w1, b1, w2, b2, costs, y_hat_save
