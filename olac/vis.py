@@ -4,6 +4,7 @@ import seaborn as sns
 import numpy as np
 import time
 
+import olac.perceptron as pc
 
 def demo_plot():
     # Initialize
@@ -53,3 +54,36 @@ def demo_plot():
 
         # Add close, so it runs faster and the final plot isn't made cuz we don't need that in our life
         plt.close()
+
+
+def get_new_accuracy(data, labels, model=None, weights=None):
+    """
+    Get the accuracy and stuff back to display how it changes over time
+
+    Parameters
+    ----------
+
+    data : ndarray | shape (N, 2)
+        New clusters to classify
+
+    model : Model class
+        Keras based deep learning model class
+
+    labels : ndarray | shape (N, )
+        Labels of the datapoints.
+
+    weights : tuple
+        w1, b1, w2, b2
+
+    """
+
+    try:
+        predictions = model.predict(data)
+    except AttributeError:
+        w1, b1, w2, b2 = weights
+        predictions = pc.prediction(data, w1, b1, w2, b2)
+
+    accuracy = np.equal(predictions[:, 0].round(), labels).mean()
+
+    return predictions[:, 0].round(), accuracy
+
