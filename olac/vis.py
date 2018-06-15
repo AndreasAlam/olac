@@ -89,6 +89,9 @@ class GetNewMetric:
             w1, b1, w2, b2 = weights
             predictions = model.predict(data, w1, b1, w2, b2)
         
+        labels = labels.reshape(predictions.shape)
+        assert predictions.shape == labels.shape
+
         accuracy = np.equal(predictions.round(), labels).mean()
 
         return predictions.round(), accuracy
@@ -162,17 +165,18 @@ class GetNewMetric:
         return predictions[:, 0].round(), TP/(TP+FN)
 
 
-def main_function(MODEL, GENERATOR, iterations, metric, weights=None, window=20, **kwargs):
+def main_function(MODEL, GENERATOR, metric, weights=None, window=20, **kwargs):
     """
 
     """
-    data = np.array(list(GENERATOR(steps=iterations, **kwargs)))
+    data = np.array(list(GENERATOR(**kwargs)))
+    iterations = len(data)
     X = data[:, :2]
     labels = data[:, -1]
     wdw = int(iterations*0.1)
 
-    xlim = (min(X[:, 0]) + min(X[:, 0])/40, max(X[:, 0])+max(X[:, 0])/40)
-    ylim = (min(X[:, 1]) + min(X[:, 1])/40, max(X[:, 1])+max(X[:, 1])/40)
+    xlim = (min(X[:, 0]) + min(X[:, 0])/10, max(X[:, 0])+max(X[:, 0])/10)
+    ylim = (min(X[:, 1]) + min(X[:, 1])/10, max(X[:, 1])+max(X[:, 1])/10)
     if weights:
         # dont train model
         pass
@@ -182,9 +186,10 @@ def main_function(MODEL, GENERATOR, iterations, metric, weights=None, window=20,
             weights = MODEL.fit(X[:wdw], labels[:wdw], epochs=200, batch_size=32)
         except AttributeError:
             # model = MODEL
+            print("Training model")
             weights = MODEL.fit_model(X[:wdw], labels[:wdw], epochs=500, step=0.001, n_hidden=3)
 
-        print("Training model")
+
         # get weights
 
     metric_in_time = []
