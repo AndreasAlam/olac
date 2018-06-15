@@ -6,6 +6,7 @@ import time
 
 import olac.perceptron as pc
 
+
 def demo_plot():
     # Initialize
     start = [100]
@@ -55,35 +56,132 @@ def demo_plot():
         # Add close, so it runs faster and the final plot isn't made cuz we don't need that in our life
         plt.close()
 
+# todo: get_new_recall, precicion etc
 
-def get_new_accuracy(data, labels, model=None, weights=None):
+
+class GetNewMetric:
+
+    @staticmethod
+    def get_new_accuracy(data, labels, model=None, weights=None):
+        """
+        Get the accuracy and stuff back to display how it changes over time
+
+        Parameters
+        ----------
+
+        data : ndarray | shape (N, 2)
+            New clusters to classify
+
+        model : Model class
+            Keras based deep learning model class
+
+        labels : ndarray | shape (N, )
+            Labels of the datapoints.
+
+        weights : tuple
+            w1, b1, w2, b2
+
+        """
+
+        try:
+            predictions = model.predict(data)
+        except AttributeError:
+            w1, b1, w2, b2 = weights
+            predictions = pc.prediction(data, w1, b1, w2, b2)
+
+        accuracy = np.equal(predictions[:, 0].round(), labels[:, 0]).mean()
+
+        return predictions[:, 0].round(), accuracy
+
+    @staticmethod
+    def get_new_precision(data, labels, model=None, weights=None):
+        """
+        Get the accuracy and stuff back to display how it changes over time
+        Assumes 1 is the positive label!!
+        Parameters
+        ----------
+
+        data : ndarray | shape (N, 2)
+            New clusters to classify
+
+        model : Model class
+            Keras based deep learning model class
+
+        labels : ndarray | shape (N, )
+            Labels of the datapoints.
+
+        weights : tuple
+            w1, b1, w2, b2
+
+        """
+
+        try:
+            predictions = model.predict(data)
+        except AttributeError:
+            w1, b1, w2, b2 = weights
+            predictions = pc.prediction(data, w1, b1, w2, b2)
+
+        TP = np.equal(predictions[predictions.round() == 1, 0].round(), labels[:, 0]).mean()
+        # TN = np.equal(predictions[predictions.round() == 0, 0].round(), labels[:, 0]).mean()
+        FP = np.not_equal(predictions[predictions.round() == 1, 0].round(), labels[:, 0]).mean()
+        # FN = np.not_equal(predictions[predictions.round() == 0, 0].round(), labels[:, 0]).mean()
+        return predictions[:, 0].round(), TP/(TP+FP)
+
+    @staticmethod
+    def get_new_recall(data, labels, model=None, weights=None):
+        """
+        Get the accuracy and stuff back to display how it changes over time
+        Assumes 1 is the positive label!!
+        Parameters
+        ----------
+
+        data : ndarray | shape (N, 2)
+            New clusters to classify
+
+        model : Model class
+            Keras based deep learning model class
+
+        labels : ndarray | shape (N, )
+            Labels of the datapoints.
+
+        weights : tuple
+            w1, b1, w2, b2
+
+        """
+
+        try:
+            predictions = model.predict(data)
+        except AttributeError:
+            w1, b1, w2, b2 = weights
+            predictions = pc.prediction(data, w1, b1, w2, b2)
+
+        TP = np.equal(predictions[predictions.round() == 1, 0].round(), labels[:, 0]).mean()
+        # TN = np.equal(predictions[predictions.round() == 0, 0].round(), labels[:, 0]).mean()
+        # FP = np.not_equal(predictions[predictions.round() == 1, 0].round(), labels[:, 0]).mean()
+        FN = np.not_equal(predictions[predictions.round() == 0, 0].round(), labels[:, 0]).mean()
+        return predictions[:, 0].round(), TP/(TP+FN)
+
+
+def main_function(data, MODEL, GENERATOR, iterations, metric, weights=None, **kwargs):
     """
-    Get the accuracy and stuff back to display how it changes over time
-
-    Parameters
-    ----------
-
-    data : ndarray | shape (N, 2)
-        New clusters to classify
-
-    model : Model class
-        Keras based deep learning model class
-
-    labels : ndarray | shape (N, )
-        Labels of the datapoints.
-
-    weights : tuple
-        w1, b1, w2, b2
 
     """
+    if weights:
+        # dont train model\
 
-    try:
-        predictions = model.predict(data)
-    except AttributeError:
-        w1, b1, w2, b2 = weights
-        predictions = pc.prediction(data, w1, b1, w2, b2)
+    else:
+        # train model
+        GETFIRST_DATA_TO_TRAIN_MODEL
+        print("Training model")
+        # get weights
 
-    accuracy = np.equal(predictions[:, 0].round(), labels[:, 0]).mean()
+    for i, x in enumerate(generator()):
 
-    return predictions[:, 0].round(), accuracy
+        data_point = whatever
+        data = whatever
+
+        metric_in_time = []
+        new_pred, metric = getattr(GetNewMetric, 'get_new_' + metric)
+        metric_in_time.append(metric)
+
 
