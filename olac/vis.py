@@ -120,15 +120,16 @@ class GetNewMetric:
 
         try:
             predictions = model.predict(data)
-        except AttributeError:
+        except TypeError:
             w1, b1, w2, b2 = weights
-            predictions = pc.prediction(data, w1, b1, w2, b2)
+            predictions = model.predict(data, w1, b1, w2, b2)
 
-        TP = np.equal(predictions[predictions.round() == 1, 0].round(), labels[:, 0]).mean()
+        labels = labels.reshape(predictions.shape)
+        TP = np.equal(predictions[predictions.round() == 1].round(), labels[predictions.round() == 1]).mean()
         # TN = np.equal(predictions[predictions.round() == 0, 0].round(), labels[:, 0]).mean()
-        FP = np.not_equal(predictions[predictions.round() == 1, 0].round(), labels[:, 0]).mean()
+        FP = np.not_equal(predictions[predictions.round() == 1].round(), labels[predictions.round() == 1]).mean()
         # FN = np.not_equal(predictions[predictions.round() == 0, 0].round(), labels[:, 0]).mean()
-        return predictions[:, 0].round(), TP/(TP+FP)
+        return predictions.round(), TP/(TP+FP)
 
     @staticmethod
     def get_new_recall(data, labels, model=None, weights=None):
@@ -154,77 +155,133 @@ class GetNewMetric:
 
         try:
             predictions = model.predict(data)
-        except AttributeError:
+        except TypeError:
             w1, b1, w2, b2 = weights
-            predictions = pc.prediction(data, w1, b1, w2, b2)
+            predictions = model.predict(data, w1, b1, w2, b2)
 
-        TP = np.equal(predictions[predictions.round() == 1, 0].round(), labels[:, 0]).mean()
+        labels = labels.reshape(predictions.shape)
+        TP = np.equal(predictions[predictions.round() == 1].round(), labels[predictions.round() == 1]).mean()
         # TN = np.equal(predictions[predictions.round() == 0, 0].round(), labels[:, 0]).mean()
         # FP = np.not_equal(predictions[predictions.round() == 1, 0].round(), labels[:, 0]).mean()
-        FN = np.not_equal(predictions[predictions.round() == 0, 0].round(), labels[:, 0]).mean()
-        return predictions[:, 0].round(), TP/(TP+FN)
+        FN = np.not_equal(predictions[predictions.round() == 0].round(), labels[predictions.round() == 0]).mean()
+        return predictions.round(), TP/(TP+FN)
 
 
-def main_function(MODEL, GENERATOR, metric, weights=None, window=20, **kwargs):
+def get_fun_map(xlim, ylim, weights, MODEL):
+
+    x1 = np.linspace(xlim[0], xlim[1], 100)
+    x2 = np.linspace(ylim[0], ylim[1], 100)
+    fun_map = np.empty((x1.size, x2.size))
+    for nn, ii in enumerate(x1):
+        for mm, jj in enumerate(x2):
+            w1, b1, w2, b2 = weights
+            fun_map[mm, nn] = MODEL.predict([ii, jj], w1, b1, w2, b2)
+
+    return fun_map
+
+
+def main(MODEL, GENERATOR, metric, weights=None, window=20, p_train=10, **kwargs):
     """
+    Display the model accuracy, recall or precision over time together with the data points as predicted
+    by the model.
 
+    Parameters
+    ----------
+
+        MODEL : Object
+            Keras model or Perceptron Object as made by us
+
+        GENERATOR : generator object?
+            Generator that simulates the datapoints. For example popping clusters or roving balls
+
+        metric : string
+            "accuracy", "precision" or "recall": Which metric you want to display over time.
+
+        weights : ndarray
+            If you have a pretrained perceptron, you can input the learned weights here. For a keras
+            model this should be saved in the model object.
+
+        window : int
+            Size of the sliding window: How many datapoints you want to predict at the same time
+
+        p_train : int
+            percentage of datapoints you want to use for training
+
+        **kwargs
+            Input for the generator
     """
-    data = np.array(list(GENERATOR(**kwargs)))
-    iterations = len(data)
-    X = data[:, :2]
-    labels = data[:, -1]
-    wdw = int(iterations*0.1)
+    var_c = "N"
+    while var_c == "N":
+        # Initialize
+        data = np.array(list(GENERATOR(**kwargs)))
+        itrs = len(data)
+        pnts = data[:, :2]
+        lbls = data[:, -1]
+        wndw = int(itrs/p_train)
 
-    xlim = (min(X[:, 0]) + min(X[:, 0])/10, max(X[:, 0])+max(X[:, 0])/10)
-    ylim = (min(X[:, 1]) + min(X[:, 1])/10, max(X[:, 1])+max(X[:, 1])/10)
-    if weights:
-        # dont train model
-        pass
-    else:
-        # train model
-        try:
-            weights = MODEL.fit(X[:wdw], labels[:wdw], epochs=200, batch_size=32)
-        except AttributeError:
-            # model = MODEL
-            print("Training model")
-            weights = MODEL.fit_model(X[:wdw], labels[:wdw], epochs=500, step=0.001, n_hidden=3)
+        xlim = (min(pnts[:, 0]) + min(pnts[:, 0])/10, max(pnts[:, 0])+max(pnts[:, 0])/10)
+        ylim = (min(pnts[:, 1]) + min(pnts[:, 1])/10, max(pnts[:, 1])+max(pnts[:, 1])/10)
 
+        if weights:
+            # dont train model
+            pass
+        else:
+            # train model
+            try:
+                weights = MODEL.fit(pnts[:wndw], lbls[:wndw], epochs=200, batch_size=32)
 
-        # get weights
+            except AttributeError:
+                print("Training model")
+                weights = MODEL.fit_model(pnts[:wndw], lbls[:wndw], epochs=500, step=0.001, n_hidden=3)
+
+        # Plot the first trained batch to see if it is doing OK
+        fun_map = get_fun_map(xlim, ylim, weights, MODEL)
+
+        plt.imshow(fun_map, extent=[xlim[0], xlim[1], ylim[0], ylim[1]],
+                   vmin=0, vmax=1, aspect='auto', origin='lower')
+        new_pred, metric_value = getattr(GetNewMetric, 'get_new_' + metric)(
+                                         pnts[:wndw, :],
+                                         lbls[:wndw],
+                                         MODEL,
+                                         weights)
+        plt.scatter(*pnts[:wndw, :][np.not_equal(new_pred[:, 0], lbls[:wndw]), :].T, color='r')
+        plt.scatter(*pnts[:wndw, :].T, color=[{0: 'w', 1: 'k', 2: 'b'}[n] for n in lbls[:window].astype(int)],
+                    alpha=.3)
+        plt.show()
+
+        print("Contiue? Y/N")
+        var_c = input().upper()
+        if var_c == "N":
+            weights = None
 
     metric_in_time = []
-    for i in np.arange(1, iterations, int(window/4)):
+    for i in np.arange(1, itrs, int(window/4)):
 
-        X_window = X[i:window+i]
-        label_window = labels[i:window+i]
+        pnts_window = pnts[i:window+i]
+        label_window = lbls[i:window+i]
 
-        new_pred, metric_value = getattr(GetNewMetric, 'get_new_' + metric)(X_window, label_window, MODEL, weights)
+        new_pred, metric_value = getattr(GetNewMetric, 'get_new_' + metric)(pnts_window,
+                                                                            label_window,
+                                                                            MODEL,
+                                                                            weights)
         metric_in_time.append(metric_value)
 
         plt.figure(figsize=(20, 10))
         plt.subplot(121)
         plt.plot(np.arange(0, len(metric_in_time)), metric_in_time)
-        plt.xlim(0, int(len(np.arange(1, iterations, int(window/2)))))
+        plt.xlim(0, int(len(np.arange(1, itrs, int(window/4)))))
         plt.ylim(0, 1.1)
         plt.title(metric+'{:.4%}'.format(metric_value))
 
         plt.subplot(122)
-        x1 = np.linspace(xlim[0], xlim[1], 100)
-        x2 = np.linspace(ylim[0], ylim[1], 100)
-        fun_map = np.empty((x1.size, x2.size))
-        for nn, ii in enumerate(x1):
-            for mm, jj in enumerate(x2):
-                w1, b1, w2, b2 = weights
-                fun_map[mm, nn] = MODEL.predict([ii, jj], w1, b1, w2, b2)
-        plt.imshow(fun_map, extent=[x1.min(), x1.max(), x2.min(), x2.max()],
-               vmin=0, vmax=1, aspect='auto', origin='lower')
-        plt.scatter(*X_window.T, color=[{0: 'w', 1: 'k', 2: 'b'}[n] for n in label_window.astype(int)], alpha=.3)
-        # plt.scatter(*X[new_pred == 0, :].T, color='w', alpha=.3)
-        plt.scatter(*X_window[np.not_equal(new_pred[:, 0], label_window), :].T, color='r')
+        fun_map = get_fun_map(xlim, ylim, weights, MODEL)
+        plt.imshow(fun_map, extent=[xlim[0], xlim[1], ylim[0], ylim[1]],
+                   vmin=0, vmax=1, aspect='auto', origin='lower')
+        plt.scatter(*pnts_window.T, color=[{0: 'w', 1: 'k', 2: 'b'}[n] for n in label_window.astype(int)],
+                    alpha=.8)
+        plt.scatter(*pnts_window[np.not_equal(new_pred[:, 0], label_window), :].T, color='r')
         plt.xlim(xlim)
         plt.ylim(ylim)
-        # x1 = np.linspace(0, 1000, 100)
-        # x2 = np.linspace(0, 1000, 100)
 
         display.clear_output(wait=True)
         display.display(plt.gcf())
