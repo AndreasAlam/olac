@@ -4,7 +4,6 @@ import seaborn as sns
 import numpy as np
 import time
 
-from olac.perceptron import Perceptron as pc
 
 
 def demo_plot():
@@ -88,7 +87,7 @@ class GetNewMetric:
         except TypeError:
             w1, b1, w2, b2 = weights
             predictions = model.predict(data, w1, b1, w2, b2)
-        
+
         labels = labels.reshape(predictions.shape)
         assert predictions.shape == labels.shape
 
@@ -169,13 +168,22 @@ class GetNewMetric:
 
 def get_fun_map(xlim, ylim, weights, MODEL):
 
-    x1 = np.linspace(xlim[0], xlim[1], 100)
-    x2 = np.linspace(ylim[0], ylim[1], 100)
-    fun_map = np.empty((x1.size, x2.size))
-    for nn, ii in enumerate(x1):
-        for mm, jj in enumerate(x2):
-            w1, b1, w2, b2 = weights
-            fun_map[mm, nn] = MODEL.predict([ii, jj], w1, b1, w2, b2)
+    try:
+        w1, b1, w2, b2 = weights
+        x1 = np.linspace(xlim[0], xlim[1], 100)
+        x2 = np.linspace(ylim[0], ylim[1], 100)
+        fun_map = np.empty((x1.size, x2.size))
+
+        for nn, ii in enumerate(x1):
+            for mm, jj in enumerate(x2):
+                fun_map[mm, nn] = MODEL.predict([ii, jj], w1, b1, w2, b2)
+    
+    except TypeError:
+        x1 = np.linspace(xlim[0], xlim[1], 100)
+        x2 = np.linspace(ylim[0], ylim[1], 100)
+        fun_map = np.meshgrid(x1, x2)
+        fun_map = MODEL.predict(np.reshape(fun_map, (2, 100*100)).T)
+        fun_map = fun_map.reshape(100, 100)
 
     return fun_map
 
@@ -228,7 +236,7 @@ def main(MODEL, GENERATOR, metric, weights=None, window=20, p_train=10, **kwargs
         else:
             # train model
             try:
-                weights = MODEL.fit(pnts[:wndw], lbls[:wndw], epochs=200, batch_size=32)
+                weights = MODEL.fit(pnts[:wndw], lbls[:wndw], epochs=200, batch_size=32, verbose=0)
 
             except AttributeError:
                 print("Training model")
