@@ -1,6 +1,8 @@
 # maths
 import numpy as np
+import scipy.stats as stats
 
+from . import vis as vf
 from . import utils as uf
 ########################################################################################################################
 #                                                    Learning at Cost                                                  #
@@ -72,6 +74,33 @@ def seq_linear_ls(x, y, window_size=10, constant=True, axis=0):
     for i, period in enumerate(ind):
         coefs[i, :] = linear_ls(X[period, :], y[period], constant=False).reshape(-1)
     return coefs, ind
+
+
+def dist_coefs(coefs):
+    """Describe the distribution of the coefficients
+
+    Parameters
+    ----------
+    coefs : ndarray
+        Numpy array containing the coefficients of the linear least squares fits
+
+    Returns
+    -------
+
+    """
+    n, m = coefs.shape
+    mu = np.mean(coefs, axis=0)
+    sigma = np.std(coefs, axis=0)
+    median = np.median(coefs, axis=0)
+    third_moment = stats.skew(coefs, axis=0)
+    # Fisher's definition substracts 3 from the result to give 0.0 for a normal distribution
+    fourth_moment = stats.kurtosis(coefs, axis=0, fisher=True)
+    return (mu, sigma, third_moment, fourth_moment, median)
+
+
+def dist_seq_lls():
+    print("empty")
+
 
 ########################################################################################################################
 #                                                   Data Generation                                                    #
