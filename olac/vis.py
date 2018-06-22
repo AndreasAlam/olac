@@ -1,10 +1,12 @@
-import matplotlib.pyplot as plt
-from IPython import display
-import seaborn as sns
-import numpy as np
 import time
+import numpy as np
+import seaborn as sns
+from IPython import display
+import matplotlib.pyplot as plt
 
-from olac.perceptron import Perceptron as pc
+from . import maths as mf
+# [RU] imported but unused
+# from olac.perceptron import Perceptron as pc
 
 
 def demo_plot():
@@ -88,7 +90,7 @@ class GetNewMetric:
         except TypeError:
             w1, b1, w2, b2 = weights
             predictions = model.predict(data, w1, b1, w2, b2)
-        
+
         labels = labels.reshape(predictions.shape)
         assert predictions.shape == labels.shape
 
@@ -286,3 +288,41 @@ def main(MODEL, GENERATOR, metric, weights=None, window=20, p_train=10, **kwargs
         display.clear_output(wait=True)
         display.display(plt.gcf())
         plt.close()
+
+
+########################################################################################################################
+#                                                    Learning at Cost                                                  #
+########################################################################################################################
+
+
+def plot_linear_ls(x, y, window_size=10, constant=True, colour='r', label=None):
+    """Plot the linear fits for each period
+
+    Parameters
+    ----------
+    x : ndarray
+        The independent variables, features, over which to fit
+    y : ndarray
+        The dependent variable which we want approximate
+    window_size : int (optional)
+        The number of observations that will included in a period
+    constant : boolean (optional)
+        Whether a constant should be added, default is True
+    colour : str
+        The colour paramter to be passed to pyplot
+    label : str
+        The label parameter to be passed to pyplot
+
+    Returns
+    -------
+    coefs : ndarray
+        An numpy array containing the coefficients.
+    ind : list
+        The indexes of the periods
+    """
+    coefs, ind = mf.seq_linear_ls(x=x, y=y, window_size=window_size, constant=constant)
+    for i in range(len(ind)):
+        xi = ind[i]
+        alpha, beta = coefs[i]
+        plt.plot(xi, alpha + beta * xi, c=colour, label=label)
+    return coefs, ind
