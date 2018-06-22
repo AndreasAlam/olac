@@ -11,4 +11,8 @@ setup(name='olac',
       url='https://github.com/rurlus/olac',
       packages=['olac'],
       install_requires=reqs,
+      py_modules=['olac.vis', 'olac.data_generators',
+                  'olac.maths', 'olac.popping_clusters',
+                  'olac.utils'
+      ]
 )
