@@ -7,10 +7,13 @@ Welcome to olac's documentation!
 ================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents:
+
+   olac_docs
    olac
    modules
+
 
 
 Indices and tables
