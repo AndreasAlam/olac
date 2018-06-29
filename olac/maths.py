@@ -2,7 +2,6 @@
 import numpy as np
 import scipy.stats as stats
 
-from . import vis as vf
 from . import utils as uf
 ########################################################################################################################
 #                                                    Learning at Cost                                                  #
@@ -96,10 +95,6 @@ def dist_coefs(coefs):
     # Fisher's definition substracts 3 from the result to give 0.0 for a normal distribution
     fourth_moment = stats.kurtosis(coefs, axis=0, fisher=True)
     return (mu, sigma, third_moment, fourth_moment, median)
-
-
-def dist_seq_lls():
-    print("empty")
 
 
 ########################################################################################################################
