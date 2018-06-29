@@ -123,3 +123,6 @@ github
 
 # Pyenv version
 .python-version
+
+# Pyenv config
+pyenv.cfg
