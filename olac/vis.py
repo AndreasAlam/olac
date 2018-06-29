@@ -5,6 +5,7 @@ from IPython import display
 import matplotlib.pyplot as plt
 
 from . import maths as mf
+from . import utils as ut
 # [RU] imported but unused
 # from olac.perceptron import Perceptron as pc
 
@@ -227,7 +228,7 @@ def main(MODEL, GENERATOR, metric, weights=None, window=20, p_train=10, **kwargs
         data = np.array(list(GENERATOR(**kwargs)))
         itrs = len(data)
         pnts = data[:, :2]
-        pnts = pnts/np.max(np.abs(pnts))
+        pnts = ut.data_prep(pnts)
         lbls = data[:, -1]
         wndw = int(itrs/p_train)
 
@@ -248,7 +249,7 @@ def main(MODEL, GENERATOR, metric, weights=None, window=20, p_train=10, **kwargs
 
         # Plot the first trained batch to see if it is doing OK
         fun_map = get_fun_map(xlim, ylim, weights, MODEL)
-
+        plt.figure(figsize=(20, 10))
         plt.imshow(fun_map, extent=[xlim[0], xlim[1], ylim[0], ylim[1]],
                    vmin=0, vmax=1, aspect='auto', origin='lower')
         new_pred, metric_value = getattr(GetNewMetric, 'get_new_' + metric)(
@@ -257,8 +258,8 @@ def main(MODEL, GENERATOR, metric, weights=None, window=20, p_train=10, **kwargs
                                          MODEL,
                                          weights)
         plt.scatter(*pnts[:wndw, :][np.not_equal(new_pred[:, 0], lbls[:wndw]), :].T, color='r')
-        plt.scatter(*pnts[:wndw, :].T, color=[{0: 'w', 1: 'k', 2: 'b'}[n] for n in lbls[:window].astype(int)],
-                    alpha=.3)
+        plt.scatter(*pnts[:wndw, :].T, color=[{0: 'w', 1: 'k', 2: 'b'}[n] for n in lbls[:wndw].astype(int)],
+                    alpha=.6)
         plt.show()
 
         print("Contiue? Y/N")
@@ -267,21 +268,23 @@ def main(MODEL, GENERATOR, metric, weights=None, window=20, p_train=10, **kwargs
             weights = None
 
     metric_in_time = []
-    for i in np.arange(1, itrs, int(window/4)):
+    for i in np.arange(1, itrs, int(wndw/4)):
 
-        pnts_window = pnts[i:window+i]
-        label_window = lbls[i:window+i]
+        pnts_wndw = pnts[i:wndw+i]
+        label_wndw = lbls[i:wndw+i]
 
-        new_pred, metric_value = getattr(GetNewMetric, 'get_new_' + metric)(pnts_window,
-                                                                            label_window,
+        new_pred, metric_value = getattr(GetNewMetric, 'get_new_' + metric)(pnts_wndw,
+                                                                            label_wndw,
                                                                             MODEL,
                                                                             weights)
+        assert new_pred[:, 0].shape == label_wndw.shape
+
         metric_in_time.append(metric_value)
 
         plt.figure(figsize=(20, 10))
         plt.subplot(121)
         plt.plot(np.arange(0, len(metric_in_time)), metric_in_time)
-        plt.xlim(0, int(len(np.arange(1, itrs, int(window/4)))))
+        plt.xlim(0, int(len(np.arange(1, itrs, int(wndw/4)))))
         plt.ylim(0, 1.1)
         plt.title(metric+'{:.4%}'.format(metric_value))
 
@@ -289,9 +292,9 @@ def main(MODEL, GENERATOR, metric, weights=None, window=20, p_train=10, **kwargs
         fun_map = get_fun_map(xlim, ylim, weights, MODEL)
         plt.imshow(fun_map, extent=[xlim[0], xlim[1], ylim[0], ylim[1]],
                    vmin=0, vmax=1, aspect='auto', origin='lower')
-        plt.scatter(*pnts_window.T, color=[{0: 'w', 1: 'k', 2: 'b'}[n] for n in label_window.astype(int)],
+        plt.scatter(*pnts_wndw.T, color=[{0: 'w', 1: 'k', 2: 'b'}[n] for n in label_wndw.astype(int)],
                     alpha=.8)
-        plt.scatter(*pnts_window[np.not_equal(new_pred[:, 0], label_window), :].T, color='r')
+        plt.scatter(*pnts_wndw[np.not_equal(new_pred[:, 0], label_wndw), :].T, color='r')
         plt.xlim(xlim)
         plt.ylim(ylim)
 
