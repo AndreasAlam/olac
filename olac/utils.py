@@ -1,7 +1,32 @@
 # general
 import os
 import sys
-import numpy as np
+
+
+def dim_correct(x, axis=1):
+    """Check and dimensionality of the input array and add one if number of dimensions is zero.
+
+    Parameters
+    ----------
+    x : ndarray
+        The array to be validated and or corrected
+    axis : int [0, 1] (Optional)
+        The axis to which to add the dimension, 0 results in a row vector/array
+        1 results in a columns vector/array
+
+    Returns
+    -------
+    x : ndarray
+        The original input array if the dimension were already greather than 0
+        otherwise with a second dimension of 1 added.
+    """
+    if x.ndim == 1:
+        if axis == 1:
+            return x[:, None]
+        else:
+            return x[None, :]
+    else:
+        return x
 
 
 def rotation_matrix(theta: float):
@@ -17,8 +42,10 @@ def rotation_matrix(theta: float):
     The 2x2 rotation matrix
 
     """
-    return np.array([[ np.cos(theta), np.sin(theta)],
-                     [-np.sin(theta), np.cos(theta)]])
+    import warnings
+    from . import maths as mf
+    warnings.warn("The 'utils.rotation_matrix' method is deprecated, use maths.rotation_matrix(theta: float) instead")
+    return mf.rotation_matrix(theta)
 
 
 def set_path(level=1, change_path=True):

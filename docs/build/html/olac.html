@@ -1,0 +1,428 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>olac package &#8212; olac 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="olac" href="modules.html" />
+    <link rel="prev" title="OLAC - Online Learning at Cost" href="olac_docs.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="olac-package">
+<h1>olac package<a class="headerlink" href="#olac-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-olac.data_generators">
+<span id="olac-data-generators-module"></span><h2>olac.data_generators module<a class="headerlink" href="#module-olac.data_generators" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="olac.data_generators.roving_balls">
+<code class="descclassname">olac.data_generators.</code><code class="descname">roving_balls</code><span class="sig-paren">(</span><em>balls=2</em>, <em>steps=1000</em>, <em>period=1000</em>, <em>radius=5</em>, <em>vars=1</em>, <em>center=(0</em>, <em>0)</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.data_generators.roving_balls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generator for the roving balls dataset.</p>
+<p>The generator will terminate after <cite>steps</cite> steps, or will go on forever if
+<cite>steps==0</cite>.</p>
+<p>See notebooks/jdp-data-roving-balls.ipynb for examples.</p>
+<dl class="docutils">
+<dt>balls <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>The number of balls to use</dd>
+<dt>steps <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>Number of steps to generate. Will generate forever if <cite>steps==0</cite>.</dd>
+<dt>period <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>Period of rotation of the balls</dd>
+<dt>radius <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>Radius of the entire dataset</dd>
+<dt>vars <span class="classifier-delimiter">:</span> <span class="classifier">float or iterable</span></dt>
+<dd>The variances of the balls. If iterable, must have length equal to
+number of balls.</dd>
+<dt>center <span class="classifier-delimiter">:</span> <span class="classifier">tuple</span></dt>
+<dd>The center of the entire dataset</dd>
+</dl>
+<dl class="docutils">
+<dt>np.ndarray</dt>
+<dd>Data point of form [x1, x2, label]</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-olac.perceptron">
+<span id="olac-perceptron-module"></span><h2>olac.perceptron module<a class="headerlink" href="#module-olac.perceptron" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="olac.perceptron.Perceptron">
+<em class="property">class </em><code class="descclassname">olac.perceptron.</code><code class="descname">Perceptron</code><a class="headerlink" href="#olac.perceptron.Perceptron" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="olac.perceptron.Perceptron.J">
+<code class="descname">J</code><span class="sig-paren">(</span><em>y</em>, <em>yhat</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.perceptron.Perceptron.J" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="olac.perceptron.Perceptron.backwardJ">
+<code class="descname">backwardJ</code><span class="sig-paren">(</span><em>x0</em>, <em>w1</em>, <em>b1</em>, <em>w2</em>, <em>b2</em>, <em>y</em>, <em>yhat</em>, <em>alpha</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.perceptron.Perceptron.backwardJ" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="olac.perceptron.Perceptron.dJ_dy">
+<code class="descname">dJ_dy</code><span class="sig-paren">(</span><em>y</em>, <em>yhat</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.perceptron.Perceptron.dJ_dy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="olac.perceptron.Perceptron.drelu_dz">
+<code class="descname">drelu_dz</code><span class="sig-paren">(</span><em>z</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.perceptron.Perceptron.drelu_dz" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="olac.perceptron.Perceptron.dsig_dz">
+<code class="descname">dsig_dz</code><span class="sig-paren">(</span><em>z</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.perceptron.Perceptron.dsig_dz" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="olac.perceptron.Perceptron.fit_model">
+<code class="descname">fit_model</code><span class="sig-paren">(</span><em>X</em>, <em>labels</em>, <em>epochs</em>, <em>step</em>, <em>n_hidden</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.perceptron.Perceptron.fit_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="olac.perceptron.Perceptron.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>x0</em>, <em>w1</em>, <em>b1</em>, <em>w2</em>, <em>b2</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.perceptron.Perceptron.predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="olac.perceptron.Perceptron.relu">
+<code class="descname">relu</code><span class="sig-paren">(</span><em>z</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.perceptron.Perceptron.relu" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="olac.perceptron.Perceptron.sig">
+<code class="descname">sig</code><span class="sig-paren">(</span><em>z</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.perceptron.Perceptron.sig" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="olac.perceptron.Perceptron.train_network">
+<code class="descname">train_network</code><span class="sig-paren">(</span><em>X</em>, <em>labels</em>, <em>step</em>, <em>nr_epochs</em>, <em>n_hidden</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.perceptron.Perceptron.train_network" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="olac.perceptron.PointsInCircum">
+<code class="descclassname">olac.perceptron.</code><code class="descname">PointsInCircum</code><span class="sig-paren">(</span><em>r</em>, <em>n=100</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.perceptron.PointsInCircum" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="olac.perceptron.PointsInCircum2">
+<code class="descclassname">olac.perceptron.</code><code class="descname">PointsInCircum2</code><span class="sig-paren">(</span><em>r</em>, <em>n=100</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.perceptron.PointsInCircum2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="olac.perceptron.generate_data">
+<code class="descclassname">olac.perceptron.</code><code class="descname">generate_data</code><span class="sig-paren">(</span><em>n_samples</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.perceptron.generate_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="olac.perceptron.rand_cluster">
+<code class="descclassname">olac.perceptron.</code><code class="descname">rand_cluster</code><span class="sig-paren">(</span><em>n</em>, <em>c</em>, <em>r</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.perceptron.rand_cluster" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns n random points in disk of radius r centered at c</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="olac.perceptron.random">
+<code class="descclassname">olac.perceptron.</code><code class="descname">random</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; x in the interval [0, 1).<a class="headerlink" href="#olac.perceptron.random" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-olac.popping_clusters">
+<span id="olac-popping-clusters-module"></span><h2>olac.popping_clusters module<a class="headerlink" href="#module-olac.popping_clusters" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="olac.popping_clusters.cluster_generator">
+<code class="descclassname">olac.popping_clusters.</code><code class="descname">cluster_generator</code><span class="sig-paren">(</span><em>n_clusters=5</em>, <em>n_points=1000</em>, <em>slider='poisson'</em>, <em>cluster_width=10.0</em>, <em>amount_of_labels=2</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.popping_clusters.cluster_generator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function that returns a dataset with timestamps/time dimension and positional coordinates.
+The function will generate x points where x is determined by (n_clusters + tail_time)/dt
+To determine the label of a cluster there is a randomly drawn from a pdf. The pdf is modular in time. Two options
+are used in the current model. One is a sum of squared sinuses and the other a moving poisson distribution.</p>
+<dl class="docutils">
+<dt>n_clusters: int</dt>
+<dd>Default n_clusters = 5, amount clusters that will be generated in the simulation</dd>
+<dt>n_points: int</dt>
+<dd>Default n_points = 1000, amount of points that will be generated</dd>
+<dt>slider: basestring</dt>
+<dd>Either poisson or sinus, determines the way how the probabilities move along with the time</dd>
+<dt>cluster_width: float</dt>
+<dd>The maximum width of the cluster distributions</dd>
+<dt>amount_of_labels: int</dt>
+<dd>Default amount_of_labels = 2, because you have either good or bad</dd>
+</dl>
+<dl class="docutils">
+<dt>np.array</dt>
+<dd>points which will occur in time with a label and position</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-olac.utils">
+<span id="olac-utils-module"></span><h2>olac.utils module<a class="headerlink" href="#module-olac.utils" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="olac.utils.dim_correct">
+<code class="descclassname">olac.utils.</code><code class="descname">dim_correct</code><span class="sig-paren">(</span><em>x</em>, <em>axis=1</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.utils.dim_correct" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check and dimensionality of the input array and add one if number of dimensions is zero.</p>
+<dl class="docutils">
+<dt>x <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd>The array to be validated and or corrected</dd>
+<dt>axis <span class="classifier-delimiter">:</span> <span class="classifier">int [0, 1] (Optional)</span></dt>
+<dd>The axis to which to add the dimension, 0 results in a row vector/array
+1 results in a columns vector/array</dd>
+</dl>
+<dl class="docutils">
+<dt>x <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd>The original input array if the dimension were already greather than 0
+otherwise with a second dimension of 1 added.</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="olac.utils.rotation_matrix">
+<code class="descclassname">olac.utils.</code><code class="descname">rotation_matrix</code><span class="sig-paren">(</span><em>theta: float</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.utils.rotation_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a rotation matrix to rotate a 2d vector by theta.</p>
+<p>theta : float</p>
+<p>The 2x2 rotation matrix</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="olac.utils.set_path">
+<code class="descclassname">olac.utils.</code><code class="descname">set_path</code><span class="sig-paren">(</span><em>level=1</em>, <em>change_path=True</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.utils.set_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the path to the olac/olac directory or insert it in the path.</p>
+<dl class="docutils">
+<dt>level <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>The number of levels you are removed from the olac parent
+directory. Maximum of two levels are implemented.</dd>
+<dt>change_path <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
+<dd>True - Change the working directory
+False - Inset the path to the python path</dd>
+</dl>
+<dl class="docutils">
+<dt>None <span class="classifier-delimiter">:</span> <span class="classifier">nonetype</span></dt>
+<dd>The function does not return anything</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-olac.vis">
+<span id="olac-vis-module"></span><h2>olac.vis module<a class="headerlink" href="#module-olac.vis" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="olac.vis.GetNewMetric">
+<em class="property">class </em><code class="descclassname">olac.vis.</code><code class="descname">GetNewMetric</code><a class="headerlink" href="#olac.vis.GetNewMetric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="staticmethod">
+<dt id="olac.vis.GetNewMetric.get_new_accuracy">
+<em class="property">static </em><code class="descname">get_new_accuracy</code><span class="sig-paren">(</span><em>labels</em>, <em>model=None</em>, <em>weights=None</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.vis.GetNewMetric.get_new_accuracy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the accuracy and stuff back to display how it changes over time</p>
+<dl class="docutils">
+<dt>data <span class="classifier-delimiter">:</span> <span class="classifier">ndarray | shape (N, 2)</span></dt>
+<dd>New clusters to classify</dd>
+<dt>model <span class="classifier-delimiter">:</span> <span class="classifier">Model class</span></dt>
+<dd>Keras based deep learning model class</dd>
+<dt>labels <span class="classifier-delimiter">:</span> <span class="classifier">ndarray | shape (N, )</span></dt>
+<dd>Labels of the datapoints.</dd>
+<dt>weights <span class="classifier-delimiter">:</span> <span class="classifier">tuple</span></dt>
+<dd>w1, b1, w2, b2</dd>
+</dl>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="olac.vis.GetNewMetric.get_new_precision">
+<em class="property">static </em><code class="descname">get_new_precision</code><span class="sig-paren">(</span><em>labels</em>, <em>model=None</em>, <em>weights=None</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.vis.GetNewMetric.get_new_precision" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the accuracy and stuff back to display how it changes over time
+Assumes 1 is the positive label!!
+Parameters
+———-</p>
+<dl class="docutils">
+<dt>data <span class="classifier-delimiter">:</span> <span class="classifier">ndarray | shape (N, 2)</span></dt>
+<dd>New clusters to classify</dd>
+<dt>model <span class="classifier-delimiter">:</span> <span class="classifier">Model class</span></dt>
+<dd>Keras based deep learning model class</dd>
+<dt>labels <span class="classifier-delimiter">:</span> <span class="classifier">ndarray | shape (N, )</span></dt>
+<dd>Labels of the datapoints.</dd>
+<dt>weights <span class="classifier-delimiter">:</span> <span class="classifier">tuple</span></dt>
+<dd>w1, b1, w2, b2</dd>
+</dl>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="olac.vis.GetNewMetric.get_new_recall">
+<em class="property">static </em><code class="descname">get_new_recall</code><span class="sig-paren">(</span><em>labels</em>, <em>model=None</em>, <em>weights=None</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.vis.GetNewMetric.get_new_recall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the accuracy and stuff back to display how it changes over time
+Assumes 1 is the positive label!!
+Parameters
+———-</p>
+<dl class="docutils">
+<dt>data <span class="classifier-delimiter">:</span> <span class="classifier">ndarray | shape (N, 2)</span></dt>
+<dd>New clusters to classify</dd>
+<dt>model <span class="classifier-delimiter">:</span> <span class="classifier">Model class</span></dt>
+<dd>Keras based deep learning model class</dd>
+<dt>labels <span class="classifier-delimiter">:</span> <span class="classifier">ndarray | shape (N, )</span></dt>
+<dd>Labels of the datapoints.</dd>
+<dt>weights <span class="classifier-delimiter">:</span> <span class="classifier">tuple</span></dt>
+<dd>w1, b1, w2, b2</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="olac.vis.demo_plot">
+<code class="descclassname">olac.vis.</code><code class="descname">demo_plot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#olac.vis.demo_plot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="olac.vis.get_fun_map">
+<code class="descclassname">olac.vis.</code><code class="descname">get_fun_map</code><span class="sig-paren">(</span><em>xlim</em>, <em>ylim</em>, <em>weights</em>, <em>MODEL</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.vis.get_fun_map" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="olac.vis.main">
+<code class="descclassname">olac.vis.</code><code class="descname">main</code><span class="sig-paren">(</span><em>MODEL</em>, <em>GENERATOR</em>, <em>metric</em>, <em>weights=None</em>, <em>window=20</em>, <em>p_train=10</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.vis.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display the model accuracy, recall or precision over time together with the data points as predicted
+by the model.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>MODEL <span class="classifier-delimiter">:</span> <span class="classifier">Object</span></dt>
+<dd>Keras model or Perceptron Object as made by us</dd>
+<dt>GENERATOR <span class="classifier-delimiter">:</span> <span class="classifier">generator object?</span></dt>
+<dd>Generator that simulates the datapoints. For example popping clusters or roving balls</dd>
+<dt>metric <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd>“accuracy”, “precision” or “recall”: Which metric you want to display over time.</dd>
+<dt>weights <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd>If you have a pretrained perceptron, you can input the learned weights here. For a keras
+model this should be saved in the model object.</dd>
+<dt>window <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>Size of the sliding window: How many datapoints you want to predict at the same time</dd>
+<dt>p_train <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>percentage of datapoints you want to use for training</dd>
+<dt><a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs</dt>
+<dd>Input for the generator</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="olac.vis.plot_linear_ls">
+<code class="descclassname">olac.vis.</code><code class="descname">plot_linear_ls</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>window_size=10</em>, <em>constant=True</em>, <em>colour='r'</em>, <em>label=None</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.vis.plot_linear_ls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the linear fits for each period</p>
+<dl class="docutils">
+<dt>x <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd>The independent variables, features, over which to fit</dd>
+<dt>y <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd>The dependent variable which we want approximate</dd>
+<dt>window_size <span class="classifier-delimiter">:</span> <span class="classifier">int (optional)</span></dt>
+<dd>The number of observations that will included in a period</dd>
+<dt>constant <span class="classifier-delimiter">:</span> <span class="classifier">boolean (optional)</span></dt>
+<dd>Whether a constant should be added, default is True</dd>
+<dt>colour <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>The colour paramter to be passed to pyplot</dd>
+<dt>label <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>The label parameter to be passed to pyplot</dd>
+</dl>
+<dl class="docutils">
+<dt>coefs <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd>An numpy array containing the coefficients.</dd>
+<dt>ind <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd>The indexes of the periods</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-olac">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-olac" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">olac package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-olac.data_generators">olac.data_generators module</a></li>
+<li><a class="reference internal" href="#module-olac.perceptron">olac.perceptron module</a></li>
+<li><a class="reference internal" href="#module-olac.popping_clusters">olac.popping_clusters module</a></li>
+<li><a class="reference internal" href="#module-olac.utils">olac.utils module</a></li>
+<li><a class="reference internal" href="#module-olac.vis">olac.vis module</a></li>
+<li><a class="reference internal" href="#module-olac">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="olac_docs.html" title="previous chapter">OLAC - Online Learning at Cost</a></li>
+      <li>Next: <a href="modules.html" title="next chapter">olac</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/olac.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Susanne Groothuis, John Paton, Bram Schermer, Ralph Urlus.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/olac.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

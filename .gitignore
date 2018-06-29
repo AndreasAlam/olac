@@ -120,3 +120,6 @@ activate
 
 # Shortcuts
 github
+
+# Pyenv version
+.python-version
