@@ -1,6 +1,8 @@
 # maths
 import numpy as np
-import scipy.stats as stats
+from scipy import stats
+from sklearn import metrics as skm
+from numpy.lib import function_base as np_fb
 
 from . import utils as uf
 ########################################################################################################################
@@ -72,7 +74,7 @@ def seq_linear_ls(x, y, window_size=10, constant=True, axis=0):
     ind = np.array_split(np.arange(0, n, 1), periods, axis)
     for i, period in enumerate(ind):
         coefs[i, :] = linear_ls(X[period, :], y[period], constant=False).reshape(-1)
-    return coefs, ind
+    return (coefs, ind)
 
 
 def dist_coefs(coefs):
@@ -96,6 +98,93 @@ def dist_coefs(coefs):
     fourth_moment = stats.kurtosis(coefs, axis=0, fisher=True)
     return (mu, sigma, third_moment, fourth_moment, median)
 
+
+def auto_bin(arr):
+    """Determine optimal number of bins for a given array
+
+    Parameters
+    ----------
+    arr : ndarray
+        The input array
+
+    Returns
+    -------
+    int
+        Approximation of the optimal number of bins
+    """
+    return int(np.round(np.ptp(arr) / np_fb._hist_bin_auto(arr), 0))
+
+
+def mutual_info(arr1, arr2, normalized=1):
+    """Determine similarity of two datasets
+
+    The mutual information score estimates the difference between two distributions
+    for a particular set of bins.
+    The higher score the score the bigger the difference between the datasets
+
+    Parameters
+    ----------
+    arr1 : array-like
+        The first dataset
+
+    arr2 : array-like
+        The second dataset
+
+    normalized : int [0, 2]
+        0 -> no normalized mi score
+        1 -> normalized mi score
+        2 -> both mi scores
+
+    Returns
+    -------
+    float
+        The normalized mutual information score
+
+    tuple
+        The mutual information score and the normalized mutual info
+    """
+    def _mi_score():
+        # determine the optimal number of bins
+        c_arr = np.histogram2d(arr1, arr2, bins=auto_bin(arr1))[0]
+        return skm.mutual_info_score(None, None, contingency=c_arr)
+
+    if normalized == 1:
+        return _mi_score()
+    elif normalized == 0:
+        return skm.normalized_mutual_info_score(arr1, arr2)
+    elif normalized == 2:
+        return (_mi_score(), skm.normalized_mutual_info_score(arr1, arr2))
+
+
+def KL_div(arr1, arr2, eps=0.00001):
+    """
+    """
+    def _normalize_t1(bins_arr, arr, eps=0):
+        return (bins_arr / arr.size) + eps
+
+    def _calc_kl(arr1, arr2):
+        return np.sum(arr1*np.log(arr1 / arr2))
+
+    def _bin_similarity(arr1, arr2):
+        hist_arr1, bins_arr1 = np.histogram(arr1, bins=auto_bin(arr1))
+        hist_arr2 = np.histogram(arr2, bins=bins_arr1)[0]
+        return hist_arr1, hist_arr2
+
+    hist_arr1, hist_arr2 = _bin_similarity(arr1, arr2)
+
+    nrm_arr1 = _normalize_t1(hist_arr1, arr1, eps)
+    nrm_arr2 = _normalize_t1(hist_arr2, arr2, eps)
+
+    sc1 = _calc_kl(nrm_arr1, nrm_arr2)
+
+    hist_arr2, hist_arr1 = _bin_similarity(arr2, arr1)
+
+    nrm_arr1 = _normalize_t1(hist_arr1, arr1, eps)
+    nrm_arr2 = _normalize_t1(hist_arr2, arr2, eps)
+
+    sc2 = _calc_kl(nrm_arr2, nrm_arr1)
+    # The mean of the two KL divergence scores
+    return (sc1 + sc2) / 2
 
 ########################################################################################################################
 #                                                   Data Generation                                                    #
