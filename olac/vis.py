@@ -227,6 +227,7 @@ def main(MODEL, GENERATOR, metric, weights=None, window=20, p_train=10, **kwargs
         data = np.array(list(GENERATOR(**kwargs)))
         itrs = len(data)
         pnts = data[:, :2]
+        pnts = pnts/np.max(np.abs(pnts))
         lbls = data[:, -1]
         wndw = int(itrs/p_train)
 
