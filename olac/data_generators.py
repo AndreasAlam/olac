@@ -1,5 +1,5 @@
 import numpy as np
-from .utils import rotation_matrix
+from .maths import rotation_matrix
 
 
 def roving_balls(balls=2, steps=1000, period=1000, radius=5, vars=1,
@@ -8,7 +8,7 @@ def roving_balls(balls=2, steps=1000, period=1000, radius=5, vars=1,
     Generator for the roving balls dataset.
 
     The generator will terminate after `steps` steps, or will go on forever if
-    `steps==0`.
+    `steps==0`.git st
 
     See notebooks/jdp-data-roving-balls.ipynb for examples.
 
