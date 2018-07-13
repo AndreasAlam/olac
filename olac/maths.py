@@ -96,7 +96,49 @@ def dist_coefs(coefs):
     third_moment = stats.skew(coefs, axis=0)
     # Fisher's definition substracts 3 from the result to give 0.0 for a normal distribution
     fourth_moment = stats.kurtosis(coefs, axis=0, fisher=True)
+    print('!!! NOT DONE !!!')
     return (mu, sigma, third_moment, fourth_moment, median)
+
+
+def _bin_similarity(p, q):
+    """Calculate the hist count for two arrays taken the bins chosen for the first array
+       as the bins for the second array.
+
+    Parameters
+    ----------
+    p : ndarray
+        The first array to compare to the second
+    q : ndarray
+        The second array to compare to the first
+
+    Returns
+    -------
+    (hcnt_p, hcnt_q) : tuple(ndarray, ndarray)
+        The hist counts with optional bins for array 1
+    """
+    hcnt_p, bins_p = np.histogram(p, bins=auto_bin(p))
+    hcnt_q = np.histogram(q, bins=bins_p)[0]
+    return hcnt_p, hcnt_q
+
+
+def _normalize_t1(hcnt_arr, arr_size, eps):
+    """Normalise the array such that is sums to one. Epsilon is added to prevent zero values
+
+    Parameters
+    ----------
+    hcnt_arr : ndarray
+        the count of values for a bin, histogram count
+    arr_size : int/float
+        The number of data points in arr
+    eps : float
+        Correction factor to prevent null values
+
+   Returns
+   -------
+   ndarray
+       The normalized histogram count
+    """
+    return (hcnt_arr / arr_size) + eps
 
 
 def auto_bin(arr):
@@ -112,10 +154,15 @@ def auto_bin(arr):
     int
         Approximation of the optimal number of bins
     """
-    return int(np.round(np.ptp(arr) / np_fb._hist_bin_auto(arr), 0))
+    len_uniq = np.unique(arr).size
+    bin_cnt = int(np.round(np.ptp(arr) / np_fb._hist_bin_auto(arr), 0))
+    if bin_cnt > len_uniq:
+        return len_uniq
+    else:
+        return bin_cnt
 
 
-def mutual_info(arr1, arr2, normalized=1):
+def mutual_info(p, q, normalized=1):
     """Determine similarity of two datasets
 
     The mutual information score estimates the difference between two distributions
@@ -124,10 +171,10 @@ def mutual_info(arr1, arr2, normalized=1):
 
     Parameters
     ----------
-    arr1 : array-like
+    p : array-like
         The first dataset
 
-    arr2 : array-like
+    q : array-like
         The second dataset
 
     normalized : int [0, 2]
@@ -145,47 +192,80 @@ def mutual_info(arr1, arr2, normalized=1):
     """
     def _mi_score():
         # determine the optimal number of bins
-        c_arr = np.histogram2d(arr1, arr2, bins=auto_bin(arr1))[0]
+        c_arr = np.histogram2d(p, q, bins=auto_bin(p))[0]
         return skm.mutual_info_score(None, None, contingency=c_arr)
 
     if normalized == 1:
         return _mi_score()
     elif normalized == 0:
-        return skm.normalized_mutual_info_score(arr1, arr2)
+        return skm.normalized_mutual_info_score(p, q)
     elif normalized == 2:
-        return (_mi_score(), skm.normalized_mutual_info_score(arr1, arr2))
+        return (_mi_score(), skm.normalized_mutual_info_score(p, q))
 
 
-def KL_div(arr1, arr2, eps=0.00001):
+def kl_div(p, q, eps=0.00001, full_outp=False):
+    """ Calculate the Kullback–Leibler divergence score.
+
+    The function calculates the average KL divergence score taking each array as base at a time.
+
+    Parameters
+    ----------
+    p : ndarray
+        The first array to compare to the second
+    q : ndarray
+        The second array to compare to the first
+    eps : float (optional)
+        Correction factor to prevent null values
+
+    Returns
+    -------
+    float
+        KL div score
+
+    Reference
+    ---------
+    [1] https://en.wikipedia.org/wiki/Kullback–Leibler_divergence
     """
+    # Bins that are optimal from perspective of the first array
+    hcnt_p, hcnt_q = _bin_similarity(p, q)
+
+    # KL expects counts that sum to one, i.e. for distribitions
+    nrm_p = _normalize_t1(hcnt_p, p.size, eps)
+    nrm_q = _normalize_t1(hcnt_q, q.size, eps)
+
+    # The KL score
+    return np.sum(nrm_p * np.log2(nrm_p / nrm_q))
+
+
+def hellinger_dist(p, q, eps=0.00001):
+    """ Calculate the hellinger_dist for concrete distributions
+
+    Parameters
+    ----------
+    p : ndarray
+        The first array to compare to the second
+    q : ndarray
+        The second array to compare to the first
+    eps : float (optional)
+        Correction factor to prevent null values
+
+    Returns
+    -------
+    float
+        hellinger_dist
+
+    Reference
+    ---------
+    [1] https://en.wikipedia.org/wiki/Hellinger_distance
     """
-    def _normalize_t1(bins_arr, arr, eps=0):
-        return (bins_arr / arr.size) + eps
+    # Bins that are optimal from perspective of the first array
+    hcnt_p, hcnt_q = _bin_similarity(p, q)
 
-    def _calc_kl(arr1, arr2):
-        return np.sum(arr1*np.log(arr1 / arr2))
+    # KL expects counts that sum to one, i.e. for distribitions
+    nrm_p = _normalize_t1(hcnt_p, p.size, eps)
+    nrm_q = _normalize_t1(hcnt_q, q.size, eps)
 
-    def _bin_similarity(arr1, arr2):
-        hist_arr1, bins_arr1 = np.histogram(arr1, bins=auto_bin(arr1))
-        hist_arr2 = np.histogram(arr2, bins=bins_arr1)[0]
-        return hist_arr1, hist_arr2
-
-    hist_arr1, hist_arr2 = _bin_similarity(arr1, arr2)
-
-    nrm_arr1 = _normalize_t1(hist_arr1, arr1, eps)
-    nrm_arr2 = _normalize_t1(hist_arr2, arr2, eps)
-
-    sc1 = _calc_kl(nrm_arr1, nrm_arr2)
-
-    hist_arr2, hist_arr1 = _bin_similarity(arr2, arr1)
-
-    nrm_arr1 = _normalize_t1(hist_arr1, arr1, eps)
-    nrm_arr2 = _normalize_t1(hist_arr2, arr2, eps)
-
-    sc2 = _calc_kl(nrm_arr2, nrm_arr1)
-    # The mean of the two KL divergence scores
-    return (sc1 + sc2) / 2
-
+    return np.sqrt(np.sum((np.sqrt(nrm_p) - np.sqrt(nrm_q)) ** 2)) / np.sqrt(2.0)
 ########################################################################################################################
 #                                                   Data Generation                                                    #
 ########################################################################################################################
