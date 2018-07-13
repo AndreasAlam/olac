@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 
 from . import maths as mf
 from . import utils as ut
+import imageio
 # [RU] imported but unused
 # from olac.perceptron import Perceptron as pc
 
@@ -192,7 +193,7 @@ def get_fun_map(xlim, ylim, weights, MODEL):
     return fun_map
 
 
-def main(MODEL, GENERATOR, metric, weights=None, window=20, p_train=10, **kwargs):
+def main(MODEL, GENERATOR, metric, weights=None, window=20, p_train=10, write=False, **kwargs):
     """
     Display the model accuracy, recall or precision over time together with the data points as predicted
     by the model.
@@ -300,8 +301,17 @@ def main(MODEL, GENERATOR, metric, weights=None, window=20, p_train=10, **kwargs
 
         display.clear_output(wait=True)
         display.display(plt.gcf())
+
+        if write:
+            plt.savefig('tmp/'+str(i)+'.png')
         plt.close()
 
+    # if write:
+    #     images = []
+    #     for i in np.arange(1, itrs, int(window/4)):
+    #         filename = 'tmp/'+str(i)+'.png'
+    #         images.append(imageio.imread(filename))
+    #         imageio.mimsave('progressgif'+time.strftime('%Y-%m-%d', time.localtime(time.time()))+'.gif', images)
 
 ########################################################################################################################
 #                                                    Learning at Cost                                                  #
