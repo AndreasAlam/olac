@@ -44,7 +44,8 @@ def rotation_matrix(theta: float):
     """
     import warnings
     from . import maths as mf
-    warnings.warn("The 'utils.rotation_matrix' method is deprecated, use maths.rotation_matrix(theta: float) instead")
+    warnings.warn("The 'utils.rotation_matrix' method is deprecated, "
+                  "use maths.rotation_matrix(theta: float) instead")
     return mf.rotation_matrix(theta)
 
 
