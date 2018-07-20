@@ -1,5 +1,5 @@
 import numpy as np
-from .utils import rotation_matrix
+from .maths import rotation_matrix
 from scipy.stats import poisson
 
 def roving_balls(balls=2, steps=1000, period=1000, radius=5, vars=1,
