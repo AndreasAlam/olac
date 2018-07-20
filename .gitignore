@@ -118,7 +118,7 @@ activate
 *.asc
 *.zip
 *.pptx
-
+*.gif
 
 # Shortcuts
 github
