@@ -1,7 +1,6 @@
 # maths
 import numpy as np
 from scipy import stats
-from sklearn import metrics as skm
 from numpy.lib import function_base as np_fb
 
 from . import utils as uf
@@ -160,47 +159,6 @@ def auto_bin(arr):
         return len_uniq
     else:
         return bin_cnt
-
-
-def mutual_info(p, q, normalized=1):
-    """Determine similarity of two datasets
-
-    The mutual information score estimates the difference between two distributions
-    for a particular set of bins.
-    The higher score the score the bigger the difference between the datasets
-
-    Parameters
-    ----------
-    p : array-like
-        The first dataset
-
-    q : array-like
-        The second dataset
-
-    normalized : int [0, 2]
-        0 -> no normalized mi score
-        1 -> normalized mi score
-        2 -> both mi scores
-
-    Returns
-    -------
-    float
-        The normalized mutual information score
-
-    tuple
-        The mutual information score and the normalized mutual info
-    """
-    def _mi_score():
-        # determine the optimal number of bins
-        c_arr = np.histogram2d(p, q, bins=auto_bin(p))[0]
-        return skm.mutual_info_score(None, None, contingency=c_arr)
-
-    if normalized == 1:
-        return _mi_score()
-    elif normalized == 0:
-        return skm.normalized_mutual_info_score(p, q)
-    elif normalized == 2:
-        return (_mi_score(), skm.normalized_mutual_info_score(p, q))
 
 
 def kl_div(p, q, eps=0.00001, full_outp=False):
