@@ -1,6 +1,55 @@
 import numpy as np
-from .maths import rotation_matrix
 from scipy.stats import poisson
+
+from .maths import rotation_matrix
+
+########################################################################################################################
+#                                                    Learning at Cost                                                  #
+########################################################################################################################
+
+
+def rand_walk(start=0, steps=1000, batch=False, rvs_func=np.random.normal, **kwargs):
+    """ Generate a random time-series where the movement at time t is a sample from the given distribution.
+
+    Parameters
+    ----------
+    start : int
+        The y coordinate at time zero
+    steps : int
+        Number of steps to generate. Will generate forever if `steps==0`.
+    batch : boolean [Optional]
+        Whether the functions should return or yield
+    rvs_func: function
+        The random variate generator function, e.g. np.random.normal
+    **kwargs
+            parameters for the rvs_func
+
+    Return
+    -------
+    ndarray
+        The generated time series if batch
+    int
+        If not batch, yield the next value
+    """
+    # condition to go on forever if steps==0, else stop when i==steps.
+    def cond(i):
+        if not steps:
+            return True
+        else:
+            return i < steps
+    if batch:
+        return start + np.cumsum(rvs_func(**kwargs, size=(steps, 1)))
+    else:
+        i = -1
+        # generate the (infinite) stream
+        alpha = start
+        while cond(i):
+            i += 1
+            tmp = alpha + rvs_func(**kwargs, size=1)
+            yield tmp
+            alpha = tmp
+########################################################################################################################
+
 
 def roving_balls(balls=2, steps=1000, period=1000, radius=5, vars=1,
                  center=(0, 0,)):
