@@ -384,6 +384,7 @@ class OnlinePredictor(PredictorBase):
         super().__init__()
         self.verbose = verbose
 
+
     def train_condition(self, pipeline,):
         """Train anytime there are points available in the training queue"""
         return not pipeline.training_queue.empty()
@@ -439,6 +440,7 @@ class ThresholdLabeller(LabellerBase):
 
     """
     def __init__(self, threshold, prob, verbose=True):
+
         """
 
         Parameters

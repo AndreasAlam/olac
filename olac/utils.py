@@ -103,6 +103,7 @@ def queue_point_list_to_df(qp_list):
     zipped = list(zip(*[p.to_tuple() for p in qp_list]))
 
     # initialize dataframe with columns x0...xn for datapoints
+
     df = pd.DataFrame(np.vstack(zipped[0]))
     df = df.rename(columns={i: f'x{i}' for i in df.columns})
 
