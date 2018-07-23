@@ -7,7 +7,6 @@ import time
 from . import utils
 
 from queue import Queue
-from dataclasses import dataclass
 
 
 def err_handler(e: Exception):
@@ -374,6 +373,17 @@ class OnlinePredictor(PredictorBase):
     methods.
 
     """
+    def __init__(self, verbose=True):
+        """
+
+        Parameters
+        ----------
+        verbose: bool
+            Whether to print output when model is being updated
+        """
+        super().__init__()
+        self.verbose = verbose
+
     def train_condition(self, pipeline,):
         """Train anytime there are points available in the training queue"""
         return not pipeline.training_queue.empty()
@@ -384,7 +394,10 @@ class OnlinePredictor(PredictorBase):
         using pipeline.model.partial_fit.
         """
         points = pipeline.training_queue.get_all()
-        print(f'Predictor:\t{len(points)} new points available, training...')
+        if self.verbose:
+            print(
+                f'Predictor:\t{len(points)} new points available, updating...'
+            )
 
         X_train = np.vstack([np.array(p.point) for p in points])
         y_train = np.array([p.true_label for p in points])
@@ -398,10 +411,18 @@ class OnlinePredictor(PredictorBase):
         """
         try:
             y_pred = pipeline.model.predict([x])
-            prob = pipeline.model.decision_function([x])
 
-        # still burning in, return NaNs.
+            # certainty measure not standard across sklearn
+            # prefer predict_proba, else take decision_function
+            if hasattr(pipeline.model, 'predict_proba'):
+                prob = pipeline.model.predict_proba([x])
+            elif hasattr(pipeline.model, 'decision_function'):
+                prob = pipeline.model.decision_function([x])
+            else:
+                prob = np.nan
+
         except sklearn.exceptions.NotFittedError:
+            # still burning in, return NaNs.
             y_pred = np.nan
             prob = np.nan
 
@@ -417,17 +438,24 @@ class ThresholdLabeller(LabellerBase):
     property. This could be used for budgeting.
 
     """
-    def __init__(self, threshold, prob):
+    def __init__(self, threshold, prob, verbose=True):
         """
 
         Parameters
         ----------
-        threshold: The minimum number of points to trigger a batch of labelling
-        prob: The probability with which each point will recieve a label.
+        threshold: int
+            The minimum number of points to trigger a batch of labelling
+
+        prob: float (<= 1)
+            The probability with which each point will receive a label
+
+        verbose: bool
+            Whether to print output when labelling
         """
         super().__init__()
         self.threshold = threshold
         self.prob = prob
+        self.verbose = verbose
 
         self.labels_bought = 0
 
@@ -435,7 +463,11 @@ class ThresholdLabeller(LabellerBase):
         """Buy labels if the labelling_queue is longer than the threshold."""
         n = pipeline.labelling_queue.qsize()
         if n > self.threshold:
-            print(f'Labeller:\tThreshold met, {n} new points avaible in queue')
+            if self.verbose:
+                print(
+                    f'Labeller:\tThreshold met, {n} new '
+                    'points available in queue'
+                )
             return True
         else:
             return False
@@ -456,6 +488,7 @@ class ThresholdLabeller(LabellerBase):
             else:
                 unlabelled_points.append(point)
 
-        print(f'Labeller:\tLabelled {len(labelled_points)} new points')
+        if self.verbose:
+            print(f'Labeller:\tLabelled {len(labelled_points)} new points')
 
         return labelled_points, unlabelled_points

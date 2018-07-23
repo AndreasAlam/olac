@@ -1,6 +1,7 @@
 import numpy as np
 from .maths import rotation_matrix
 from scipy.stats import poisson
+import time
 
 def roving_balls(balls=2, steps=1000, period=1000, radius=5, vars=1,
                  center=(0, 0,)):
@@ -243,3 +244,56 @@ def cluster_generator(n_clusters=5, n_points=1000, slider='poisson',  cluster_wi
         return p_time_sin(n_clusters, centers, dt, end_time)
     elif slider == 'poisson':
         return p_time_poisson(centers, dt, end_time)
+
+
+def delayed_generator(data_generator, delay, precision=1e-3):
+    """
+    A wrapper function to delay the output of another generator.
+
+    The delay parameter controls how much time should pass between iterations.
+    Note that if the underlying data_generator is slower than the delay time,
+    then the slower time will be observed.
+
+    delay may also be callable, for generating random delays at each iteration.
+    Then delay() will be called at each iteration, and the output number will
+    be used as the delay for that iteration.
+
+
+    Parameters
+    ----------
+    data_generator: iterable
+        The generator whose output to delay
+
+    delay: float or callable
+        The delay per iteration. If callable, delay() should return a float. It
+        will be called once per iteration. Can be used to create a random delay.
+
+    precision: float (default 1e-3)
+        How precise the delay should be. If precision=0.1, then the observed
+        delay should be within 0.1 of the delay parameter. Note that a higher
+        precision requires more CPU cycles.
+
+        This parameter is an indication, not a guarantee, especially in cases
+        of long running underlying data_generator processes.
+
+    Yields
+    ------
+    The items of data_generator
+
+    """
+    start = time.time()
+
+    for point in data_generator:
+        if callable(delay):
+            d = delay()
+        else:
+            d = delay
+
+        # Don't just sleep for delay, in case the call to data_generator takes
+        # time to complete
+        while time.time() - start <= (1-precision)*d:
+            time.sleep(precision*d)
+
+        yield point
+        start = time.time()
+
