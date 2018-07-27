@@ -4,10 +4,26 @@ olac package
 Submodules
 ----------
 
+olac.cost\_of\_label module
+---------------------------
+
+.. automodule:: olac.cost_of_label
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 olac.data\_generators module
 ----------------------------
 
 .. automodule:: olac.data_generators
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+olac.maths module
+-----------------
+
+.. automodule:: olac.maths
     :members:
     :undoc-members:
     :show-inheritance:
@@ -20,10 +36,10 @@ olac.perceptron module
     :undoc-members:
     :show-inheritance:
 
-olac.popping\_clusters module
------------------------------
+olac.pipeline module
+--------------------
 
-.. automodule:: olac.popping_clusters
+.. automodule:: olac.pipeline
     :members:
     :undoc-members:
     :show-inheritance:
