@@ -257,8 +257,8 @@ class PredictorBase():
 
     def train_pipeline_model(self, pipeline,):
         """
-        Called by the Pipeline if self.train_condition is true. Should implement
-        the logic for training pipeline.model (i.e. should call
+        Called by the Pipeline if self.train_condition is true. Should
+        implement the logic for training pipeline.model (i.e. should call
         pipeline.model.fit or pipeline.model.partial_fit at some point).
 
         Parameters
