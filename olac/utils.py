@@ -124,7 +124,29 @@ def queue_point_list_to_df(qp_list):
     # add other columns
     df['index'] = zipped[1]
     df['y_pred'] = zipped[2]
-    df['prob'] = zipped[3]
+
+    # prob can be either a number or an array
+    prob = zipped[3]
+
+    # if there are arrays in prob, then loose nans will cause problems. They
+    # must also be put into an array of the right length before we can stack
+    # the whole thing
+    has_arrays = any([type(p) in [np.ndarray, list] for p in prob])
+    if has_arrays:
+        prob = [dim_correct(p) if type(p) is np.ndarray else p for p in prob]
+        max_len = max([p.shape[1] for p in prob if type(p) is np.ndarray])
+
+        prob = [
+            np.array(max_len*[p]) if type(p) is float
+            else p
+            for p in prob
+        ]
+
+    prob = dim_correct(np.vstack(prob))
+
+    for i in range(prob.shape[1]):
+        df[f'prob{i}'] = prob[:, i]
+
     df['y_true'] = zipped[4]
 
     # use the index from the QueuePoints and sort

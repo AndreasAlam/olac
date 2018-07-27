@@ -116,6 +116,8 @@ activate
 *.csv
 *.asc
 *.zip
+*.pptx
+*.gif
 
 # Shortcuts
 github
