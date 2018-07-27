@@ -87,7 +87,6 @@ celerybeat-schedule
 venv/
 ENV/
 activate
-.python-version
 
 # Spyder project settings
 .spyderproject
@@ -123,3 +122,7 @@ github
 
 # Pyenv version
 .python-version
+
+# Pyenv config
+pyenv.cfg
+
