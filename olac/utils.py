@@ -1,6 +1,7 @@
 # general
 import os
 import sys
+import pandas as pd
 import numpy as np
 
 
@@ -94,3 +95,39 @@ def data_prep(X):
         Input points
     """
     return X/np.max(np.abs(X))
+
+
+def queue_point_list_to_df(qp_list):
+    """
+    Convert a list of QueuePoints to a pandas DataFrame
+
+    Parameters
+    ----------
+    qp_list : list[QueuePoint]
+        The list of QueuePoints to convert
+
+    Returns
+    -------
+    pandas.DataFrame: A dataframe containing all the QueuePoint information
+
+    """
+
+    # pivot the list
+    zipped = list(zip(*[p.to_tuple() for p in qp_list]))
+
+    # initialize dataframe with columns x0...xn for datapoints
+
+    df = pd.DataFrame(np.vstack(zipped[0]))
+    df = df.rename(columns={i: f'x{i}' for i in df.columns})
+
+    # add other columns
+    df['index'] = zipped[1]
+    df['y_pred'] = zipped[2]
+    df['prob'] = zipped[3]
+    df['y_true'] = zipped[4]
+
+    # use the index from the QueuePoints and sort
+    df = df.set_index('index', drop=True)
+    df = df.sort_index()
+
+    return df
