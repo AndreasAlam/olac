@@ -1,36 +1,179 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>olac package &#8212; olac 0.1 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>olac package &mdash; olac 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="olac" href="modules.html" />
-    <link rel="prev" title="OLAC - Online Learning at Cost" href="olac_docs.html" />
+    <link rel="prev" title="Decisions and logs" href="log.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
    
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  <div class="wy-grid-for-nav">
 
-  </head><body>
-  
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+          
+            <a href="index.html" class="icon icon-home"> olac
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="olac_docs.html">OLAC - Online Learning at Cost</a></li>
+<li class="toctree-l1"><a class="reference internal" href="log.html">Decisions and logs</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">olac package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-olac.cost_of_label">olac.cost_of_label module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-olac.data_generators">olac.data_generators module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-olac.maths">olac.maths module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-olac.perceptron">olac.perceptron module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-olac.pipeline">olac.pipeline module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-olac.utils">olac.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-olac.vis">olac.vis module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-olac">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">olac</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">olac package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-olac.cost_of_label">olac.cost_of_label module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-olac.data_generators">olac.data_generators module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-olac.maths">olac.maths module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-olac.perceptron">olac.perceptron module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-olac.pipeline">olac.pipeline module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-olac.utils">olac.utils module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-olac.vis">olac.vis module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-olac">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="python.html">python package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup.html">setup module</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">olac</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>olac package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/olac.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   <div class="section" id="olac-package">
 <h1>olac package<a class="headerlink" href="#olac-package" title="Permalink to this headline">¶</a></h1>
@@ -44,13 +187,24 @@
 <code class="descclassname">olac.cost_of_label.</code><code class="descname">cost_investigation</code><span class="sig-paren">(</span><em>data_point</em>, <em>decision</em>, <em>salary=-1.0</em>, <em>fraud_label=1</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.cost_of_label.cost_investigation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function that looks at the data is there fraud or not compared to what the model predicts.
 We want to obtain the labels, did we make a correct decission or not and the cost consequences are made
-Parameters
-———-
-data_point : series or array like object that has as last entry the true label
-decision : array or bool if we have investigated the record or not
-salary : how much does a standard investigation cost, default = -1
-fraud_label : default we have determined fraud at 1</p>
-<p>cost of investigating for a label</p>
+:param data_point:
+:type data_point: series or array like object that has as last entry the true label
+:param decision:
+:type decision: array or bool if we have investigated the record or not
+:param salary:
+:type salary: how much does a standard investigation cost, default = -1
+:param fraud_label:
+:type fraud_label: default we have determined fraud at 1</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">cost of investigating for a label</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -59,10 +213,25 @@ fraud_label : default we have determined fraud at 1</p>
 <dd><p>This function gives back the cost of obtaining a label from the incoming data. It will check if the classification
 of the points one wants to investigate is correct and assesses a profit or loss on each result.</p>
 <p>a data point has the format [x,y,label] where label is always the last entry in the list</p>
-<p>data : can be either a data point or a array of data points.
-decision : bool or array of bools, investigate a point True or False
-data_type : how does the data come in, either ‘array’ or ‘point’ like.</p>
-<p>costs for obtaining a certain label of a data point or labels of an array of data points</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> (<em>can be either a data point</em><em> or </em><em>a array of data points.</em>) – </li>
+<li><strong>decision</strong> (<em>bool</em><em> or </em><em>array of bools</em><em>, </em><em>investigate a point True</em><em> or </em><em>False</em>) – </li>
+<li><strong>data_type</strong> (<em>how does the data come in</em><em>, </em><em>either 'array'</em><em> or </em><em>'point' like.</em>) – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">costs for obtaining a certain label of a data point or labels of an array of data points</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -75,22 +244,27 @@ data_type : how does the data come in, either ‘array’ or ‘point’ like.</
 The function will generate x points where x is determined by (n_clusters + tail_time)/dt
 To determine the label of a cluster there is a randomly drawn from a pdf. The pdf is modular in time. Two options
 are used in the current model. One is a sum of squared sinuses and the other a moving poisson distribution.</p>
-<dl class="docutils">
-<dt>n_clusters: int</dt>
-<dd>Default n_clusters = 5, amount clusters that will be generated in the simulation</dd>
-<dt>n_points: int</dt>
-<dd>Default n_points = 1000, amount of points that will be generated</dd>
-<dt>slider: basestring</dt>
-<dd>Either poisson or sinus, determines the way how the probabilities move along with the time</dd>
-<dt>cluster_width: float</dt>
-<dd>The maximum width of the cluster distributions</dd>
-<dt>amount_of_labels: int</dt>
-<dd>Default amount_of_labels = 2, because you have either good or bad</dd>
-</dl>
-<dl class="docutils">
-<dt>np.array</dt>
-<dd>points which will occur in time with a label and position</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>n_clusters</strong> (<em>int</em>) – Default n_clusters = 5, amount clusters that will be generated in the simulation</li>
+<li><strong>n_points</strong> (<em>int</em>) – Default n_points = 1000, amount of points that will be generated</li>
+<li><strong>slider</strong> (<em>basestring</em>) – Either poisson or sinus, determines the way how the probabilities move along with the time</li>
+<li><strong>cluster_width</strong> (<em>float</em>) – The maximum width of the cluster distributions</li>
+<li><strong>amount_of_labels</strong> (<em>int</em>) – Default amount_of_labels = 2, because you have either good or bad</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">points which will occur in time with a label and position</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.array</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -103,45 +277,56 @@ then the slower time will be observed.</p>
 <p>delay may also be callable, for generating random delays at each iteration.
 Then delay() will be called at each iteration, and the output number will
 be used as the delay for that iteration.</p>
-<dl class="docutils">
-<dt>data_generator: iterable</dt>
-<dd>The generator whose output to delay</dd>
-<dt>delay: float or callable</dt>
-<dd>The delay per iteration. If callable, delay() should return a float. It
-will be called once per iteration. Can be used to create a random delay.</dd>
-<dt>precision: float (default 1e-3)</dt>
-<dd><p class="first">How precise the delay should be. If precision=0.1, then the observed
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data_generator</strong> (<em>iterable</em>) – The generator whose output to delay</li>
+<li><strong>delay</strong> (<em>float</em><em> or </em><em>callable</em>) – The delay per iteration. If callable, delay() should return a float. It
+will be called once per iteration. Can be used to create a random delay.</li>
+<li><strong>precision</strong> (<em>float</em><em> (</em><em>default 1e-3</em><em>)</em>) – <p>How precise the delay should be. If precision=0.1, then the observed
 delay should be within 0.1 of the delay parameter. Note that a higher
 precision requires more CPU cycles.</p>
-<p class="last">This parameter is an indication, not a guarantee, especially in cases
+<p>This parameter is an indication, not a guarantee, especially in cases
 of long running underlying data_generator processes.</p>
-</dd>
-</dl>
-<p>The items of data_generator</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body"><p class="first last"><em>The items of data_generator</em></p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="olac.data_generators.rand_walk">
 <code class="descclassname">olac.data_generators.</code><code class="descname">rand_walk</code><span class="sig-paren">(</span><em>start=0</em>, <em>steps=1000</em>, <em>batch=False</em>, <em>rvs_func=&lt;built-in method normal of mtrand.RandomState object&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.data_generators.rand_walk" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a random time-series where the movement at time t is a sample from the given distribution.</p>
-<dl class="docutils">
-<dt>start <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd>The y coordinate at time zero</dd>
-<dt>steps <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd>Number of steps to generate. Will generate forever if <cite>steps==0</cite>.</dd>
-<dt>batch <span class="classifier-delimiter">:</span> <span class="classifier">boolean [Optional]</span></dt>
-<dd>Whether the functions should return or yield</dd>
-<dt>rvs_func: function</dt>
-<dd>The random variate generator function, e.g. np.random.normal</dd>
-<dt><a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs</dt>
-<dd>parameters for the rvs_func</dd>
-</dl>
-<dl class="docutils">
-<dt>ndarray</dt>
-<dd>The generated time series if batch</dd>
-<dt>int</dt>
-<dd>If not batch, yield the next value</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>start</strong> (<em>int</em>) – The y coordinate at time zero</li>
+<li><strong>steps</strong> (<em>int</em>) – Number of steps to generate. Will generate forever if <cite>steps==0</cite>.</li>
+<li><strong>batch</strong> (<em>boolean</em><em> [</em><em>Optional</em><em>]</em>) – Whether the functions should return or yield</li>
+<li><strong>rvs_func</strong> (<em>function</em>) – The random variate generator function, e.g. np.random.normal</li>
+<li><strong>**kwargs</strong> – parameters for the rvs_func</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>ndarray</em> – The generated time series if batch</li>
+<li><em>int</em> – If not batch, yield the next value</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -151,25 +336,26 @@ of long running underlying data_generator processes.</p>
 <p>The generator will terminate after <cite>steps</cite> steps, or will go on forever if
 <cite>steps==0</cite>.git st</p>
 <p>See notebooks/jdp-data-roving-balls.ipynb for examples.</p>
-<dl class="docutils">
-<dt>balls <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd>The number of balls to use</dd>
-<dt>steps <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd>Number of steps to generate. Will generate forever if <cite>steps==0</cite>.</dd>
-<dt>period <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd>Period of rotation of the balls</dd>
-<dt>radius <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd>Radius of the entire dataset</dd>
-<dt>vars <span class="classifier-delimiter">:</span> <span class="classifier">float or iterable</span></dt>
-<dd>The variances of the balls. If iterable, must have length equal to
-number of balls.</dd>
-<dt>center <span class="classifier-delimiter">:</span> <span class="classifier">tuple</span></dt>
-<dd>The center of the entire dataset</dd>
-</dl>
-<dl class="docutils">
-<dt>np.ndarray</dt>
-<dd>Data point of form [x1, x2, label]</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>balls</strong> (<em>int</em>) – The number of balls to use</li>
+<li><strong>steps</strong> (<em>int</em>) – Number of steps to generate. Will generate forever if <cite>steps==0</cite>.</li>
+<li><strong>period</strong> (<em>int</em>) – Period of rotation of the balls</li>
+<li><strong>radius</strong> (<em>int</em>) – Radius of the entire dataset</li>
+<li><strong>vars</strong> (<em>float</em><em> or </em><em>iterable</em>) – The variances of the balls. If iterable, must have length equal to
+number of balls.</li>
+<li><strong>center</strong> (<em>tuple</em>) – The center of the entire dataset</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body"><p class="first last"><em>np.ndarray</em> – Data point of form [x1, x2, label]</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -179,43 +365,60 @@ number of balls.</dd>
 <dt id="olac.maths.auto_bin">
 <code class="descclassname">olac.maths.</code><code class="descname">auto_bin</code><span class="sig-paren">(</span><em>arr</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.maths.auto_bin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determine optimal number of bins for a given array</p>
-<dl class="docutils">
-<dt>arr <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
-<dd>The input array</dd>
-</dl>
-<dl class="docutils">
-<dt>int</dt>
-<dd>Approximation of the optimal number of bins</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>arr</strong> (<em>ndarray</em>) – The input array</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Approximation of the optimal number of bins</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="olac.maths.dist_coefs">
 <code class="descclassname">olac.maths.</code><code class="descname">dist_coefs</code><span class="sig-paren">(</span><em>coefs</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.maths.dist_coefs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Describe the distribution of the coefficients</p>
-<dl class="docutils">
-<dt>coefs <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
-<dd>Numpy array containing the coefficients of the linear least squares fits</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>coefs</strong> (<em>ndarray</em>) – Numpy array containing the coefficients of the linear least squares fits</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="olac.maths.hellinger_dist">
 <code class="descclassname">olac.maths.</code><code class="descname">hellinger_dist</code><span class="sig-paren">(</span><em>p</em>, <em>q</em>, <em>eps=1e-05</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.maths.hellinger_dist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the hellinger_dist for concrete distributions</p>
-<dl class="docutils">
-<dt>p <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
-<dd>The first array to compare to the second</dd>
-<dt>q <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
-<dd>The second array to compare to the first</dd>
-<dt>eps <span class="classifier-delimiter">:</span> <span class="classifier">float (optional)</span></dt>
-<dd>Correction factor to prevent null values</dd>
-</dl>
-<dl class="docutils">
-<dt>float</dt>
-<dd>hellinger_dist</dd>
-</dl>
-<p>[1] <a class="reference external" href="https://en.wikipedia.org/wiki/Hellinger_distance">https://en.wikipedia.org/wiki/Hellinger_distance</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>p</strong> (<em>ndarray</em>) – The first array to compare to the second</li>
+<li><strong>q</strong> (<em>ndarray</em>) – The second array to compare to the first</li>
+<li><strong>eps</strong> (<em>float</em><em> (</em><em>optional</em><em>)</em>) – Correction factor to prevent null values</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>float</em> – hellinger_dist</li>
+<li><em>Reference</em></li>
+<li><em>———</em></li>
+<li><strong>[1] https</strong> (<em>//en.wikipedia.org/wiki/Hellinger_distance</em>)</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -223,69 +426,95 @@ number of balls.</dd>
 <code class="descclassname">olac.maths.</code><code class="descname">kl_div</code><span class="sig-paren">(</span><em>p</em>, <em>q</em>, <em>eps=1e-05</em>, <em>full_outp=False</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.maths.kl_div" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the Kullback–Leibler divergence score.</p>
 <p>The function calculates the average KL divergence score taking each array as base at a time.</p>
-<dl class="docutils">
-<dt>p <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
-<dd>The first array to compare to the second</dd>
-<dt>q <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
-<dd>The second array to compare to the first</dd>
-<dt>eps <span class="classifier-delimiter">:</span> <span class="classifier">float (optional)</span></dt>
-<dd>Correction factor to prevent null values</dd>
-</dl>
-<dl class="docutils">
-<dt>float</dt>
-<dd>KL div score</dd>
-</dl>
-<p>[1] <a class="reference external" href="https://en.wikipedia.org/wiki/Kullback">https://en.wikipedia.org/wiki/Kullback</a>–Leibler_divergence</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>p</strong> (<em>ndarray</em>) – The first array to compare to the second</li>
+<li><strong>q</strong> (<em>ndarray</em>) – The second array to compare to the first</li>
+<li><strong>eps</strong> (<em>float</em><em> (</em><em>optional</em><em>)</em>) – Correction factor to prevent null values</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>float</em> – KL div score</li>
+<li><em>Reference</em></li>
+<li><em>———</em></li>
+<li><strong>[1] https</strong> (<em>//en.wikipedia.org/wiki/Kullback–Leibler_divergence</em>)</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="olac.maths.linear_ls">
 <code class="descclassname">olac.maths.</code><code class="descname">linear_ls</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>constant=True</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.maths.linear_ls" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fast linear least squares</p>
-<dl class="docutils">
-<dt>x <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
-<dd>The independent variables, features, over which to fit</dd>
-<dt>y <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
-<dd>The dependent variable which we want approximate</dd>
-<dt>constant <span class="classifier-delimiter">:</span> <span class="classifier">boolean (optional)</span></dt>
-<dd>Whether a constant should be added, default is True</dd>
-</dl>
-<p>Returns:
-np.matrix</p>
-<blockquote>
-<div>The coefficients that minimise the square error</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> (<em>ndarray</em>) – The independent variables, features, over which to fit</li>
+<li><strong>y</strong> (<em>ndarray</em>) – The dependent variable which we want approximate</li>
+<li><strong>constant</strong> (<em>boolean</em><em> (</em><em>optional</em><em>)</em>) – Whether a constant should be added, default is True</li>
+<li><strong>Returns</strong> – </li>
+<li><strong>np.matrix</strong> – The coefficients that minimise the square error</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="olac.maths.rotation_matrix">
 <code class="descclassname">olac.maths.</code><code class="descname">rotation_matrix</code><span class="sig-paren">(</span><em>theta: float</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.maths.rotation_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a rotation matrix to rotate a 2d vector by theta.</p>
-<p>theta : float</p>
-<p>The 2x2 rotation matrix</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>theta</strong> (<em>float</em>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">The 2x2 rotation matrix</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="olac.maths.seq_linear_ls">
 <code class="descclassname">olac.maths.</code><code class="descname">seq_linear_ls</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>window_size=10</em>, <em>constant=True</em>, <em>axis=0</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.maths.seq_linear_ls" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the linear fits for each period</p>
-<dl class="docutils">
-<dt>x <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
-<dd>The independent variables, features, over which to fit</dd>
-<dt>y <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
-<dd>The dependent variable which we want approximate</dd>
-<dt>window_size <span class="classifier-delimiter">:</span> <span class="classifier">int (optional)</span></dt>
-<dd>The number of observations that will included in a period</dd>
-<dt>constant <span class="classifier-delimiter">:</span> <span class="classifier">boolean (optional)</span></dt>
-<dd>Whether a constant should be added, default is True</dd>
-<dt>axis <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd>The axis over which to split the input array</dd>
-</dl>
-<dl class="docutils">
-<dt>coefs <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
-<dd>An numpy array containing the coefficients.</dd>
-<dt>ind <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
-<dd>The indexes of the periods</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<em>ndarray</em>) – The independent variables, features, over which to fit</li>
+<li><strong>y</strong> (<em>ndarray</em>) – The dependent variable which we want approximate</li>
+<li><strong>window_size</strong> (<em>int</em><em> (</em><em>optional</em><em>)</em>) – The number of observations that will included in a period</li>
+<li><strong>constant</strong> (<em>boolean</em><em> (</em><em>optional</em><em>)</em>) – Whether a constant should be added, default is True</li>
+<li><strong>axis</strong> (<em>int</em>) – The axis over which to split the input array</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>coefs</strong> (<em>ndarray</em>) – An numpy array containing the coefficients.</li>
+<li><strong>ind</strong> (<em>list</em>) – The indexes of the periods</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -385,14 +614,30 @@ np.matrix</p>
 <code class="descname">get_all</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#olac.pipeline.BatchQueue.get_all" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all items present in the queue at the time of calling and return
 them as a list, marking all the tasks as done immediately.</p>
-<p>list: all current queue items</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>list</strong></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">all current queue items</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="olac.pipeline.BatchQueue.put_all">
 <code class="descname">put_all</code><span class="sig-paren">(</span><em>items</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.pipeline.BatchQueue.put_all" title="Permalink to this definition">¶</a></dt>
 <dd><p>Put all the items in a list into the queue sequentially</p>
-<p>items (iterable): The list of items to put</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>(</strong><strong>iterable</strong><strong>)</strong> (<em>items</em>) – </td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -441,8 +686,18 @@ accumulating additional results.</p>
 <dd><p>Split the available points into labelled and unlabelled using some
 strategy. Should return two lists of QueuePoints: the list of points
 for which labels have been bought, and the remaining unlabelled points.</p>
-<p>pipeline: the calling Pipeline object</p>
-<p>list, list : labelled points, unlabelled points</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pipeline</strong> (<em>the calling Pipeline object</em>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>list, list</strong></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">labelled points, unlabelled points</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -453,8 +708,18 @@ when the condition is met for buying new labels.</p>
 <p>If calculating the condition requires access to the datapoints
 themselves, make sure to store them in an object property as they will
 no longer be available in the queue for buy_labels.</p>
-<p>pipeline: the calling Pipeline object</p>
-<p>bool: Whether to call self.buy_labels this iteration</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pipeline</strong> (<em>the calling Pipeline object</em>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>bool</strong></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Whether to call self.buy_labels this iteration</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -548,9 +813,19 @@ predictor for communicating with each other:
 <dt id="olac.pipeline.Pipeline.run">
 <code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#olac.pipeline.Pipeline.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run the pipeline until the data_generator is exhausted.</p>
-<p>tuple: (training_set, eval_set)</p>
-<p>Training set is the list of QueuePoints that was labelled, and eval_set
-is the list of points that were not labelled.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
+<li><strong>tuple</strong> (<em>(training_set, eval_set)</em>)</li>
+<li><em>Training set is the list of QueuePoints that was labelled, and eval_set</em></li>
+<li><em>is the list of points that were not labelled.</em></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -575,9 +850,24 @@ should simply be returned by do_prediction for further processing.</p>
 <code class="descname">do_prediction</code><span class="sig-paren">(</span><em>pipeline</em>, <em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.pipeline.PredictorBase.do_prediction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Use pipeline.model to make a prediction on point x. Should return
 the predicted class, as well as a measure of certainty.</p>
-<p>pipeline: the calling Pipeline object
-x: the data point to predict</p>
-<p>float, float : prediction, certainty</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pipeline</strong> (<em>the calling Pipeline object</em>) – </li>
+<li><strong>x</strong> (<em>the data point to predict</em>) – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>float, float</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">prediction, certainty</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -589,8 +879,18 @@ this iteration, before making the next prediction.</p>
 <p>If calculating the condition requires access to the datapoints
 themselves, make sure to store them in an object property as they will
 no longer be available in the queue for train_pipeline_model.</p>
-<p>pipeline: the calling Pipeline object</p>
-<p>bool: Whether to call self.train_pipeline_model this iteration</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pipeline</strong> (<em>the calling Pipeline object</em>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>bool</strong></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Whether to call self.train_pipeline_model this iteration</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -599,8 +899,18 @@ no longer be available in the queue for train_pipeline_model.</p>
 <dd><p>Called by the Pipeline if self.train_condition is true. Should
 implement the logic for training pipeline.model (i.e. should call
 pipeline.model.fit or pipeline.model.partial_fit at some point).</p>
-<p>pipeline: the calling Pipeline object</p>
-<p>None</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pipeline</strong> (<em>the calling Pipeline object</em>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -614,8 +924,18 @@ pipeline.model.fit or pipeline.model.partial_fit at some point).</p>
 <dt id="olac.pipeline.QueuePoint.to_tuple">
 <code class="descname">to_tuple</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#olac.pipeline.QueuePoint.to_tuple" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert the QueuePoint to a tuple.</p>
-<p>tuple: (point, index, predicted_label, prob, true_label,)</p>
-<p>See also: olac.utils.queue_point_list_to_df</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
+<li><strong>tuple</strong> (<em>(point, index, predicted_label, prob, true_label,)</em>)</li>
+<li><strong>See also</strong> (<em>olac.utils.queue_point_list_to_df</em>)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -648,7 +968,14 @@ some probability.</p>
 <dt id="olac.pipeline.err_handler">
 <code class="descclassname">olac.pipeline.</code><code class="descname">err_handler</code><span class="sig-paren">(</span><em>e: Exception</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.pipeline.err_handler" title="Permalink to this definition">¶</a></dt>
 <dd><p>A simple error handler for threads that raises any Exceptions that occur.</p>
-<p>e: The Exception being raised</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>e</strong> (<em>The Exception being raised</em>) – </td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -658,65 +985,102 @@ some probability.</p>
 <dt id="olac.utils.data_prep">
 <code class="descclassname">olac.utils.</code><code class="descname">data_prep</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.utils.data_prep" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prepare data points for input in keras model. For now it just scales.</p>
-<dl class="docutils">
-<dt>X <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
-<dd>Input points</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>X</strong> (<em>ndarray</em>) – Input points</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="olac.utils.dim_correct">
 <code class="descclassname">olac.utils.</code><code class="descname">dim_correct</code><span class="sig-paren">(</span><em>x</em>, <em>axis=1</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.utils.dim_correct" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check and dimensionality of the input array and add one if number of dimensions is zero.</p>
-<dl class="docutils">
-<dt>x <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
-<dd>The array to be validated and or corrected</dd>
-<dt>axis <span class="classifier-delimiter">:</span> <span class="classifier">int [0, 1] (Optional)</span></dt>
-<dd>The axis to which to add the dimension, 0 results in a row vector/array
-1 results in a columns vector/array</dd>
-</dl>
-<dl class="docutils">
-<dt>x <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
-<dd>The original input array if the dimension were already greather than 0
-otherwise with a second dimension of 1 added.</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<em>ndarray</em>) – The array to be validated and or corrected</li>
+<li><strong>axis</strong> (<em>int</em><em> [</em><em>0</em><em>, </em><em>1</em><em>] </em><em>(</em><em>Optional</em><em>)</em>) – The axis to which to add the dimension, 0 results in a row vector/array
+1 results in a columns vector/array</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>x</strong> – The original input array if the dimension were already greather than 0
+otherwise with a second dimension of 1 added.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">ndarray</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="olac.utils.queue_point_list_to_df">
 <code class="descclassname">olac.utils.</code><code class="descname">queue_point_list_to_df</code><span class="sig-paren">(</span><em>qp_list</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.utils.queue_point_list_to_df" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a list of QueuePoints to a pandas DataFrame</p>
-<dl class="docutils">
-<dt>qp_list <span class="classifier-delimiter">:</span> <span class="classifier">list[QueuePoint]</span></dt>
-<dd>The list of QueuePoints to convert</dd>
-</dl>
-<p>pandas.DataFrame: A dataframe containing all the QueuePoint information</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>qp_list</strong> (<em>list</em><em>[</em><a class="reference internal" href="#olac.pipeline.QueuePoint" title="olac.pipeline.QueuePoint"><em>QueuePoint</em></a><em>]</em>) – The list of QueuePoints to convert</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>pandas.DataFrame</strong></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">A dataframe containing all the QueuePoint information</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="olac.utils.rotation_matrix">
 <code class="descclassname">olac.utils.</code><code class="descname">rotation_matrix</code><span class="sig-paren">(</span><em>theta: float</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.utils.rotation_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a rotation matrix to rotate a 2d vector by theta.</p>
-<p>theta : float</p>
-<p>The 2x2 rotation matrix</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>theta</strong> (<em>float</em>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">The 2x2 rotation matrix</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="olac.utils.set_path">
 <code class="descclassname">olac.utils.</code><code class="descname">set_path</code><span class="sig-paren">(</span><em>level=1</em>, <em>change_path=True</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.utils.set_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the path to the olac/olac directory or insert it in the path.</p>
-<dl class="docutils">
-<dt>level <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd>The number of levels you are removed from the olac parent
-directory. Maximum of two levels are implemented.</dd>
-<dt>change_path <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
-<dd>True - Change the working directory
-False - Inset the path to the python path</dd>
-</dl>
-<dl class="docutils">
-<dt>None <span class="classifier-delimiter">:</span> <span class="classifier">nonetype</span></dt>
-<dd>The function does not return anything</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>level</strong> (<em>int</em>) – The number of levels you are removed from the olac parent
+directory. Maximum of two levels are implemented.</li>
+<li><strong>change_path</strong> (<em>boolean</em>) – True - Change the working directory
+False - Inset the path to the python path</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>None</strong> – The function does not return anything</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">nonetype</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -730,16 +1094,20 @@ False - Inset the path to the python path</dd>
 <dt id="olac.vis.GetNewMetric.get_new_accuracy">
 <em class="property">static </em><code class="descname">get_new_accuracy</code><span class="sig-paren">(</span><em>labels</em>, <em>model=None</em>, <em>weights=None</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.vis.GetNewMetric.get_new_accuracy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the accuracy and stuff back to display how it changes over time</p>
-<dl class="docutils">
-<dt>data <span class="classifier-delimiter">:</span> <span class="classifier">ndarray | shape (N, 2)</span></dt>
-<dd>New clusters to classify</dd>
-<dt>model <span class="classifier-delimiter">:</span> <span class="classifier">Model class</span></dt>
-<dd>Keras based deep learning model class</dd>
-<dt>labels <span class="classifier-delimiter">:</span> <span class="classifier">ndarray | shape (N, )</span></dt>
-<dd>Labels of the datapoints.</dd>
-<dt>weights <span class="classifier-delimiter">:</span> <span class="classifier">tuple</span></dt>
-<dd>w1, b1, w2, b2</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> (<em>ndarray | shape</em><em> (</em><em>N</em><em>, </em><em>2</em><em>)</em>) – New clusters to classify</li>
+<li><strong>model</strong> (<em>Model class</em>) – Keras based deep learning model class</li>
+<li><strong>labels</strong> (<em>ndarray | shape</em><em> (</em><em>N</em><em>, </em><em>)</em>) – Labels of the datapoints.</li>
+<li><strong>weights</strong> (<em>tuple</em>) – w1, b1, w2, b2</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="staticmethod">
@@ -747,18 +1115,14 @@ False - Inset the path to the python path</dd>
 <em class="property">static </em><code class="descname">get_new_precision</code><span class="sig-paren">(</span><em>labels</em>, <em>model=None</em>, <em>weights=None</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.vis.GetNewMetric.get_new_precision" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the accuracy and stuff back to display how it changes over time
 Assumes 1 is the positive label!!
-Parameters
-———-</p>
-<dl class="docutils">
-<dt>data <span class="classifier-delimiter">:</span> <span class="classifier">ndarray | shape (N, 2)</span></dt>
-<dd>New clusters to classify</dd>
-<dt>model <span class="classifier-delimiter">:</span> <span class="classifier">Model class</span></dt>
-<dd>Keras based deep learning model class</dd>
-<dt>labels <span class="classifier-delimiter">:</span> <span class="classifier">ndarray | shape (N, )</span></dt>
-<dd>Labels of the datapoints.</dd>
-<dt>weights <span class="classifier-delimiter">:</span> <span class="classifier">tuple</span></dt>
-<dd>w1, b1, w2, b2</dd>
-</dl>
+:param data: New clusters to classify
+:type data: ndarray | shape (N, 2)
+:param model: Keras based deep learning model class
+:type model: Model class
+:param labels: Labels of the datapoints.
+:type labels: ndarray | shape (N, )
+:param weights: w1, b1, w2, b2
+:type weights: tuple</p>
 </dd></dl>
 
 <dl class="staticmethod">
@@ -766,18 +1130,14 @@ Parameters
 <em class="property">static </em><code class="descname">get_new_recall</code><span class="sig-paren">(</span><em>labels</em>, <em>model=None</em>, <em>weights=None</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.vis.GetNewMetric.get_new_recall" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the accuracy and stuff back to display how it changes over time
 Assumes 1 is the positive label!!
-Parameters
-———-</p>
-<dl class="docutils">
-<dt>data <span class="classifier-delimiter">:</span> <span class="classifier">ndarray | shape (N, 2)</span></dt>
-<dd>New clusters to classify</dd>
-<dt>model <span class="classifier-delimiter">:</span> <span class="classifier">Model class</span></dt>
-<dd>Keras based deep learning model class</dd>
-<dt>labels <span class="classifier-delimiter">:</span> <span class="classifier">ndarray | shape (N, )</span></dt>
-<dd>Labels of the datapoints.</dd>
-<dt>weights <span class="classifier-delimiter">:</span> <span class="classifier">tuple</span></dt>
-<dd>w1, b1, w2, b2</dd>
-</dl>
+:param data: New clusters to classify
+:type data: ndarray | shape (N, 2)
+:param model: Keras based deep learning model class
+:type model: Model class
+:param labels: Labels of the datapoints.
+:type labels: ndarray | shape (N, )
+:param weights: w1, b1, w2, b2
+:type weights: tuple</p>
 </dd></dl>
 
 </dd></dl>
@@ -797,51 +1157,53 @@ Parameters
 <code class="descclassname">olac.vis.</code><code class="descname">main</code><span class="sig-paren">(</span><em>MODEL</em>, <em>GENERATOR</em>, <em>metric</em>, <em>weights=None</em>, <em>window=20</em>, <em>p_train=10</em>, <em>write=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.vis.main" title="Permalink to this definition">¶</a></dt>
 <dd><p>Display the model accuracy, recall or precision over time together with the data points as predicted
 by the model.</p>
-<blockquote>
-<div><dl class="docutils">
-<dt>MODEL <span class="classifier-delimiter">:</span> <span class="classifier">Object</span></dt>
-<dd>Keras model or Perceptron Object as made by us</dd>
-<dt>GENERATOR <span class="classifier-delimiter">:</span> <span class="classifier">generator object?</span></dt>
-<dd>Generator that simulates the datapoints. For example popping clusters or roving balls</dd>
-<dt>metric <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd>“accuracy”, “precision” or “recall”: Which metric you want to display over time.</dd>
-<dt>weights <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
-<dd>If you have a pretrained perceptron, you can input the learned weights here. For a keras
-model this should be saved in the model object.</dd>
-<dt>window <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd>Size of the sliding window: How many datapoints you want to predict at the same time</dd>
-<dt>p_train <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd>percentage of datapoints you want to use for training</dd>
-<dt><a href="#id3"><span class="problematic" id="id4">**</span></a>kwargs</dt>
-<dd>Input for the generator</dd>
-</dl>
-</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>MODEL</strong> (<em>Object</em>) – Keras model or Perceptron Object as made by us</li>
+<li><strong>GENERATOR</strong> (<em>generator object?</em>) – Generator that simulates the datapoints. For example popping clusters or roving balls</li>
+<li><strong>metric</strong> (<em>string</em>) – “accuracy”, “precision” or “recall”: Which metric you want to display over time.</li>
+<li><strong>weights</strong> (<em>ndarray</em>) – If you have a pretrained perceptron, you can input the learned weights here. For a keras
+model this should be saved in the model object.</li>
+<li><strong>window</strong> (<em>int</em>) – Size of the sliding window: How many datapoints you want to predict at the same time</li>
+<li><strong>p_train</strong> (<em>int</em>) – percentage of datapoints you want to use for training</li>
+<li><strong>**kwargs</strong> – Input for the generator</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="olac.vis.plot_linear_ls">
 <code class="descclassname">olac.vis.</code><code class="descname">plot_linear_ls</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>window_size=10</em>, <em>constant=True</em>, <em>colour='r'</em>, <em>label=None</em><span class="sig-paren">)</span><a class="headerlink" href="#olac.vis.plot_linear_ls" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the linear fits for each period</p>
-<dl class="docutils">
-<dt>x <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
-<dd>The independent variables, features, over which to fit</dd>
-<dt>y <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
-<dd>The dependent variable which we want approximate</dd>
-<dt>window_size <span class="classifier-delimiter">:</span> <span class="classifier">int (optional)</span></dt>
-<dd>The number of observations that will included in a period</dd>
-<dt>constant <span class="classifier-delimiter">:</span> <span class="classifier">boolean (optional)</span></dt>
-<dd>Whether a constant should be added, default is True</dd>
-<dt>colour <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd>The colour paramter to be passed to pyplot</dd>
-<dt>label <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd>The label parameter to be passed to pyplot</dd>
-</dl>
-<dl class="docutils">
-<dt>coefs <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
-<dd>An numpy array containing the coefficients.</dd>
-<dt>ind <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
-<dd>The indexes of the periods</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<em>ndarray</em>) – The independent variables, features, over which to fit</li>
+<li><strong>y</strong> (<em>ndarray</em>) – The dependent variable which we want approximate</li>
+<li><strong>window_size</strong> (<em>int</em><em> (</em><em>optional</em><em>)</em>) – The number of observations that will included in a period</li>
+<li><strong>constant</strong> (<em>boolean</em><em> (</em><em>optional</em><em>)</em>) – Whether a constant should be added, default is True</li>
+<li><strong>colour</strong> (<em>str</em>) – The colour paramter to be passed to pyplot</li>
+<li><strong>label</strong> (<em>str</em>) – The label parameter to be passed to pyplot</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>coefs</strong> (<em>ndarray</em>) – An numpy array containing the coefficients.</li>
+<li><strong>ind</strong> (<em>list</em>) – The indexes of the periods</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -851,72 +1213,69 @@ model this should be saved in the model object.</dd>
 </div>
 
 
+           </div>
+           
           </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="modules.html" class="btn btn-neutral float-right" title="olac" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="log.html" class="btn btn-neutral" title="Decisions and logs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Susanne Groothuis, Bram Schermer, John Paton, Ralph Urlus.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">olac package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-olac.cost_of_label">olac.cost_of_label module</a></li>
-<li><a class="reference internal" href="#module-olac.data_generators">olac.data_generators module</a></li>
-<li><a class="reference internal" href="#module-olac.maths">olac.maths module</a></li>
-<li><a class="reference internal" href="#module-olac.perceptron">olac.perceptron module</a></li>
-<li><a class="reference internal" href="#module-olac.pipeline">olac.pipeline module</a></li>
-<li><a class="reference internal" href="#module-olac.utils">olac.utils module</a></li>
-<li><a class="reference internal" href="#module-olac.vis">olac.vis module</a></li>
-<li><a class="reference internal" href="#module-olac">Module contents</a></li>
-</ul>
-</li>
-</ul>
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="olac_docs.html" title="previous chapter">OLAC - Online Learning at Cost</a></li>
-      <li>Next: <a href="modules.html" title="next chapter">olac</a></li>
-  </ul></li>
-</ul>
-</div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/olac.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2018, Susanne Groothuis, John Paton, Bram Schermer, Ralph Urlus.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
-      
-      |
-      <a href="_sources/olac.rst.txt"
-          rel="nofollow">Page source</a>
-    </div>
 
-    
+    </section>
 
-    
-  </body>
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
 </html>
