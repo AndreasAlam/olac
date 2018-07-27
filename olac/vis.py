@@ -5,6 +5,8 @@ from IPython import display
 import matplotlib.pyplot as plt
 
 from . import maths as mf
+from . import utils as ut
+import imageio
 # [RU] imported but unused
 # from olac.perceptron import Perceptron as pc
 
@@ -191,7 +193,7 @@ def get_fun_map(xlim, ylim, weights, MODEL):
     return fun_map
 
 
-def main(MODEL, GENERATOR, metric, weights=None, window=20, p_train=10, **kwargs):
+def main(MODEL, GENERATOR, metric, weights=None, window=20, p_train=10, write=False, **kwargs):
     """
     Display the model accuracy, recall or precision over time together with the data points as predicted
     by the model.
@@ -227,6 +229,7 @@ def main(MODEL, GENERATOR, metric, weights=None, window=20, p_train=10, **kwargs
         data = np.array(list(GENERATOR(**kwargs)))
         itrs = len(data)
         pnts = data[:, :2]
+        pnts = ut.data_prep(pnts)
         lbls = data[:, -1]
         wndw = int(itrs/p_train)
 
@@ -247,7 +250,7 @@ def main(MODEL, GENERATOR, metric, weights=None, window=20, p_train=10, **kwargs
 
         # Plot the first trained batch to see if it is doing OK
         fun_map = get_fun_map(xlim, ylim, weights, MODEL)
-
+        plt.figure(figsize=(20, 10))
         plt.imshow(fun_map, extent=[xlim[0], xlim[1], ylim[0], ylim[1]],
                    vmin=0, vmax=1, aspect='auto', origin='lower')
         new_pred, metric_value = getattr(GetNewMetric, 'get_new_' + metric)(
@@ -257,7 +260,7 @@ def main(MODEL, GENERATOR, metric, weights=None, window=20, p_train=10, **kwargs
                                          weights)
         plt.scatter(*pnts[:wndw, :][np.not_equal(new_pred[:, 0], lbls[:wndw]), :].T, color='r')
         plt.scatter(*pnts[:wndw, :].T, color=[{0: 'w', 1: 'k', 2: 'b'}[n] for n in lbls[:window].astype(int)],
-                    alpha=.3)
+                    alpha=.6)
         plt.show()
 
         print("Contiue? Y/N")
@@ -275,6 +278,8 @@ def main(MODEL, GENERATOR, metric, weights=None, window=20, p_train=10, **kwargs
                                                                             label_window,
                                                                             MODEL,
                                                                             weights)
+        assert new_pred[:, 0].shape == label_window.shape
+
         metric_in_time.append(metric_value)
 
         plt.figure(figsize=(20, 10))
@@ -296,8 +301,17 @@ def main(MODEL, GENERATOR, metric, weights=None, window=20, p_train=10, **kwargs
 
         display.clear_output(wait=True)
         display.display(plt.gcf())
+
+        if write:
+            plt.savefig('tmp/'+str(i)+'.png')
         plt.close()
 
+    # if write:
+    #     images = []
+    #     for i in np.arange(1, itrs, int(window/4)):
+    #         filename = 'tmp/'+str(i)+'.png'
+    #         images.append(imageio.imread(filename))
+    #         imageio.mimsave('progressgif'+time.strftime('%Y-%m-%d', time.localtime(time.time()))+'.gif', images)
 
 ########################################################################################################################
 #                                                    Learning at Cost                                                  #
