@@ -258,8 +258,8 @@ class PredictorBase():
 
     def train_pipeline_model(self, pipeline,):
         """
-        Called by the Pipeline if self.train_condition is true. Should implement
-        the logic for training pipeline.model (i.e. should call
+        Called by the Pipeline if self.train_condition is true. Should
+        implement the logic for training pipeline.model (i.e. should call
         pipeline.model.fit or pipeline.model.partial_fit at some point).
 
         Parameters
@@ -561,3 +561,89 @@ class NaieveLabeller(LabellerBase):
         print(f'Labeller:\tLabelled {len(labelled_points)} new points')
 
         return labelled_points, unlabelled_points
+
+class GridPredictor():
+    """
+    Mixin class to add a grid predictor to your base predictor class. The
+    class will add a get_grid and grid_predict method to your class,
+    that can be used to save model predictions done on a 250 by 250 grid
+    which can be used to plot the decision boundary.
+    """
+    def get_grid(self):
+        gridpoints = np.linspace(0, 1, 250)
+        grid = []
+        for y in gridpoints:
+            for x in gridpoints:
+                grid.append([x,y])
+        return np.array(grid)
+
+    def grid_predict(self, pipeline):
+        l = int(np.sqrt(self.grid.shape[0]))
+        return pipeline.model.predict_proba(self.grid)[:, 0].reshape(l, l)
+
+
+class OfflinePredictor(GridPredictor, PredictorBase):
+    """A simple predictor for use with non-online models. The corresponding
+    pipeline.model should implement the partial_fit and the decision_function
+    or predict_proba methods.
+
+    """
+    def __init__(self, batch_size):
+
+        self.batch_size = batch_size
+        self.grid = self.get_grid()
+        self.hist_grid = []
+        self.historic_points = []
+
+    def train_condition(self, pipeline, ):
+        """Train anytime there are batch_size points in the queue"""
+        return pipeline.training_queue.qsize() >= self.batch_size
+
+    def train_pipeline_model(self, pipeline,):
+        """
+        Rertrain the model using all points available in the training queue
+        plus all the points you've come across before using pipeline.model.fit.
+        """
+        # Get the new points from the queue
+        new_points = pipeline.training_queue.get_all()  # training_queue is now empty
+        print(f'Predictor:\t{len(new_points)} new points available, re-training...')
+
+        # Stack the points as an array to add to historical points
+        add_points = np.vstack([np.hstack((p.point, p.true_label)) for p in new_points])
+        try:
+            # Get the historical points
+            self.historic_points = np.vstack((self.historic_points, add_points))
+        except ValueError:
+            # If no historic points yet, set first batch as historical points
+            self.historic_points = add_points
+
+        # Split into X and y
+        X_train = self.historic_points[:, :-1]
+        y_train = self.historic_points[:, -1]
+
+        # Train the model
+        pipeline.model.fit(X_train, y_train)
+        print("Trained model on {} points".format(len(self.historic_points)))
+
+    def do_prediction(self, pipeline, x,):
+        """
+        Make a prediction. If the model has not yet been fit (burn-in phase),
+        return NaNs.
+        """
+        try:
+            y_pred = pipeline.model.predict([x])
+            self.hist_grid.append(self.grid_predict(pipeline))
+            if hasattr(pipeline.model, 'predict_proba'):
+                prob = pipeline.model.predict_proba([x])
+            elif hasattr(pipeline.model, 'decision_function'):
+                prob = pipeline.model.decision_function([x])
+            else:
+                prob = np.nan
+
+        # Not trained yet, return nans
+        except sklearn.exceptions.NotFittedError:
+            y_pred = np.nan
+            prob = np.nan
+
+        return y_pred, prob
+
