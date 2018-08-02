@@ -3,17 +3,37 @@
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{mathtools}
+\usepackage[english]{babel} % English language/hyphenation
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs - comment this line for an assignment with lots of text
+
 \begin{document}
+\strut\\[0.8cm]
 \begin{center}
 \Large{\textbf{OLAC}\\
 - \\
 \textbf{Label Buying Decision Engine}}\\[5mm]
 \normalsize
 \end{center}
-\textbf{Problem setting:}\\
-Compute the optimal allocation of labels acquisitions that maximize, under resource constraints, long run utility.\\
 
-\subsubsection*{Definitions:}
+\vfill
+\hfill Ralph Urlus | urlus.ralph@kpmg.nl
+\thispagestyle{empty}
+
+\newpage
+\section*{Problem statement}
+\input{intro}
+
+\newpage
+\section*{Clustering}
+\input{clusters}
+
+\newpage
+\section*{Multi Armed Bandit}
+\input{mab}
+
+\newpage
+\section*{Definitions:}
 \begin{itemize}
 \item Let $\mathbf{X} \in \mathbb{R}^{nm}$ be the observed data.
 \item Let $\textbf{f} \in \mathbb{R}^{m}$ be the vector of features.
@@ -24,51 +44,4 @@ Compute the optimal allocation of labels acquisitions that maximize, under resou
 \item Let $\textbf{k} \in {\{1,2,\ldots,n\}}^{t}$ be the vector of optimal number of clusters.
 \item Let $\textbf{u} \in \mathbb{R}^{n}\sim LN(\mu, \sigma)$ the vector of utility earned by detecting fraud drawn from a log-normal distribution.
 \end{itemize}
-\subsubsection*{Information K-means}
-For each block of time $t$, $t \in \mathbb{Z}$, the newly observed data is compared to the historical data and evaluate whether the number of clusters needs to be adjusted.\\
-Let $k_{t} = g(\textbf{f})$; where $g$ is a function that approximates the optimal number of clusters.
-Let $\mathcal{K}_{t} = f(k_{t}, \textbf{X})$ where $f$ is the K-means algorithm that approximates the optimal centroid location and assignment of data points.\\
-
-\noindent\textit{cluster assignment}:
-\begin{equation}
-K_{\eta}^{(q)} = \{x_i~:~\lVert x_i - m_{\eta} \rVert^{2} \leq \lVert x_i - m_{j} \rVert^{2}~\forall~j, 1 \leq j \leq k\}
-\end{equation}
-\textit{centroid update}:
-\begin{equation}
-m_{\eta}^{(q + 1)} = \frac{1}{\lvert K_{\eta}^{(q)}\rvert}\sum_{x_{i} \in K_{\eta}^{(q)}} x_{i}
-\end{equation}
-
-\subsubsection*{Utility function}
-Utility consists of the cost of buying a label, $c \in \mathbb{R_{+}}$, the revenue gained by detecting fraud, $u \in \mathbb{R_+}$ with the assumption that the
-utility gained from determining fraud is greater than the cost, $c < u$. Additional elements can be added such as cost of true negatives, missing fraud, or additional costs for investigating false positives.
-\begin{equation}
-U(\textbf{u}, \mathbf{y}, \theta, c) = \textbf{u} \times (\textbf{y} \times \theta) - c \theta = \sum_{i=0}^{n}u_{i}y_{i}\theta_{i} - c\theta_{i}
-\end{equation}
-
-\subsubsection*{Revenue}
-In order to determine the monetary gain of buying a label in a particular cluster we calculate the expected revenue of allocating all labels to a particular cluster. The matrix $\textbf{H} \in {\{0,1\}}^{nk}$ contains the masks for each cluster, $K_\eta \subset \mathcal{K} \text{ where } $, i.e.:
-\begin{equation}
-h_{i,\eta}=
-\begin{dcases}
-1,& \text{if } \textbf{x}_{i} \in K_\eta\\
-0, & \text{otherwise}
-\end{dcases}
-\end{equation}
-where $i \in \{0,\ldots,n-1\},~\eta \in \{1, \ldots, k\}$.\\
-
-The expected revenue for cluster $\eta$ is defined as:
-\begin{equation}
-\pi_{\eta} = \textbf{h}_{\eta} \cdot \mathop{\mathbb{E}}[U(\textbf{u}, \mathbf{y}, \theta, c)] = \textbf{h}_{\eta} \cdot (\mathop{\mathbb{E}}[\textbf{u}] \times (\textbf{y} \times \theta) - c\theta)
-\end{equation}
-
-
-\subsubsection*{ADW-MAB}
-Rough idea:
-\begin{enumerate}
-  \item Determine the number of clusters (Information K-means, $\ldots$)
-  \item Determine the windows size dependent of measure of change (Adaptive windowing - ADWIN, $\ldots$)
-  \item Determine optimal allocation label (Multi-armed Bandit, $\ldots$)
-\end{enumerate}
-
 \end{document}
-

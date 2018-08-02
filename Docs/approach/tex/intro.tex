@@ -1,0 +1,20 @@
+Compute the optimal allocation of labels acquisitions that maximize, under resource constraints, long run utility.\\
+
+Throughout this document the following notation will be used:\\
+
+\textit{Let} $a$ \textit{indicate a scaler}.\\
+\textit{Let} $\alpha$ \textit{indicate a vector}.\\
+\textit{Let} $\mathbf{a}$ \textit{indicate a vector}.\\
+\textit{Let} $A$ \textit{indicate a function}.\\
+\textit{Let} $\mathbf{A}$ \textit{indicate a matrix}.\\
+\textit{Let} $\mathcal{A}$ \textit{indicate a cluster}.
+
+\subsection*{Utility}
+The total utility is defined as the utility gained from each label bought at time $t$.
+Utility consists of the cost of buying a label, $c \in \mathbb{R_{+}}$, the revenue gained by detecting fraud, $u \in \mathbb{R_+}$ with the assumption that the
+utility gained from determining fraud is greater than the cost, $c < u$.
+The utility function is defined as:
+\begin{equation}
+U(\textbf{u}, \mathbf{y}, \theta, c) = \textbf{u} \times (\textbf{y} \times \theta) - c \theta = \sum_{i=0}^{n}u_{i}y_{i}\theta_{i} - c\theta_{i}
+\end{equation}
+Additional elements can be added such as cost of true negatives, missing fraud, or additional costs for investigating false positives.\\

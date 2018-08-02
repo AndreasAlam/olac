@@ -1,0 +1,24 @@
+\subsection*{Greedy agent}
+A naive implementation would be to maximise utility by allocating all labels in the cluster(s) that have the highest expected utility.
+The expected utility of allocating all labels to a particular cluster $\eta$ is defined as:
+\begin{equation}
+\phi_{\eta} = \textbf{h}_{\eta} \cdot \mathop{\mathbb{E}}[U(\textbf{u}, \mathbf{y}, \theta, c)] = \textbf{h}_{\eta} \cdot (\mathop{\mathbb{E}}[\textbf{u}] \times (\textbf{y} \times \theta) - c\theta)
+\end{equation}
+
+Where the matrix $\textbf{H} \in {\{0,1\}}^{nk}$ contains the masks for each cluster, $K_\eta \subset \mathcal{K}$, i.e.:
+\begin{equation}
+h_{i,\eta}=
+\begin{dcases}
+1,& \text{if } \textbf{x}_{i} \in K_\eta\\
+0, & \text{otherwise}
+\end{dcases}
+\end{equation}
+with $i \in \{0,\ldots,n-1\},~\eta \in \{1, \ldots, k\}$.\\
+
+\subsection*{ADW-MAB}
+Rough idea:
+\begin{enumerate}
+  \item Determine the number of clusters (Information K-means, $\ldots$)
+  \item Determine the windows size dependent of measure of change (Adaptive windowing | ADWIN, $\ldots$)
+  \item Determine optimal allocation label (Multi-armed Bandit, $\ldots$)
+\end{enumerate}
