@@ -17,11 +17,11 @@ Compute the optimal allocation of labels acquisitions that maximize, under resou
 \begin{itemize}
 \item Let $\mathbf{X} \in \mathbb{R}^{nm}$ be the observed data.
 \item Let $\textbf{f} \in \mathbb{R}^{m}$ be the vector of features.
-\item Let $\textbf{H} \in \{0,1\}^{nk_{t}}$ be the cluster mask.
-\item Let $\textbf{y} \in \{0,1\}^n$ be the vector of true labels.
-\item Let $\theta \in \{0,1\}^n$ be the vector of acquired labels.
+\item Let $\textbf{H} \in {\{0,1\}}^{nk_{t}}$ be the cluster mask.
+\item Let $\textbf{y} \in {\{0,1\}}^n$ be the vector of true labels.
+\item Let $\theta \in {\{0,1\}}^n$ be the vector of acquired labels.
 \item Let $\mathcal{K}_{t}$ be the set of clusters of size $k_{t}$ at time $t$.
-\item Let $\textbf{k} \in \{1,2,\ldots,n\}^{t}$ be the vector of optimal number of clusters.
+\item Let $\textbf{k} \in {\{1,2,\ldots,n\}}^{t}$ be the vector of optimal number of clusters.
 \item Let $\textbf{u} \in \mathbb{R}^{n}\sim LN(\mu, \sigma)$ the vector of utility earned by detecting fraud drawn from a log-normal distribution.
 \end{itemize}
 \subsubsection*{Information K-means}
@@ -46,7 +46,7 @@ U(\textbf{u}, \mathbf{y}, \theta, c) = \textbf{u} \times (\textbf{y} \times \the
 \end{equation}
 
 \subsubsection*{Revenue}
-In order to determine the monetary gain of buying a label in a particular cluster we calculate the expected revenue of allocating all labels to a particular cluster. The matrix $\textbf{H} \in \{0,1\}^{nk}$ contains the masks for each cluster, $K_\eta \subset \mathcal{K} \text{ where } $, i.e.:
+In order to determine the monetary gain of buying a label in a particular cluster we calculate the expected revenue of allocating all labels to a particular cluster. The matrix $\textbf{H} \in {\{0,1\}}^{nk}$ contains the masks for each cluster, $K_\eta \subset \mathcal{K} \text{ where } $, i.e.:
 \begin{equation}
 h_{i,\eta}=
 \begin{dcases}
@@ -60,5 +60,15 @@ The expected revenue for cluster $\eta$ is defined as:
 \begin{equation}
 \pi_{\eta} = \textbf{h}_{\eta} \cdot \mathop{\mathbb{E}}[U(\textbf{u}, \mathbf{y}, \theta, c)] = \textbf{h}_{\eta} \cdot (\mathop{\mathbb{E}}[\textbf{u}] \times (\textbf{y} \times \theta) - c\theta)
 \end{equation}
+
+
+\subsubsection*{ADW-MAB}
+Rough idea:
+\begin{enumerate}
+  \item Determine the number of clusters (Information K-means, $\ldots$)
+  \item Determine the windows size dependent of measure of change (Adaptive windowing - ADWIN, $\ldots$)
+  \item Determine optimal allocation label (Multi-armed Bandit, $\ldots$)
+\end{enumerate}
+
 \end{document}
 
