@@ -89,6 +89,7 @@ class GetNewMetric:
 
         try:
             predictions = model.predict(data)
+            model_hist = model.train_on_batch(data, labels)
         except TypeError:
             w1, b1, w2, b2 = weights
             predictions = model.predict(data, w1, b1, w2, b2)
@@ -124,6 +125,7 @@ class GetNewMetric:
 
         try:
             predictions = model.predict(data)
+            model_hist  = model.train_on_batch(data, labels)
         except TypeError:
             w1, b1, w2, b2 = weights
             predictions = model.predict(data, w1, b1, w2, b2)
@@ -159,6 +161,7 @@ class GetNewMetric:
 
         try:
             predictions = model.predict(data)
+            model_hist = model.train_on_batch(data, labels)
         except TypeError:
             w1, b1, w2, b2 = weights
             predictions = model.predict(data, w1, b1, w2, b2)

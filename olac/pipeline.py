@@ -562,6 +562,7 @@ class NaieveLabeller(LabellerBase):
 
         return labelled_points, unlabelled_points
 
+
 class GridPredictor():
     """
     Mixin class to add a grid predictor to your base predictor class. The

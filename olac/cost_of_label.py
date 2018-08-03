@@ -46,6 +46,7 @@ def cost_of_label(data, decision, data_type='array', salary=-1.5):
         return np.array(df['cost'])
 
 
+# --- this function is not used at the moment but will be needed
 def cost_investigation_eval(data_point, decision, salary=-1.0, fraud_label=1):
     """
     Function that looks at the data is there fraud or not compared to what the model predicts.
