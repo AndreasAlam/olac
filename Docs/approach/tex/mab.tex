@@ -1,3 +1,4 @@
+In the context of this problem a cluster will be seen as the arm where we know the number of points contained in the cluster but do not know their yield.
 \subsection*{Greedy agent}
 A naive implementation would be to maximise utility by allocating all labels in the cluster(s) that have the highest expected utility.
 The expected utility of allocating all labels to a particular cluster $\eta$ is defined as:
@@ -22,3 +23,24 @@ Rough idea:
   \item Determine the windows size dependent of measure of change (Adaptive windowing | ADWIN, $\ldots$)
   \item Determine optimal allocation label (Multi-armed Bandit, $\ldots$)
 \end{enumerate}
+
+\textbf{Problem 1}\\
+\textit{How do we handle observations that that fall out the current clusters, i\.e\. anomalies at time $t$.?}\\[3mm]
+
+\textbf{Problem 2}\\
+\textit{When exploring how can we improve upon random selection of labels to aquire?}\\
+
+\begin{itemize}
+  \item Furthest from K (FFK)\\
+    Select the point that is furthest from any known centroid?
+  \item Mixed entropy and distance | MEAD\\
+
+    Let $tl$ denote the target label, the label that will be acquired.\\
+    Let $\Delta$ denote the distance of the potential label from (a/any centroid).\\
+    Let $S$ denote the entropy gained from the label of the potential point.\\
+    Let $u_{i}\sim U(0, 1)$ be a draw from a uniform distribution.
+    \begin{equation}
+      P(\theta_{i} = 1 | \Delta, S) = \text{softmax}{((c_0 \Delta \cdot c_1 S) \cdot \textbf{u})}_{i}~\forall i \in \{0, n-1\}
+    \end{equation}
+    Where $\Delta \in \mathbb{R}^{nk}$, $S \in \mathbb{R}^{k}$, $0 \leq i < n$ and $1 \leq \eta \leq k$.
+\end{itemize}
