@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from scipy.stats import poisson
 import time
 
@@ -376,4 +377,62 @@ def scaling_generator(data_generator, x_min, x_max, dp0=0, dp1=1):
     for point in data_generator:
         point[:2] -= x_shift
         point[:2] = dp[0] + (point[:2] - x_min)*(dp[1] - dp[0])/(x_max - x_min)
+        yield point
+
+
+def generator_from_csv(path, data_columns, label_column, n_points=None, **args):
+    """
+    A wrapper around a dataset to output it as a generator.
+
+    Parameters
+    ----------
+    path: str
+        Path to the file
+
+    data_columns: list
+        List of stings of the columns containing the datapoint values
+
+    label_columns: str
+        name of the label columns
+
+    n_points: int
+        number of points to return from the dataset
+    """
+    data_columns.append(label_column)
+    type_dict = {'xlsx': 'excel', 'csv': 'csv'}
+    filetype = path.split('.')[-1]
+    data = getattr(pd, 'read_' + type_dict[filetype])(path, **args)
+    if n_points is None:
+        n_points = len(data)
+    data = data.loc[:n_points, data_columns]
+
+    for point in data.values:
+        yield point
+
+
+def generator_from_df(data, data_columns=None, label_column=None, n_points=None):
+    """
+    A wrapper around a dataset to output it as a generator.
+
+    Parameters
+    ----------
+    data: pandas DataFrame
+        pandas data frame containing the data and label columns
+
+    data_columns: list
+        List of stings of the columns containing the datapoint values.
+        If none it is assumed the first two columns are the values.
+
+    label_columns: str
+        name of the label columns. If none it is assumed the last column is the label
+
+    n_points: int
+        number of points to return from the dataset
+    """
+    try:
+        data = data.loc[:n_points, data_columns]
+    except TypeError:
+        pass
+
+    for point in data.values:
         yield point
