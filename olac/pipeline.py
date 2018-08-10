@@ -385,7 +385,6 @@ class OnlinePredictor(PredictorBase):
         super().__init__()
         self.verbose = verbose
 
-
     def train_condition(self, pipeline,):
         """Train anytime there are points available in the training queue"""
         return not pipeline.training_queue.empty()
@@ -562,6 +561,7 @@ class NaieveLabeller(LabellerBase):
 
         return labelled_points, unlabelled_points
 
+
 class GridPredictor():
     """
     Mixin class to add a grid predictor to your base predictor class. The
@@ -570,11 +570,11 @@ class GridPredictor():
     which can be used to plot the decision boundary.
     """
     def get_grid(self):
-        gridpoints = np.linspace(0, 1, 250)
+        gridpoints = np.linspace(-10, 10, 250)
         grid = []
         for y in gridpoints:
             for x in gridpoints:
-                grid.append([x,y])
+                grid.append([x, y])
         return np.array(grid)
 
     def grid_predict(self, pipeline):
@@ -646,4 +646,5 @@ class OfflinePredictor(GridPredictor, PredictorBase):
             prob = np.nan
 
         return y_pred, prob
+
 

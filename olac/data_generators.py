@@ -348,3 +348,32 @@ def delayed_generator(data_generator, delay, precision=1e-3):
         yield point
         start = time.time()
 
+
+def scaling_generator(data_generator, x_min, x_max, dp0=0, dp1=1):
+    """
+    A wrapper to scale the output of the data generators. In pricnuiple they
+    should be between -1 and -1 for the most optimal performance of the model.
+    However, most of our data generators are on different scales, so this warpper
+    takes that output and rescales it to 0 and 1.
+
+    Parameters
+    ----------
+    data_generator: iterable
+        The generator whose output to delay
+
+    x_min: float
+        Lowest value of the scale on which the data point should be
+
+    x_max: float
+        Highest value of the scale on which the data point should be
+        """
+
+    x_shift = x_min
+
+    dp = np.array((dp0, dp1))
+    x_min -= x_shift
+    x_max -= x_shift
+    for point in data_generator:
+        point[:2] -= x_shift
+        point[:2] = dp[0] + (point[:2] - x_min)*(dp[1] - dp[0])/(x_max - x_min)
+        yield point
