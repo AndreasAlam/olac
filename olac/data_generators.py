@@ -52,6 +52,7 @@ def rand_walk(start=0, steps=1000, batch=False, rvs_func=np.random.normal, **kwa
 ########################################################################################################################
 
 
+
 def roving_balls(balls=2, steps=1000, period=1000, radius=5, vars=1,
                  center=(0, 0,)):
     """
@@ -186,7 +187,7 @@ def cluster_generator(n_clusters=5, n_points=1000, slider='poisson',  cluster_wi
             Determines when the sliding probabilities will stop
 
         Yields
-        -------
+        ------
         np.array
             points which will occur in time with a label and position
 
@@ -225,9 +226,10 @@ def cluster_generator(n_clusters=5, n_points=1000, slider='poisson',  cluster_wi
     # keeps track of the
     def p_time_poisson(centers, dt, end_time):
         """
-        This function generates the behavior of the probabilities over time. In this case is a moving poission
-        distribution used. The mean of the poission moves along a linear axis in time. For each step in time a point of
-        a cluster is generated.
+        This function generates the behavior of the probabilities over time. In this case a moving poission
+        distribution is used. The mean of the poission moves along a linear axis in time.
+        For each step in time a point of a cluster is generated.
+
         Parameters
         ----------
         centers: np.array
@@ -238,7 +240,7 @@ def cluster_generator(n_clusters=5, n_points=1000, slider='poisson',  cluster_wi
             Determines when the sliding probabilities will stop
 
         Yields
-        -------
+        ------
         np.array
             points which will occur in time with a label and position
 

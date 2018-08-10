@@ -51,22 +51,23 @@ def rotation_matrix(theta: float):
 
 
 def set_path(level=1, change_path=True):
-    """Set the path to the olac/olac directory or insert it in the path.
+    """
+    Set the path to the olac/olac directory or insert it in the path.
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     level : int
-            The number of levels you are removed from the olac parent
-            directory. Maximum of two levels are implemented.
+        The number of levels you are removed from the olac parent
+        directory. Maximum of two levels are implemented.
 
     change_path : boolean
-                  True - Change the working directory
-                  False - Inset the path to the python path
+        True - Change the working directory
+        False - Inset the path to the python path
 
-    Returns:
-    --------
+    Returns
+    -------
     None : nonetype
-           The function does not return anything
+        The function does not return anything
     """
     if level == 1:
         base = os.path.normpath(os.getcwd() + os.sep + os.pardir)
@@ -82,6 +83,18 @@ def set_path(level=1, change_path=True):
     else:
         sys.path.insert(0, base)
     return(None)
+
+
+def data_prep(X):
+    """
+    Prepare data points for input in keras model. For now it just scales.
+
+    Parameters
+    ----------
+    X : ndarray
+        Input points
+    """
+    return X/np.max(np.abs(X))
 
 
 def queue_point_list_to_df(qp_list):
