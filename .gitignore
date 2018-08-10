@@ -119,6 +119,7 @@ activate
 
 # Shortcuts
 github
+activate
 
 # Ignore local articles
 articles
@@ -128,3 +129,6 @@ articles
 
 # Pyenv config
 pyenv.cfg
+
+# Misc notebooks
+*Untitled*.ipynb
