@@ -6,7 +6,10 @@ import matplotlib.pyplot as plt
 
 from . import maths as mf
 from . import utils as ut
-import imageio
+
+# [RU] imported but unused
+# import imageio
+
 # [RU] imported but unused
 # from olac.perceptron import Perceptron as pc
 
@@ -182,7 +185,7 @@ def get_fun_map(xlim, ylim, weights, MODEL):
         for nn, ii in enumerate(x1):
             for mm, jj in enumerate(x2):
                 fun_map[mm, nn] = MODEL.predict([ii, jj], w1, b1, w2, b2)
-    
+
     except TypeError:
         x1 = np.linspace(xlim[0], xlim[1], 100)
         x2 = np.linspace(ylim[0], ylim[1], 100)

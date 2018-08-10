@@ -1,5 +1,6 @@
-import numpy as np
 import math
+import numpy as np
+# [RU] Why use the built-in random lib when you have np already loaded
 from random import random
 
 
