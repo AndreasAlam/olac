@@ -1,10 +1,13 @@
 import multiprocessing.dummy as mp
-import pandas as pd
+# [RU] imported but unused
+# import pandas as pd
 import numpy as np
 import sklearn
-import time
+# [RU] imported but unused
+# import time
 
-from . import utils
+# [RU] imported but unused
+# from . import utils
 
 from queue import Queue
 
@@ -383,7 +386,6 @@ class OnlinePredictor(PredictorBase):
         """
         super().__init__()
         self.verbose = verbose
-
 
     def train_condition(self, pipeline,):
         """Train anytime there are points available in the training queue"""

@@ -1,6 +1,6 @@
+import time
 import numpy as np
 from scipy.stats import poisson
-import time
 
 from .maths import rotation_matrix
 
@@ -50,7 +50,6 @@ def rand_walk(start=0, steps=1000, batch=False, rvs_func=np.random.normal, **kwa
             yield tmp
             alpha = tmp
 ########################################################################################################################
-
 
 
 def roving_balls(balls=2, steps=1000, period=1000, radius=5, vars=1,
@@ -347,4 +346,3 @@ def delayed_generator(data_generator, delay, precision=1e-3):
 
         yield point
         start = time.time()
-

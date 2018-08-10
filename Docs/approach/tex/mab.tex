@@ -1,0 +1,46 @@
+In the context of this problem a cluster will be seen as the arm where we know the number of points contained in the cluster but do not know their yield.
+\subsection*{Greedy agent}
+A naive implementation would be to maximise utility by allocating all labels in the cluster(s) that have the highest expected utility.
+The expected utility of allocating all labels to a particular cluster $\eta$ is defined as:
+\begin{equation}
+\phi_{\eta} = \textbf{h}_{\eta} \cdot \mathop{\mathbb{E}}[U(\textbf{u}, \mathbf{y}, \theta, c)] = \textbf{h}_{\eta} \cdot (\mathop{\mathbb{E}}[\textbf{u}] \times (\textbf{y} \times \theta) - c\theta)
+\end{equation}
+
+Where the matrix $\textbf{H} \in {\{0,1\}}^{nk}$ contains the masks for each cluster, $K_\eta \subset \mathcal{K}$, i.e.:
+\begin{equation}
+h_{i,\eta}=
+\begin{dcases}
+1,& \text{if } \textbf{x}_{i} \in K_\eta\\
+0, & \text{otherwise}
+\end{dcases}
+\end{equation}
+with $i \in \{0,\ldots,n-1\},~\eta \in \{1, \ldots, k\}$.\\
+
+\subsection*{ADW-MAB}
+Rough idea:
+\begin{enumerate}
+  \item Determine the number of clusters (Information K-means, $\ldots$)
+  \item Determine the windows size dependent of measure of change (Adaptive windowing | ADWIN, $\ldots$)
+  \item Determine optimal allocation label (Multi-armed Bandit, $\ldots$)
+\end{enumerate}
+
+\textbf{Problem 1}\\
+\textit{How do we handle observations that that fall out the current clusters, i\.e\. anomalies at time $t$.?}\\[3mm]
+
+\textbf{Problem 2}\\
+\textit{When exploring how can we improve upon random selection of labels to aquire?}\\
+
+\begin{itemize}
+  \item Furthest from K (FFK)\\
+    Select the point that is furthest from any known centroid?
+  \item Mixed entropy and distance | MEAD\\
+
+    Let $tl$ denote the target label, the label that will be acquired.\\
+    Let $\Delta$ denote the distance of the potential label from (a/any centroid).\\
+    Let $S$ denote the entropy gained from the label of the potential point.\\
+    Let $u_{i}\sim U(0, 1)$ be a draw from a uniform distribution.
+    \begin{equation}
+      P(\theta_{i} = 1 | \Delta, S) = \text{softmax}{((c_0 \Delta \cdot c_1 S) \cdot \textbf{u})}_{i}~\forall i \in \{0, n-1\}
+    \end{equation}
+    Where $\Delta \in \mathbb{R}^{nk}$, $S \in \mathbb{R}^{k}$, $0 \leq i < n$ and $1 \leq \eta \leq k$.
+\end{itemize}
