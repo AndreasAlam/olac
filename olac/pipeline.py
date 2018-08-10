@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import sklearn
 import time
+from . import cost_of_label
 
 from . import utils
 
@@ -496,6 +497,71 @@ class ThresholdLabeller(LabellerBase):
         return labelled_points, unlabelled_points
 
 
+class NaieveLabeller(LabellerBase):
+    """ A Naieve labeller which decides on how to get the labels randomly. Also is the function to determine the
+    cost of investigating a certain datapoint implemented. The costs per investigation round are kept track of in the
+    inherited list : cost_of_points.
+
+    """
+
+    def __init__(self, threshold, decider, decider_args=tuple(), decider_kwargs=dict()):
+        """
+
+        Parameters
+        ----------
+        threshold: The minimum number of points to trigger a batch of labelling
+        decider: the function that decides wheter to buy or not to buy a label of a certain point
+        decider_args: args of decider function
+        decider_kwargs: kwargs of decider function
+        """
+        super().__init__()
+        self.threshold = threshold
+        self.decider = decider
+        self.decider_args = decider_args
+        self.decider_kwargs = decider_kwargs
+        self.labels_bought = 0
+        self.cost_points = []
+
+    def buy_labels_condition(self, pipeline, ):
+        """Buy labels if the labelling_queue is longer than the threshold."""
+        n = pipeline.labelling_queue.qsize()
+        if n > self.threshold:
+            print(f'Labeller:\tThreshold met, {n} new points avaible in queue')
+            return True
+        else:
+            return False
+
+    def buy_labels(self, pipeline, ):
+        """Get all the points from the labelling queue and label them according to the decissions made in the decider
+         function. Optional is to replace the decider function with a more advanced decider function. The function
+
+          Returns
+          -------
+          array of labelled_points, unlabelled_points"""
+        labelled_points = []
+        unlabelled_points = []
+
+        # Get all the points from the queue (queue will now be empty)
+        points = pipeline.labelling_queue.get_all()
+
+        # use the decider function to create a list of which points to investigate an which not
+        decider = self.decider(self, points, *self.decider_args, **self.decider_kwargs)
+
+        # calculate the cost of the investigation
+        cost = cost_of_label.cost_of_label(data=points, decision=decider, salary=-1.5, data_type='array')
+
+        # store the data points
+        for i, point in enumerate(points):
+            if decider[i] == 1:
+                labelled_points.append(point)
+            else:
+                unlabelled_points.append(point)
+
+        self.cost_points += [cost.sum()]
+        print(f'Labeller:\tLabelled {len(labelled_points)} new points')
+
+        return labelled_points, unlabelled_points
+
 class GridPredictor():
     """
     Mixin class to add a grid predictor to your base predictor class. The
@@ -523,13 +589,7 @@ class OfflinePredictor(GridPredictor, PredictorBase):
 
     """
     def __init__(self, batch_size):
-        """
 
-        Parameters
-        ----------
-        threshold: The minimum number of points to trigger a batch of labelling
-        prob: The probability with which each point will recieve a label.
-        """
         self.batch_size = batch_size
         self.grid = self.get_grid()
         self.hist_grid = []
@@ -586,3 +646,4 @@ class OfflinePredictor(GridPredictor, PredictorBase):
             prob = np.nan
 
         return y_pred, prob
+
