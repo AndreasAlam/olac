@@ -210,7 +210,7 @@ class Pipeline():
 
         return training_set, eval_set
 
-    def decribe(pipeline):
+    def describe(pipeline):
         """
         Describe the pipeline
         """
