@@ -624,6 +624,7 @@ class OfflinePredictor(GridPredictor, PredictorBase):
         self.grid = self.get_grid()
         self.hist_grid = []
         self.historic_points = []
+        self.npoints = []
 
     def train_condition(self, pipeline, ):
         """Train anytime there are batch_size points in the queue"""
@@ -660,9 +661,11 @@ class OfflinePredictor(GridPredictor, PredictorBase):
         Make a prediction. If the model has not yet been fit (burn-in phase),
         return NaNs.
         """
+        self.npoints.append(1)
         try:
             y_pred = pipeline.model.predict([x])
-            self.hist_grid.append(self.grid_predict(pipeline))
+            if len(self.npoints) % self.batch_size == 0:
+                self.hist_grid.append(self.grid_predict(pipeline))
             if hasattr(pipeline.model, 'predict_proba'):
                 prob = pipeline.model.predict_proba([x])
             elif hasattr(pipeline.model, 'decision_function'):
