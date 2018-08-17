@@ -3,6 +3,7 @@ import os
 import sys
 import pandas as pd
 import numpy as np
+import warnings
 
 
 def dim_correct(x, axis=1):
@@ -154,3 +155,71 @@ def queue_point_list_to_df(qp_list):
     df = df.sort_index()
 
     return df
+
+
+def get_params(cls, deep=True):
+    """Get parameters for this estimator.
+
+    Parameters
+    ----------
+    deep : boolean, optional
+        If True, will return the parameters for this estimator and
+        contained subobjects that are estimators.
+
+    Returns
+    -------
+    params : mapping of string to any
+        Parameter names mapped to their values.
+    """
+
+    def _get_param_names(cls):
+        import sklearn
+        """Get parameter names for the estimator
+        Taken from sklearn
+        """
+        # fetch the constructor or the original constructor before
+        # deprecation wrapping if any
+        init = getattr(cls.__init__, 'deprecated_original', cls.__init__)
+        if init is object.__init__:
+            # No explicit constructor to introspect
+            return []
+
+        # introspect the constructor arguments to find the model parameters
+        # to represent
+        init_signature = sklearn.utils.fixes.signature(init)
+        # Consider the constructor parameters excluding 'self'
+        parameters = [p for p in init_signature.parameters.values()
+                      if p.name != 'self' and p.kind != p.VAR_KEYWORD]
+        for p in parameters:
+            if p.kind == p.VAR_POSITIONAL:
+                raise RuntimeError("scikit-learn estimators should always "
+                                   "specify their parameters in the signature"
+                                   " of their __init__ (no varargs)."
+                                   " %s with constructor %s doesn't "
+                                   " follow this convention."
+                                   % (cls, init_signature))
+        # Extract and sort argument names excluding 'self'
+        return sorted([p.name for p in parameters])
+
+    out = dict()
+    for key in _get_param_names(cls):
+        # We need deprecation warnings to always be on in order to
+        # catch deprecated param values.
+        # This is set in utils/__init__.py but it gets overwritten
+        # when running under python3 somehow.
+        warnings.simplefilter("always", DeprecationWarning)
+        try:
+            with warnings.catch_warnings(record=True) as w:
+                value = getattr(cls, key, None)
+            if len(w) and w[0].category == DeprecationWarning:
+                # if the parameter is deprecated, don't show it
+                continue
+        finally:
+            warnings.filters.pop(0)
+
+        # XXX: should we rather test if instance of estimator?
+        if deep and hasattr(value, 'get_params'):
+            deep_items = value.get_params().items()
+            out.update((key + '__' + k, val) for k, val in deep_items)
+        out[key] = value
+    return out

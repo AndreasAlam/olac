@@ -2,7 +2,8 @@ import multiprocessing.dummy as mp
 import pandas as pd
 import numpy as np
 import sklearn
-import time
+import re
+import pprint
 from . import cost_of_label
 
 from . import utils
@@ -208,6 +209,30 @@ class Pipeline():
                 self.training_queue.put_all(labelled_points)
 
         return training_set, eval_set
+
+    def decribe(pipeline):
+        """
+        Describe the pipeline
+        """
+        for thing in ['model', 'predictor', 'labeller', 'data_generator']:
+            if thing == 'data_generator':
+                print('='*20)
+                print("{}:\n{}\n  {}\n".format(thing.capitalize(),
+                                               '='*20,
+                                               pipeline.__getattribute__(thing).__name__))
+
+            else:
+                print('='*20)
+                print("{}:\n{}\n  {}\n".format(thing.capitalize(),
+                                               '='*20,
+                                               '\n  '.join(
+                                        re.findall('(?<=\.)\w+',
+                                                   str(pipeline.__getattribute__(thing).__class__)))))
+
+                print('Parameters:  ')
+                pprint.pprint(utils.get_params(pipeline.__getattribute__(thing)), indent=2)
+                print()
+        print('-'*80)
 
 
 class PredictorBase():
@@ -646,5 +671,4 @@ class OfflinePredictor(GridPredictor, PredictorBase):
             prob = np.nan
 
         return y_pred, prob
-
 
