@@ -4,6 +4,7 @@ import numpy as np
 import sklearn
 import re
 import pprint
+import inspect
 from . import cost_of_label
 
 from . import utils
@@ -220,6 +221,10 @@ class Pipeline():
                 print("{}:\n{}\n  {}\n".format(thing.capitalize(),
                                                '='*20,
                                                pipeline.__getattribute__(thing).__name__))
+                print('Generator status: ', inspect.getgeneratorstate(
+                    pipeline.__getattribute__(thing)))
+                pprint.pprint(inspect.getgeneratorlocals(
+                    pipeline.__getattribute__(thing)))
 
             else:
                 print('='*20)
