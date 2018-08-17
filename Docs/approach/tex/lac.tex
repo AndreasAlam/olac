@@ -1,0 +1,47 @@
+\documentclass[paper=a4, fontsize=12pt]{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage[english]{babel} % English language/hyphenation
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs - comment this line for an assignment with lots of text
+
+\begin{document}
+\strut\\[0.8cm]
+\begin{center}
+\Large{\textbf{OLAC}\\
+- \\
+\textbf{Label Buying Decision Engine}}\\[5mm]
+\normalsize
+\end{center}
+
+\vfill
+\hfill Ralph Urlus | urlus.ralph@kpmg.nl
+\thispagestyle{empty}
+
+\newpage
+\section*{Problem statement}
+\input{intro}
+
+\newpage
+\section*{Clustering}
+\input{clusters}
+
+\newpage
+\section*{Multi Armed Bandit}
+\input{mab}
+
+\newpage
+\section*{Definitions:}
+\begin{itemize}
+\item Let $\mathbf{X} \in \mathbb{R}^{nm}$ be the observed data.
+\item Let $\textbf{f} \in \mathbb{R}^{m}$ be the vector of features.
+\item Let $\textbf{H} \in {\{0,1\}}^{nk_{t}}$ be the cluster mask.
+\item Let $\textbf{y} \in {\{0,1\}}^n$ be the vector of true labels.
+\item Let $\theta \in {\{0,1\}}^n$ be the vector of acquired labels.
+\item Let $\mathcal{K}_{t}$ be the set of clusters of size $k_{t}$ at time $t$.
+\item Let $\textbf{k} \in {\{1,2,\ldots,n\}}^{t}$ be the vector of optimal number of clusters.
+\item Let $\textbf{u} \in \mathbb{R}^{n}\sim LN(\mu, \sigma)$ the vector of utility earned by detecting fraud drawn from a log-normal distribution.
+\end{itemize}
+\end{document}

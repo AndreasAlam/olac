@@ -121,6 +121,10 @@ activate
 
 # Shortcuts
 github
+activate
+
+# Ignore local articles
+articles
 
 # Pyenv version
 .python-version
@@ -128,3 +132,5 @@ github
 # Pyenv config
 pyenv.cfg
 
+# Misc notebooks
+*Untitled*.ipynb

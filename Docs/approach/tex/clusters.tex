@@ -1,0 +1,13 @@
+\subsubsection*{Information K-means}
+For each block of time $t$, $t \in \mathbb{Z}$, the newly observed data is compared to the historical data and evaluate whether the number of clusters needs to be adjusted.\\
+Let $k_{t} = f(\textbf{f})$; where $g$ is a function that approximates the optimal number of clusters.
+Let $\mathcal{K}_{t} = f(k_{t}, \textbf{X})$ where $f$ is the K-means algorithm that approximates the optimal centroid location and assignment of data points.\\
+
+\noindent\textit{cluster assignment}:
+\begin{equation}
+K_{\eta}^{(q)} = \{x_i~:~\lVert x_i - m_{\eta} \rVert^{2} \leq \lVert x_i - m_{j} \rVert^{2}~\forall~j, 1 \leq j \leq k\}
+\end{equation}
+\textit{centroid update}:
+\begin{equation}
+m_{\eta}^{(q + 1)} = \frac{1}{\lvert K_{\eta}^{(q)}\rvert}\sum_{x_{i} \in K_{\eta}^{(q)}} x_{i}
+\end{equation}

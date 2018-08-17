@@ -2,6 +2,8 @@
 import os
 import sys
 import pandas as pd
+
+import scipy.stats
 import numpy as np
 import warnings
 
@@ -42,7 +44,8 @@ def rotation_matrix(theta: float):
 
     Returns
     -------
-    The 2x2 rotation matrix
+    numpy.ndarray : The 2x2 rotation matrix
+<<<<<<< HEAD
 
     """
     import warnings
@@ -50,6 +53,215 @@ def rotation_matrix(theta: float):
     warnings.warn("The 'utils.rotation_matrix' method is deprecated, "
                   "use maths.rotation_matrix(theta: float) instead")
     return mf.rotation_matrix(theta)
+
+
+def unit_circle_points(n):
+    """
+    Create `n` points evenly spaced around the unit circle.
+
+    Parameters
+    ----------
+    n : int
+        The number of points
+
+    Returns
+    -------
+    numpy.ndarray : the generated points, shape (n, 2)
+=======
+
+    """
+    points = np.zeros(shape=(n, 2))
+    points[0, 0] = 1  # first point at (1, 0)
+    rot = rotation_matrix(2 * np.pi / n)
+
+    for i in range(1, n):
+        # rotate by a fixed amount from the previous point
+        points[i, :] = points[i-1, :] @ rot
+
+    return points
+
+
+def slide_probability_over_list(num_iterations, num_indices,
+                                transition_rate=0.1, var=1):
+    """
+    Slide a gaussian probability density function over list indices for drawing
+    numbers from a list.
+
+    The function numpy.random.choice allows for the random selection of items
+    from a list. Its `p` parameter allows to set a different probability for
+    each item. This function will generate a series of `p` arrays, such that
+    successive draws will see the probability for the elements differently
+    weighted. The weighting is done using a gaussian probability density
+    function which slides over the list positions. In successive iterations,
+    the probability shifts along the list with the rate given by
+    `transition_rate`.
+
+    Parameters
+    ----------
+    num_iterations : int
+        The number of probability distributions to generate. Set
+        to zero to generate infinitely.
+
+    num_indices : int
+        Length of the list for choosing from
+
+    transition_rate : float
+        Speed of sliding the gaussian. A rate of 1 implies that
+        the mean of the gaussian will shift by one index per iteration
+
+    var : float
+        The variance of the gaussian
+
+    Returns
+    -------
+    generator : A sequence of probability arrays
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> np.random.seed(1)
+    >>> # low variance to guarantee result
+    >>> for p in slide_probability_over_list(6, 3, 1, 0.1):
+    ...    np.random.choice([1,2,3], p=p)
+    1
+    2
+    3
+    1
+    2
+    3
+
+    """
+    loc = 0  # initial location of gaussian
+
+    # make a long list to catch the tails of the distribution that would
+    # otherwise go past the edges of the list
+    base = np.arange(-num_indices, 2 * num_indices)
+
+    # go forever if num_indices = 0
+    def cond(i):
+        if num_iterations:
+            return i < num_iterations
+        else:
+            return True
+
+    i = 0
+    while cond(i):
+        p = scipy.stats.norm.pdf(base, loc=loc % num_indices, scale=var)
+        p = p / p.sum()  # normalize the distribution
+
+        # wrap the tail of the distribution around the edges of the list
+        p_wrapped = p[:num_indices] \
+                    + p[num_indices:2 * num_indices] \
+                    + p[2 * num_indices:]
+
+        yield p_wrapped
+
+        loc += transition_rate
+        i += 1
+
+
+def unit_circle_points(n):
+    """
+    Create `n` points evenly spaced around the unit circle.
+
+    Parameters
+    ----------
+    n : int
+        The number of points
+
+    Returns
+    -------
+    numpy.ndarray : the generated points, shape (n, 2)
+
+    """
+    points = np.zeros(shape=(n, 2))
+    points[0, 0] = 1  # first point at (1, 0)
+    rot = rotation_matrix(2 * np.pi / n)
+
+    for i in range(1, n):
+        # rotate by a fixed amount from the previous point
+        points[i, :] = points[i-1, :] @ rot
+
+    return points
+
+
+def slide_probability_over_list(num_iterations, num_indices,
+                                transition_rate=0.1, var=1):
+    """
+    Slide a gaussian probability density function over list indices for drawing
+    numbers from a list.
+
+    The function numpy.random.choice allows for the random selection of items
+    from a list. Its `p` parameter allows to set a different probability for
+    each item. This function will generate a series of `p` arrays, such that
+    successive draws will see the probability for the elements differently
+    weighted. The weighting is done using a gaussian probability density
+    function which slides over the list positions. In successive iterations,
+    the probability shifts along the list with the rate given by
+    `transition_rate`.
+
+    Parameters
+    ----------
+    num_iterations : int
+        The number of probability distributions to generate. Set
+        to zero to generate infinitely.
+
+    num_indices : int
+        Length of the list for choosing from
+
+    transition_rate : float
+        Speed of sliding the gaussian. A rate of 1 implies that
+        the mean of the gaussian will shift by one index per iteration
+
+    var : float
+        The variance of the gaussian
+
+    Returns
+    -------
+    generator : A sequence of probability arrays
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> np.random.seed(1)
+    >>> # low variance to guarantee result
+    >>> for p in slide_probability_over_list(6, 3, 1, 0.1):
+    ...    np.random.choice([1,2,3], p=p)
+    1
+    2
+    3
+    1
+    2
+    3
+
+    """
+    loc = 0  # initial location of gaussian
+
+    # make a long list to catch the tails of the distribution that would
+    # otherwise go past the edges of the list
+    base = np.arange(-num_indices, 2 * num_indices)
+
+    # go forever if num_indices = 0
+    def cond(i):
+        if num_iterations:
+            return i < num_iterations
+        else:
+            return True
+
+    i = 0
+    while cond(i):
+        p = scipy.stats.norm.pdf(base, loc=loc % num_indices, scale=var)
+        p = p / p.sum()  # normalize the distribution
+
+        # wrap the tail of the distribution around the edges of the list
+        p_wrapped = p[:num_indices] \
+                    + p[num_indices:2 * num_indices] \
+                    + p[2 * num_indices:]
+
+        yield p_wrapped
+
+        loc += transition_rate
+        i += 1
 
 
 def set_path(level=1, change_path=True):
