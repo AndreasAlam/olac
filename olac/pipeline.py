@@ -496,3 +496,77 @@ class ThresholdLabeller(LabellerBase):
             print(f'Labeller:\tLabelled {len(labelled_points)} new points')
 
         return labelled_points, unlabelled_points
+
+
+class DaRLabeller(LabellerBase):
+    """A placeholder labeller that is Dumb as Rocks (DaR) because of the whole `agile`
+    working thing people keep harping on about.
+
+    The total number of labels purchased is tracked using an internal
+    property. This could be used for budgeting.
+
+    """
+    def __init__(self, threshold, prob, verbose=True):
+
+        """
+
+        Parameters
+        ----------
+        threshold: int
+            The minimum number of points to trigger a batch of labelling
+
+        prob: float (<= 1)
+            The probability with which each point will receive a label
+
+        verbose: bool
+            Whether to print output when labelling
+        """
+        super().__init__()
+        self.threshold = threshold
+        self.prob = prob
+        self.verbose = verbose
+
+        self.labels_bought = 0
+
+    def optimise_learning_at_cost(self):
+        """
+
+        """
+
+    def buy_labels_condition(self, pipeline: Pipeline,):
+        """Buy labels if the labelling_queue is longer than the threshold."""
+        n = pipeline.labelling_queue.qsize()
+        if n > self.threshold:
+            if self.verbose:
+                print(
+                    f'Labeller:\tThreshold met, {n} new '
+                    'points available in queue'
+                )
+            return True
+        else:
+            return False
+
+    def buy_labels(self, pipeline: Pipeline,):
+        """Get all the points from the labelling queue and label them with
+        some probability.
+
+        EMAB GOES HERE
+        """
+
+        labelled_points = []
+        unlabelled_points = []
+
+        points = pipeline.labelling_queue.get_all()
+
+        for point in points:
+            # self.prob percent chance of being labelled
+            if np.random.uniform(0, 1) < self.prob:
+                self.labels_bought += 1
+                labelled_points.append(point)
+            else:
+                unlabelled_points.append(point)
+
+        if self.verbose:
+            print(f'Labeller:\tLabelled {len(labelled_points)} new points')
+
+        return labelled_points, unlabelled_points
