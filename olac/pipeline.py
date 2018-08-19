@@ -3,11 +3,15 @@ import multiprocessing.dummy as mp
 # import pandas as pd
 import numpy as np
 import sklearn
+import re
+import pprint
+import inspect
+from . import cost_of_label
+
 # [RU] imported but unused
 # import time
 
-# [RU] imported but unused
-# from . import utils
+from . import utils
 
 from queue import Queue
 
@@ -210,6 +214,34 @@ class Pipeline():
                 self.training_queue.put_all(labelled_points)
 
         return training_set, eval_set
+
+    def describe(pipeline):
+        """
+        Describe the pipeline
+        """
+        for thing in ['model', 'predictor', 'labeller', 'data_generator']:
+            if thing == 'data_generator':
+                print('='*20)
+                print("{}:\n{}\n  {}\n".format(thing.capitalize(),
+                                               '='*20,
+                                               pipeline.__getattribute__(thing).__name__))
+                print('Generator status: ', inspect.getgeneratorstate(
+                    pipeline.__getattribute__(thing)))
+                pprint.pprint(inspect.getgeneratorlocals(
+                    pipeline.__getattribute__(thing)))
+
+            else:
+                print('='*20)
+                print("{}:\n{}\n  {}\n".format(thing.capitalize(),
+                                               '='*20,
+                                               '\n  '.join(
+                                        re.findall('(?<=\.)\w+',
+                                                   str(pipeline.__getattribute__(thing).__class__)))))
+
+                print('Parameters:  ')
+                pprint.pprint(utils.get_params(pipeline.__getattribute__(thing)), indent=2)
+                print()
+        print('-'*80)
 
 
 class PredictorBase():
@@ -498,75 +530,156 @@ class ThresholdLabeller(LabellerBase):
         return labelled_points, unlabelled_points
 
 
-class DaRLabeller(LabellerBase):
-    """A placeholder labeller that is Dumb as Rocks (DaR) because of the whole `agile`
-    working thing people keep harping on about.
-
-    The total number of labels purchased is tracked using an internal
-    property. This could be used for budgeting.
+class NaieveLabeller(LabellerBase):
+    """ A Naieve labeller which decides on how to get the labels randomly. Also is the function to determine the
+    cost of investigating a certain datapoint implemented. The costs per investigation round are kept track of in the
+    inherited list : cost_of_points.
 
     """
-    def __init__(self, threshold, prob, verbose=True):
 
+    def __init__(self, threshold, decider, decider_args=tuple(), decider_kwargs=dict()):
         """
 
         Parameters
         ----------
-        threshold: int
-            The minimum number of points to trigger a batch of labelling
-
-        prob: float (<= 1)
-            The probability with which each point will receive a label
-
-        verbose: bool
-            Whether to print output when labelling
+        threshold: The minimum number of points to trigger a batch of labelling
+        decider: the function that decides wheter to buy or not to buy a label of a certain point
+        decider_args: args of decider function
+        decider_kwargs: kwargs of decider function
         """
         super().__init__()
         self.threshold = threshold
-        self.prob = prob
-        self.verbose = verbose
-
+        self.decider = decider
+        self.decider_args = decider_args
+        self.decider_kwargs = decider_kwargs
         self.labels_bought = 0
+        self.cost_points = []
 
-    def optimise_learning_at_cost(self):
-        """
-
-        """
-
-    def buy_labels_condition(self, pipeline: Pipeline,):
+    def buy_labels_condition(self, pipeline, ):
         """Buy labels if the labelling_queue is longer than the threshold."""
         n = pipeline.labelling_queue.qsize()
         if n > self.threshold:
-            if self.verbose:
-                print(
-                    f'Labeller:\tThreshold met, {n} new '
-                    'points available in queue'
-                )
+            print(f'Labeller:\tThreshold met, {n} new points avaible in queue')
             return True
         else:
             return False
 
-    def buy_labels(self, pipeline: Pipeline,):
-        """Get all the points from the labelling queue and label them with
-        some probability.
+    def buy_labels(self, pipeline, ):
+        """Get all the points from the labelling queue and label them according to the decissions made in the decider
+         function. Optional is to replace the decider function with a more advanced decider function. The function
 
-        EMAB GOES HERE
-        """
-
+          Returns
+          -------
+          array of labelled_points, unlabelled_points"""
         labelled_points = []
         unlabelled_points = []
 
+        # Get all the points from the queue (queue will now be empty)
         points = pipeline.labelling_queue.get_all()
 
-        for point in points:
-            # self.prob percent chance of being labelled
-            if np.random.uniform(0, 1) < self.prob:
-                self.labels_bought += 1
+        # use the decider function to create a list of which points to investigate an which not
+        decider = self.decider(self, points, *self.decider_args, **self.decider_kwargs)
+
+        # calculate the cost of the investigation
+        cost = cost_of_label.cost_of_label(data=points, decision=decider, salary=-1.5, data_type='array')
+
+        # store the data points
+        for i, point in enumerate(points):
+            if decider[i] == 1:
                 labelled_points.append(point)
             else:
                 unlabelled_points.append(point)
 
-        if self.verbose:
-            print(f'Labeller:\tLabelled {len(labelled_points)} new points')
+        self.cost_points += [cost.sum()]
+        print(f'Labeller:\tLabelled {len(labelled_points)} new points')
 
         return labelled_points, unlabelled_points
+
+
+class GridPredictor():
+    """
+    Mixin class to add a grid predictor to your base predictor class. The
+    class will add a get_grid and grid_predict method to your class,
+    that can be used to save model predictions done on a 250 by 250 grid
+    which can be used to plot the decision boundary.
+    """
+    def get_grid(self):
+        gridpoints = np.linspace(-10, 10, 250)
+        grid = []
+        for y in gridpoints:
+            for x in gridpoints:
+                grid.append([x, y])
+        return np.array(grid)
+
+    def grid_predict(self, pipeline):
+        l = int(np.sqrt(self.grid.shape[0]))
+        return pipeline.model.predict_proba(self.grid)[:, 0].reshape(l, l)
+
+
+class OfflinePredictor(GridPredictor, PredictorBase):
+    """A simple predictor for use with non-online models. The corresponding
+    pipeline.model should implement the partial_fit and the decision_function
+    or predict_proba methods.
+
+    """
+    def __init__(self, batch_size):
+
+        self.batch_size = batch_size
+        self.grid = self.get_grid()
+        self.hist_grid = []
+        self.historic_points = []
+        self.npoints = []
+
+    def train_condition(self, pipeline, ):
+        """Train anytime there are batch_size points in the queue"""
+        return pipeline.training_queue.qsize() >= self.batch_size
+
+    def train_pipeline_model(self, pipeline,):
+        """
+        Rertrain the model using all points available in the training queue
+        plus all the points you've come across before using pipeline.model.fit.
+        """
+        # Get the new points from the queue
+        new_points = pipeline.training_queue.get_all()  # training_queue is now empty
+        print(f'Predictor:\t{len(new_points)} new points available, re-training...')
+
+        # Stack the points as an array to add to historical points
+        add_points = np.vstack([np.hstack((p.point, p.true_label)) for p in new_points])
+        try:
+            # Get the historical points
+            self.historic_points = np.vstack((self.historic_points, add_points))
+        except ValueError:
+            # If no historic points yet, set first batch as historical points
+            self.historic_points = add_points
+
+        # Split into X and y
+        X_train = self.historic_points[:, :-1]
+        y_train = self.historic_points[:, -1]
+
+        # Train the model
+        pipeline.model.fit(X_train, y_train)
+        print("Trained model on {} points".format(len(self.historic_points)))
+
+    def do_prediction(self, pipeline, x,):
+        """
+        Make a prediction. If the model has not yet been fit (burn-in phase),
+        return NaNs.
+        """
+        self.npoints.append(1)
+        try:
+            y_pred = pipeline.model.predict([x])
+            if len(self.npoints) % self.batch_size == 0:
+                self.hist_grid.append(self.grid_predict(pipeline))
+            if hasattr(pipeline.model, 'predict_proba'):
+                prob = pipeline.model.predict_proba([x])
+            elif hasattr(pipeline.model, 'decision_function'):
+                prob = pipeline.model.decision_function([x])
+            else:
+                prob = np.nan
+
+        # Not trained yet, return nans
+        except sklearn.exceptions.NotFittedError:
+            y_pred = np.nan
+            prob = np.nan
+
+        return y_pred, prob

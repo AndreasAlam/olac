@@ -11,6 +11,7 @@ Welcome to olac's documentation!
    :caption: Contents:
 
    olac_docs
+   log
    olac
    modules
 

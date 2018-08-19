@@ -14,6 +14,87 @@ from . import utils as ut
 # from olac.perceptron import Perceptron as pc
 
 
+def performance(eval_data, train_data, window=10):
+    plt.figure(figsize=(20, 20))
+    sns.set_style('white')
+    sns.set_context('talk', font_scale=2)
+    clrs = sns.palettes.mpl_palette(name='Set2', n_colors=4)
+
+    df_eval = ut.queue_point_list_to_df(eval_data)
+    df_train = ut.queue_point_list_to_df(train_data)
+
+    df_eval.fillna(99)
+    df_eval.fillna(99)
+
+#     for n, thing in ['Accuracy', 'Precision', 'Recall']:
+    df_train['TP'] = (df_train['y_pred'] == 1) & (df_train['y_true'] == 1)
+    df_train['FP'] = (df_train['y_pred'] == 1) & (df_train['y_true'] == 0)
+    df_train['TN'] = (df_train['y_pred'] == 0) & (df_train['y_true'] == 0)
+    df_train['FN'] = (df_train['y_pred'] == 0) & (df_train['y_true'] == 1)
+
+    df_eval['TP'] = (df_eval['y_pred'] == 1) & (df_eval['y_true'] == 1)
+    df_eval['FP'] = (df_eval['y_pred'] == 1) & (df_eval['y_true'] == 0)
+    df_eval['TN'] = (df_eval['y_pred'] == 0) & (df_eval['y_true'] == 0)
+    df_eval['FN'] = (df_eval['y_pred'] == 0) & (df_eval['y_true'] == 1)
+
+    r_accuracy_obs = (df_train['TP'].rolling(window).sum() +
+                      df_train['TN'].rolling(window).sum())/window
+    r_accuracy_act = (df_eval['TP'].rolling(window).sum() +
+                      df_eval['TN'].rolling(window).sum())/window
+
+    r_precision_act = (df_eval['TP'].rolling(window).sum() /
+                       (df_eval['TP'].rolling(window).sum() +
+                       df_eval['FP'].rolling(window).sum()))
+    r_precision_obs = (df_train['TP'].rolling(window).sum() /
+                       (df_train['TP'].rolling(window).sum() +
+                        df_train['FP'].rolling(window).sum()))
+
+    r_recall_act = (df_eval['TP'].rolling(window).sum() /
+                    (df_eval['TP'].rolling(window).sum() +
+                     df_eval['FN'].rolling(window).sum()))
+    r_recall_obs = (df_train['TP'].rolling(window).sum() /
+                    (df_train['TP'].rolling(window).sum() +
+                     df_train['FN'].rolling(window).sum()))
+
+    r_sens_act = (df_eval['TP'].rolling(window).sum()/window)
+    r_sens_obs = (df_train['TP'].rolling(window).sum()/window)
+
+    r_spec_act = (df_eval['TN'].rolling(window).sum()/window)
+    r_spec_obs = (df_train['TN'].rolling(window).sum()/window)
+
+    plt.subplot(221)
+    plt.plot(r_accuracy_obs, c=clrs[0], label='Observed')
+    plt.plot(r_accuracy_act, c=clrs[1], label='Unobserved')
+    plt.legend()
+    plt.title('Accuracy')
+    plt.ylim(0, 1.05)
+
+    plt.subplot(222)
+    plt.plot(r_precision_obs, c=clrs[0], label='Observed')
+    plt.plot(r_precision_act, c=clrs[1], label='Unobserved')
+    plt.legend()
+    plt.title('Precision')
+    plt.ylim(0, 1.05)
+
+    plt.subplot(223)
+    plt.plot(r_recall_obs, c=clrs[0], label='Observed')
+    plt.plot(r_recall_act, c=clrs[1], label='Unobserved')
+    plt.legend()
+    plt.title('Recall')
+    plt.ylim(0, 1.05)
+
+    plt.subplot(224)
+    plt.plot(r_sens_act, c=clrs[0], label='Sensitivity Unobserved (TP)')
+    plt.plot(r_spec_act, c=clrs[1], label='Specificity Unobserved (TN)')
+    plt.plot(r_sens_obs, c=clrs[2], label='Sensitivity Observed (TP)')
+    plt.plot(r_spec_obs, c=clrs[3], label='Specificity Observed (TN)')
+    plt.legend()
+    plt.title('TPR and TNR')
+    plt.ylim(0, 1.05)
+
+    plt.tight_layout()
+
+
 def demo_plot():
     # Initialize
     start = [100]

@@ -1,8 +1,11 @@
 import time
 import numpy as np
+import pandas as pd
 from scipy.stats import poisson
 
 from .maths import rotation_matrix
+
+from . import utils
 
 ########################################################################################################################
 #                                                    Learning at Cost                                                  #
@@ -58,7 +61,7 @@ def roving_balls(balls=2, steps=1000, period=1000, radius=5, vars=1,
     Generator for the roving balls dataset.
 
     The generator will terminate after `steps` steps, or will go on forever if
-    `steps==0`.
+    `steps==0`.git st
 
     See notebooks/jdp-data-roving-balls.ipynb for examples.
 
@@ -122,7 +125,100 @@ def roving_balls(balls=2, steps=1000, period=1000, radius=5, vars=1,
         yield np.hstack([x, lab])
 
 
-def cluster_generator(n_clusters=5, n_points=1000, slider='poisson',  cluster_width=10.0, amount_of_labels=2):
+def satellites(n_points=0, n_satellites=3, contamination=0.01,
+               base_center=(0, 0,), base_std=1., satellite_std=0.3,
+               satellite_radius=4., satellite_radius_std=0.,
+               satellite_std_std=0., satellite_progress_rate=0.1,
+               satellite_simul=1):
+    """
+    Generate a dataset with a big central cluster surrounded by smaller
+    "satellite" clusters. The satellites are evenly spaced in a circle around
+    the base with radius given by `satellite_radius`. They can be made to
+    randomly vary from each other in spread and distance from the center
+    by setting `satellite_radius_std` and `satellite_std_std`.
+
+    As points are generated, the probability of an outlier (satellite point)
+    shifts across the satellites. The speed of this shift can be controlled
+    using `satellite_progress_rate`.
+
+    Parameters
+    ----------
+    n_points : int, default 0
+        Number of points to generate (0 for infinite)
+
+    n_satellites : int, default 3
+        Number of satellites
+
+    contamination : float, default 0.1
+        Fraction of points which are outliers (in satellites)
+
+    base_center : iterable of length 2 (default tuple(0,0))
+        Location of the base cluster
+
+    base_std : float, default 1.
+        Std. dev. of base cluster
+
+    satellite_std : float, default 0.
+        Std. dev. of satellites
+
+    satellite_radius : float, default 4.
+        Distance of satellite centers from base cluster center
+
+    satellite_radius_std : float, default 0.
+        Std. dev. between distances of different satellites from base center
+
+    satellite_std_std : float, default 0.1
+        Std. dev. between std. devs of different satellites
+
+    satellite_progress_rate : float, default 0.1
+        Rate at which probability density of an outlier coming from a
+        particular satellite shifts over time
+
+    satellite_simul: float, default 1.
+        Amount of satellites that can be expected to be active at one time
+
+    Returns
+    -------
+    np.ndarray : [x, y, label]
+    """
+
+    # generator for satellite probability distribution
+    satellite_probs = utils.slide_probability_over_list(
+        n_points,
+        n_satellites,
+        satellite_progress_rate,
+        var=0.63*satellite_simul,
+    )
+
+    # variation between satellite radius
+    rad_facts = np.random.normal(1, satellite_radius_std, (n_satellites, 1,))
+
+    satellite_centers = (satellite_radius
+                         * rad_facts
+                         * utils.unit_circle_points(n_satellites)
+                         ) + np.array(base_center)
+    satellite_stds = satellite_std * np.ones((n_satellites,))\
+                     * np.random.normal(1, satellite_std_std, (n_satellites,))
+
+    satellite_inds = list(range(n_satellites))
+
+    for p in satellite_probs:
+        outlier = np.random.uniform(0, 1) < contamination
+        label = int(outlier)
+
+        if not outlier:
+            x = np.random.normal(loc=base_center, scale=base_std)
+
+        else:
+            ind = np.random.choice(satellite_inds, p=p)
+            x = np.random.normal(loc=satellite_centers[ind],
+                                 scale=satellite_stds[ind])
+
+        yield np.hstack([x, [label]])
+
+
+def cluster_generator(n_clusters=5, n_points=1000, slider='poisson',
+                      cluster_width=10.0, amount_of_labels=2):
     """
     Function that returns a dataset with timestamps/time dimension and positional coordinates.
     The function will generate x points where x is determined by (n_clusters + tail_time)/dt
@@ -346,3 +442,92 @@ def delayed_generator(data_generator, delay, precision=1e-3):
 
         yield point
         start = time.time()
+
+
+def scaling_generator(data_generator, x_min, x_max, dp0=0, dp1=1):
+    """
+    A wrapper to scale the output of the data generators. In pricnuiple they
+    should be between -1 and -1 for the most optimal performance of the model.
+    However, most of our data generators are on different scales, so this warpper
+    takes that output and rescales it to 0 and 1.
+
+    Parameters
+    ----------
+    data_generator: iterable
+        The generator whose output to delay
+
+    x_min: float
+        Lowest value of the scale on which the data point should be
+
+    x_max: float
+        Highest value of the scale on which the data point should be
+        """
+
+    x_shift = x_min
+
+    dp = np.array((dp0, dp1))
+    x_min -= x_shift
+    x_max -= x_shift
+    for point in data_generator:
+        point[:2] -= x_shift
+        point[:2] = dp[0] + (point[:2] - x_min)*(dp[1] - dp[0])/(x_max - x_min)
+        yield point
+
+
+def generator_from_csv(path, data_columns, label_column, n_points=None, **args):
+    """
+    A wrapper around a dataset to output it as a generator.
+
+    Parameters
+    ----------
+    path: str
+        Path to the file
+
+    data_columns: list
+        List of stings of the columns containing the datapoint values
+
+    label_columns: str
+        name of the label columns
+
+    n_points: int
+        number of points to return from the dataset
+    """
+    data_columns.append(label_column)
+    type_dict = {'xlsx': 'excel', 'csv': 'csv'}
+    filetype = path.split('.')[-1]
+    data = getattr(pd, 'read_' + type_dict[filetype])(path, **args)
+    if n_points is None:
+        n_points = len(data)
+    data = data.loc[:n_points, data_columns]
+
+    for point in data.values:
+        yield point
+
+
+def generator_from_df(data, data_columns=None, label_column=None, n_points=None):
+    """
+    A wrapper around a dataset to output it as a generator.
+
+    Parameters
+    ----------
+    data: pandas DataFrame
+        pandas data frame containing the data and label columns
+
+    data_columns: list
+        List of stings of the columns containing the datapoint values.
+        If none it is assumed the first two columns are the values.
+
+    label_columns: str
+        name of the label columns. If none it is assumed the last column is the label
+
+    n_points: int
+        number of points to return from the dataset
+    """
+    try:
+        data = data.loc[:n_points, data_columns]
+    except TypeError:
+        pass
+
+    for point in data.values:
+        yield point
+
