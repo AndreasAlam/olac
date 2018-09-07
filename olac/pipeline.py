@@ -683,4 +683,3 @@ class OfflinePredictor(GridPredictor, PredictorBase):
             prob = np.nan
 
         return y_pred, prob
-
