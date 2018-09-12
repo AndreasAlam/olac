@@ -5,7 +5,7 @@ from scipy.stats import poisson
 
 from .maths import rotation_matrix
 
-from . import utils
+from . import utils, models
 
 ########################################################################################################################
 #                                                    Learning at Cost                                                  #
@@ -123,6 +123,66 @@ def roving_balls(balls=2, steps=1000, period=1000, radius=5, vars=1,
         lab = np.random.choice(clusters)  # choose a ball to draw from
         x = np.random.normal(loc=cluster_locs[lab], scale=scales[lab])
         yield np.hstack([x, lab])
+
+
+def dynamify_data(X, y=None, transition_rate=0.1, cluster_simul=1,
+                  dbshift_args=tuple(), dbshift_kwargs=dict()):
+
+    X = np.array(X)
+
+    if y is not None:
+        y = np.array(y)
+        assert y.shape[0] == X.shape[0], "y must have same number of rows as X"
+
+    # do clustering
+    dbs_clf = models.DBShift(*dbshift_args, **dbshift_kwargs)
+    clusters = pd.Series(dbs_clf.fit_predict(X))
+
+    # prep cluster indices
+    n_clusters = clusters.nunique()
+    n_points = X.shape[0]
+
+    # deal with cluster_simul being a fraction
+    if cluster_simul < 1:
+        cluster_simul = min(1, np.round(n_clusters * cluster_simul))
+
+    cluster_sizes = clusters.value_counts()
+    cluster_labels = np.random.permutation(cluster_sizes.index.values)
+
+    X_inds = np.arange(0, n_points)
+
+    # shuffled indices per cluster
+    cluster_inds = {
+        c: list(np.random.permutation(X_inds[clusters == c]))
+        for c in cluster_labels
+    }
+
+    # generator for cluster probability distributions
+    cluster_probs = utils.slide_probability_over_list(
+        len(X),
+        n_clusters,
+        transition_rate,
+        var=0.63*cluster_simul,
+    )
+
+    for p in cluster_probs:
+        # Rescale cluster probabilities using relative size
+        for i, c in enumerate(cluster_labels):
+            p[i] *= len(cluster_inds[c])
+
+        # renormalize
+        p /= np.sum(p)
+
+        # choose a cluster to randomly draw from
+        c = np.random.choice(cluster_labels, p=p)
+        ind = cluster_inds[c].pop()
+
+        if y is not None:
+            output = np.hstack([X[ind], y[ind]])
+        else:
+            output = X[ind]
+
+        yield output
 
 
 def satellites(n_points=0, n_satellites=3, contamination=0.01,
