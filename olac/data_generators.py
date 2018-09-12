@@ -506,7 +506,7 @@ def delayed_generator(data_generator, delay, precision=1e-3):
 
 def scaling_generator(data_generator, x_min, x_max, dp0=0, dp1=1):
     """
-    A wrapper to scale the output of the data generators. In pricnuiple they
+    A wrapper to scale the output of the data generators. In principle they
     should be between -1 and -1 for the most optimal performance of the model.
     However, most of our data generators are on different scales, so this warpper
     takes that output and rescales it to 0 and 1.
@@ -517,10 +517,10 @@ def scaling_generator(data_generator, x_min, x_max, dp0=0, dp1=1):
         The generator whose output to delay
 
     x_min: float
-        Lowest value of the scale on which the data point should be
+        Lowest value of the scale on which the input data point is
 
     x_max: float
-        Highest value of the scale on which the data point should be
+        Highest value of the scale on which the input data point is
         """
 
     x_shift = x_min
