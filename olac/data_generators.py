@@ -3,6 +3,10 @@ import numpy as np
 import pandas as pd
 from scipy.stats import poisson
 
+from keras.models import Model
+from keras.layers import Input, Dense
+from sklearn.base import BaseEstimator, ClassifierMixin
+
 from .maths import rotation_matrix
 
 from . import utils, models
@@ -590,4 +594,59 @@ def generator_from_df(data, data_columns=None, label_column=None, n_points=None)
 
     for point in data.values:
         yield point
+
+
+class EncodingGenerator():
+    """
+    Generator that uses an autoencoder to create a 2d latent space
+    """
+    def __init__(self, layers, n, dim):
+        self.history = []
+        self.layers = layers
+        self.n = n
+        self.dim = dim
+        self._autoencoder = self._encoder()
+
+    def _encoder(self):
+        """
+        Encode the input points
+
+        Parameters
+        ----------
+        points: array
+            Array of points to encode, shape of inputlayer.
+        """
+
+        self._input_layer = Input(shape = (int(self.n*self.dim),))
+        self._encoded = Dense(self.layers[0][0], activation=self.layers[0][1])(self._input_layer)
+        for layer in self.layers[1:]:
+            self._encoded = Dense(layer[0], activation=layer[1])(self._encoded)
+
+        self._decoded = Dense(self.layers[-2][0], activation=self.layers[-2][1])(self._encoded)
+        for layer in self.layers[::-1][1:]:
+            self._decoded = Dense(layer[0], activation=layer[1])(self._decoded)
+        self._decoded = Dense(int(self.n*self.dim), activation='relu')(self._decoded)
+
+        autoencoder = Model(self._input_layer, self._decoded)
+        autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy')
+
+        return autoencoder
+
+    def encode(self, points):
+#         hist = np.vstack(self.history)[:,:-1]
+        self._autoencoder.fit(points, points, verbose=False, epochs=10)
+#         self._autoencoder.train_on_batch(points, points)
+        self._encoder_model = Model(self._input_layer, self._encoded)
+
+        return self._encoder_model.predict(points)
+
+
+    def __call__(self, data):
+        for point in data:
+            self.history.append(point)
+            if len(self.history) > self.n:
+                last_n = np.vstack(self.history[-self.n:])
+                X = last_n[:,:-1].reshape(1, int(self.n*self.dim))
+                y = last_n[-1,-1]
+                yield np.hstack([self.encode(X)[0], y])
 
