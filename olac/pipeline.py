@@ -299,6 +299,7 @@ class DemoPipeline(Pipeline):
         self.counter = 0
         self.history = []
         self.colors = np.array(sns.palettes.hls_palette(2))
+        self._grid_history = []
 
     def get_grid(self):
         gridpoints = np.linspace(-10, 10, 250)
@@ -320,7 +321,7 @@ class DemoPipeline(Pipeline):
             print("="*18)
             print("| START PIPELINE |")
             print("="*18)
-            self.run()
+            results = self.run()
             print("="*18)
             print("|  END PIPELINE  |")
             print("="*18)
@@ -330,7 +331,9 @@ class DemoPipeline(Pipeline):
             print("="*18)
             print("| START PIPELINE |")
             print("="*18)
-            self.run_plot()
+            results = self.run_plot()
+
+        return results
 
     def run_plot(self):
         """
@@ -379,10 +382,14 @@ class DemoPipeline(Pipeline):
                 elif hasattr(self.model, 'decision_function'):
                     pred = self.model.decision_function(self.grid).reshape(l, l)
                     # pred = np.nan
+                else:
+                    pred = np.zeros((l, l))
 
                 points = np.vstack(self.history)
                 X = points[-50:, :2]
                 y = points[-50:, -1]
+
+                self._grid_history.append((pred, X, y))
                 if X.min() < 5:
                     x_min = -10
                 else:
@@ -411,6 +418,45 @@ class DemoPipeline(Pipeline):
                 display.display(plt.gcf())
                 display.clear_output(wait=True)
 #                 print("Not trained yet")
+
+    def replay(self, val_set=None, train_set=None, x_min=0, x_max=10):
+        plt.rcParams['figure.figsize'] = [15, 5]
+        self._val_list = []
+        self._train_list = []
+        assert self._grid_history != []
+        n = 0
+        if val_set is not None:
+            val_df = (utils.queue_point_list_to_df(val_set))[['y_pred', 'y_true']].values
+            val_set = np.array_split(val_df, len(self._grid_history), 0)
+
+        if train_set is not None:
+            train_df = (utils.queue_point_list_to_df(train_set))[['y_pred', 'y_true']].values
+            train_set = np.array_split(train_df, len(self._grid_history), 0)
+
+        for grid, X, y in self._grid_history:
+
+            plt.subplot(121)
+            plt.contourf(np.linspace(x_min, x_max, 250), np.linspace(x_min, x_max, 250),
+                         grid)
+            plt.scatter(*X.T, c=self.colors[y.astype(int)], vmax=x_max, vmin=x_min)
+
+            plt.subplot(122)
+            if val_set is not None:
+                self._val_list.append((val_set[n][:, 0] == val_set[n][:, 1]).mean())
+                plt.plot(self._val_list, c='r')
+            if train_set is not None:
+                self._train_list.append((train_set[n][:, 0] == train_set[n][:, 1]).mean())
+                plt.plot(self._train_list, c='b')
+
+            plt.title("{:.2%}% Accuracy".format(self._val_list[-1]))
+            plt.xlim(0, len(self._grid_history))
+            plt.ylim(0, 1)
+            n += 1
+
+            display.display(plt.gcf())
+            display.clear_output(wait=True)
+            # time.sleep(0.05)
+
 
     def _prediction_worker(self):
         # depends on the predictor
