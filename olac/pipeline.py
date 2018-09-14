@@ -334,7 +334,7 @@ class DemoPipeline(Pipeline):
 
     def run_plot(self):
         """
-        Run the pipeline and plot the training
+        Run the pipeline and plot the training progression
         until the data_generator is exhausted.
 
         Returns
@@ -373,7 +373,12 @@ class DemoPipeline(Pipeline):
 
             try:
                 l = int(np.sqrt(self.grid.shape[0]))
-                pred = self.model.predict_proba(self.grid)[:, 0].reshape(l, l)
+
+                if hasattr(self.model, 'predict_proba'):
+                    pred = self.model.predict_proba(self.grid)[:, 0].reshape(l, l)
+                elif hasattr(self.model, 'decision_function'):
+                    pred = self.model.decision_function(self.grid)[:, 0].reshape(l, l)
+
                 points = np.vstack(self.history)
                 X = points[-50:, :2]
                 y = points[-50:, -1]
@@ -800,13 +805,14 @@ class OfflinePredictor(GridPredictor, PredictorBase):
     or predict_proba methods.
 
     """
-    def __init__(self, batch_size):
+    def __init__(self, batch_size, verbose=True):
 
         self.batch_size = batch_size
         self.grid = self.get_grid()
         self.hist_grid = []
         self.historic_points = []
         self.npoints = []
+        self.verbose = verbose
 
     def train_condition(self, pipeline, ):
         """Train anytime there are batch_size points in the queue"""
@@ -819,7 +825,8 @@ class OfflinePredictor(GridPredictor, PredictorBase):
         """
         # Get the new points from the queue
         new_points = pipeline.training_queue.get_all()  # training_queue is now empty
-        print(f'Predictor:\t{len(new_points)} new points available, re-training...')
+        if self.verbose:
+            print(f'Predictor:\t{len(new_points)} new points available, re-training...')
 
         # Stack the points as an array to add to historical points
         add_points = np.vstack([np.hstack((p.point, p.true_label)) for p in new_points])
@@ -836,7 +843,8 @@ class OfflinePredictor(GridPredictor, PredictorBase):
 
         # Train the model
         pipeline.model.fit(X_train, y_train)
-        print("Trained model on {} points".format(len(self.historic_points)))
+        if self.verbose:
+            print("Trained model on {} points".format(len(self.historic_points)))
 
     def do_prediction(self, pipeline, x,):
         """
