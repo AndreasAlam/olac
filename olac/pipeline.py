@@ -377,14 +377,24 @@ class DemoPipeline(Pipeline):
                 if hasattr(self.model, 'predict_proba'):
                     pred = self.model.predict_proba(self.grid)[:, 0].reshape(l, l)
                 elif hasattr(self.model, 'decision_function'):
-                    pred = self.model.decision_function(self.grid)[:, 0].reshape(l, l)
+                    pred = self.model.decision_function(self.grid).reshape(l, l)
+                    # pred = np.nan
 
                 points = np.vstack(self.history)
                 X = points[-50:, :2]
                 y = points[-50:, -1]
+                if X.min() < 5:
+                    x_min = -10
+                else:
+                    x_min = 0
+                if X.max() > 100:
+                    x_max = 1100
+                else:
+                    x_max = 10
+
                 time.sleep(self.sleep)
-                plt.contourf(np.linspace(-10, 10, 250),
-                             np.linspace(-10, 10, 250),
+                plt.contourf(np.linspace(x_min, x_max, 250),
+                             np.linspace(x_min, x_max, 250),
                              pred)
                 plt.title(X.shape)
                 plt.scatter(*X.T, c=self.colors[y.astype(int)])
