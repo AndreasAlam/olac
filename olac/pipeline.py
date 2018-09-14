@@ -1,15 +1,14 @@
 import multiprocessing.dummy as mp
-# [RU] imported but unused
-# import pandas as pd
+import matplotlib.pyplot as plt
 import numpy as np
 import sklearn
 import re
 import pprint
 import inspect
 from . import cost_of_label
-
-# [RU] imported but unused
-# import time
+import seaborn as sns
+from IPython import display
+import time
 
 from . import utils
 
@@ -244,6 +243,185 @@ class Pipeline():
         print('-'*80)
 
 
+class DemoPipeline(Pipeline):
+    """
+    The pipeline runner class for backtesting online or dynamically
+    retrained models, adapted to plot the progress during training.
+
+    The pipeline gets data points from the data_generator and runs two
+    worker threads in parallel, one for making predictions and retraining, and
+    the other for buying labels. Their behaviour can be configured using
+    the predictor and the labeller.
+
+    The Pipeline also has properties which can be used by the labeller and the
+    predictor for communicating with each other:
+    * labelling_queue is the BatchQueue of points waiting to (potentially)
+        be labelled
+    * training_queue is the BatchQueue of labelled points available for
+        model (re)training
+    * stop_flag is set when the data_generator has been exhausted, and signals
+        that the labelling worker should stop working and return its results.
+
+    """
+    def __init__(self, data_generator=None, model=None,
+                 predictor=None, labeller=None):
+
+        """
+
+        Parameters
+        ----------
+        data_generator: generator
+            The data source. Should yeild datapoints of form [x0, x1, ..., y]
+
+        model:
+            The model to test. Should implement scikit-learn api.
+
+        predictor: PredictorBase
+            The predictor, which decides when to make predictions and
+            fits the model. Should inherit from PredictorBase and implement
+            methods train_condition, train_pipeline_model, and do_prediction
+
+        labeller: LabellerBase
+            The labeller, which decides which labels to buy. Should implement
+            the methods buy_labels_condition and buy_labels.
+        mode: string
+            'print' or 'plot'. For print the demo only outputs the prints. 'plot'
+            will plot the decision boundary of the model and last 50 points of
+            the data.
+        sleep: int
+            How long the plotter should sleep between plots
+        """
+
+        super().__init__(data_generator, model,
+                         predictor, labeller)
+
+        self.grid = self.get_grid()
+        self.counter = 0
+        self.history = []
+        self.colors = np.array(sns.palettes.hls_palette(2))
+
+    def get_grid(self):
+        gridpoints = np.linspace(-10, 10, 250)
+        grid = []
+        for y in gridpoints:
+            for x in gridpoints:
+                grid.append([x, y])
+        return np.array(grid)
+
+    def demo(self, mode='print', describe=True, sleep=1):
+        """
+        Run the pipeline in demo mode.
+        """
+        # --- Print the pipeline descripton
+        if describe:
+            self.describe()
+        if mode == 'print':
+            # ---
+            print("="*18)
+            print("| START PIPELINE |")
+            print("="*18)
+            self.run()
+            print("="*18)
+            print("|  END PIPELINE  |")
+            print("="*18)
+
+        if mode == "plot":
+            self.sleep = sleep
+            print("="*18)
+            print("| START PIPELINE |")
+            print("="*18)
+            self.run_plot()
+
+    def run_plot(self):
+        """
+        Run the pipeline and plot the training
+        until the data_generator is exhausted.
+
+        Returns
+        -------
+        tuple: (training_set, eval_set)
+
+        Training set is the list of QueuePoints that was labelled, and eval_set
+        is the list of points that were not labelled.
+        """
+        for prop in [self.data_generator, self.model,
+                     self.predictor, self.labeller]:
+            assert prop is not None
+
+        with mp.Pool(3) as pool:
+            # run the labelling worker
+            results = pool.apply_async(self._labelling_worker,
+                                       error_callback=err_handler)
+
+            # run the prediction worker
+            pool.apply_async(self._prediction_worker,
+                             error_callback=err_handler)
+            # run the plot worker
+            pool.apply_async(self._plot_worker,
+                             error_callback=err_handler)
+
+            # wait for the job to finish
+            pool.close()
+            pool.join()
+
+        # collect the results
+        return results.get()
+
+    def _plot_worker(self):
+        assert self.predictor is not None
+        while not self._stop_flag.is_set():
+
+            try:
+                l = int(np.sqrt(self.grid.shape[0]))
+                pred = self.model.predict_proba(self.grid)[:, 0].reshape(l, l)
+                points = np.vstack(self.history)
+                X = points[-50:, :2]
+                y = points[-50:, -1]
+                time.sleep(self.sleep)
+                plt.contourf(np.linspace(-10, 10, 250),
+                             np.linspace(-10, 10, 250),
+                             pred)
+                plt.title(X.shape)
+                plt.scatter(*X.T, c=self.colors[y.astype(int)])
+                plt.show()
+
+                display.display(plt.gcf())
+                display.clear_output(wait=True)
+#                 print("Grid prediction")
+            except sklearn.exceptions.NotFittedError:
+                time.sleep(self.sleep)
+                plt.contour(self.grid)
+                plt.title("Not trained yet")
+                plt.show()
+                display.display(plt.gcf())
+                display.clear_output(wait=True)
+#                 print("Not trained yet")
+
+    def _prediction_worker(self):
+        # depends on the predictor
+        assert self.predictor is not None
+
+        # loop through the data_generator until exhausted
+        for i, new_point in enumerate(self.data_generator):
+            self.history.append(new_point)
+            # check for training condition and train if met
+            if self.predictor.train_condition(self):
+                self.predictor.train_pipeline_model(self)
+
+            x = new_point[:-1]
+            y_true = new_point[-1]
+
+            # get prediction from the predictor
+            y_pred, prob = self.predictor.do_prediction(self, x)
+
+            # place the point and prediction in the labelling_queue for the
+            # labeller to process
+            self.labelling_queue.put(QueuePoint(x, i, y_pred, prob, y_true))
+
+        # signal the labelling worker to stop once no more data
+        self._stop_flag.set()
+
+
 class PredictorBase():
     """Base class for Predictors for use with the Pipeline.
 
@@ -456,7 +634,7 @@ class OnlinePredictor(PredictorBase):
             else:
                 prob = np.nan
 
-        except sklearn.exceptions.NotFittedError:
+        except (sklearn.exceptions.NotFittedError, AssertionError):
             # still burning in, return NaNs.
             y_pred = np.nan
             prob = np.nan
