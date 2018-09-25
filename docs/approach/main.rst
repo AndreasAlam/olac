@@ -46,8 +46,11 @@ Use-case:
 
 **Potential issues**
 - Scope creep - The problem space is big enough that it could fill multiple PHDs so we should be careful to prevent digging in to much in a particular step given the allotted time.
-  - By strongly scoping the problem space beforehand and solidifying this in a set of assumptions we can prevent creep.
+
+  1. By strongly scoping the problem space beforehand and solidifying this in a set of assumptions we can prevent creep.
+
 - Circular dependencies - The way the subsections of the problem are intertwined could cause circular dependencies in the work, where the project members are dependent on work of others.
-  - This will be addressed by creating a minimal viable pipeline between the various elements which will reduces the chance of blockages.
+
+  1. This will be addressed by creating a minimal viable pipeline between the various elements which will reduces the chance of blockages.
+
 - Due to scope and 
-- 

@@ -13,7 +13,8 @@ class DBShift(BaseEstimator, ClusterMixin):
            clusters" and outliers.
         2. Mean Shift clustering is performed over the DBSCAN
            outliers, to break these up into regions. These "outlier
-           clusters" are labelled with negative integers.
+           clusters" are relabelled with positive integers and can be
+           identified by being higher than `max_label`.
 
     Prediction is done by kNN against the dataset used in fitting.
 
@@ -83,9 +84,10 @@ class DBShift(BaseEstimator, ClusterMixin):
         outliers = X[labels == -1]
         self._meanshift = MeanShift()
 
+        self.max_label = max(labels)
         if outliers.shape[0]:
             outlier_clusters = self._meanshift.fit_predict(outliers)
-            labels[labels == -1] = -1 - outlier_clusters
+            labels[labels == -1] = self.max_label + 1 + outlier_clusters
 
         # Fit KNN
         if self.n_neighbors is not None:
@@ -99,7 +101,7 @@ class DBShift(BaseEstimator, ClusterMixin):
         self.components_ = X
         self.labels_ = labels
 
-        return self
+        # return self
 
     def predict(self, X):
         """Predict the cluster labels for the provided data using KNN

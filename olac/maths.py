@@ -18,10 +18,11 @@ def linear_ls(x, y, constant=True):
         The independent variables, features, over which to fit
     y : ndarray
         The dependent variable which we want approximate
-    constant : boolean (optional)
-        Whether a constant should be added, default is True
+    constant : boolean, optional
+        Whether a constant should be added. Default is True
 
-    Returns:
+    Returns
+    -------
     np.matrix
         The coefficients that minimise the square error
     """
