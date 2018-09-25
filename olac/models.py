@@ -2,6 +2,7 @@ from sklearn.cluster import MeanShift, DBSCAN
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.base import BaseEstimator, ClusterMixin
 from sklearn.utils.validation import NotFittedError
+import numpy as np
 
 
 class DBShift(BaseEstimator, ClusterMixin):
@@ -41,10 +42,11 @@ class DBShift(BaseEstimator, ClusterMixin):
     _meanshift : The internal Mean Shift classifier
     _knn : The internal KNN classifier
     """
-    def __init__(self, eps=None, min_samples=None, n_neighbors=None):
+    def __init__(self, eps=None, min_samples=None, n_neighbors=None, verbose=False):
         self.eps = eps
         self.min_samples = min_samples
         self.n_neighbors = n_neighbors
+        self.verbose = verbose
 
         self._dbscan = None
         self._meanshift = None
@@ -76,16 +78,34 @@ class DBShift(BaseEstimator, ClusterMixin):
             m = X.shape[0] // 100
 
         # Do dbscan
+        self._print_if_verbose('Doing DBSCAN...')
         self._dbscan = DBSCAN(eps=eps, min_samples=m)
         labels = self._dbscan.fit_predict(X)
+
+        n_main_labels = np.unique(labels).shape[0]
+        if -1 in labels:
+            n_main_labels -= 1
+
+        self._print_if_verbose(
+            'Done. Identified {} main clusters'.format(n_main_labels)
+        )
 
         # Do mean shift if there are outliers (default parameters)
         outliers = X[labels == -1]
         self._meanshift = MeanShift()
 
         if outliers.shape[0]:
+            self._print_if_verbose('Outliers detected, doing Mean Shift...')
             outlier_clusters = self._meanshift.fit_predict(outliers)
             labels[labels == -1] = -1 - outlier_clusters
+
+            n_outlier_labels = np.unique(labels).shape[0] - n_main_labels
+
+            self._print_if_verbose(
+                'Done. Identified {} outlier clusters.'.format(n_outlier_labels)
+            )
+        else:
+            self._print_if_verbose('No outliers detected, skipping Mean Shift.')
 
         # Fit KNN
         if self.n_neighbors is not None:
@@ -93,7 +113,10 @@ class DBShift(BaseEstimator, ClusterMixin):
         else:
             k = self._dbscan.min_samples
 
+        self._print_if_verbose('Fitting KNN for prediction...')
         self._knn = KNeighborsClassifier(n_neighbors=k).fit(X, labels)
+        self._print_if_verbose('Done.')
+        self._print_if_verbose('Finished DBShift fitting.')
 
         # save output
         self.components_ = X
@@ -138,3 +161,7 @@ class DBShift(BaseEstimator, ClusterMixin):
             raise NotFittedError
 
         return self._knn.predict_proba(X)
+
+    def _print_if_verbose(self, msg):
+        if self.verbose:
+            print(msg)
