@@ -3,6 +3,7 @@ import numpy as np
 import seaborn as sns
 from IPython import display
 import matplotlib.pyplot as plt
+import matplotlib
 
 import imageio
 import pandas as pd
@@ -466,7 +467,8 @@ class Plotter():
                 grid.append([x, y])
         return np.array(grid)
 
-    def plot_history(self, pipeline, test_set, save_gif=False, gen_name=None, trans=None, plot_cost=False):
+    def plot_history(self, pipeline, test_set, save_gif=False, gen_name=None, trans=None,
+                     plot_cost=False, budget=0, gain_factor=2):
         """Plot the training of the model and plot the accuracy and (optionally)
         the cost/profit over time.
 
@@ -533,7 +535,8 @@ class Plotter():
                 self.X.append(mod[-2])
                 self.y.append(mod[-1].ravel())
 
-                self.cost.append(self.cost[-1] - len(np.hstack(self.y[-1]))+((np.hstack(self.y[-1]) == 1).sum()*2))
+                self.cost.append(self.cost[-1] - len(np.hstack(self.y[-1]))+((np.hstack(self.y[-1]) == 1).sum()*(
+                            np.random.normal()+1)*gain_factor))
 
                 if trans is not None:
                     Xt = trans.transform(np.vstack(self.X)[-self.window:, :])
@@ -558,6 +561,13 @@ class Plotter():
                             Z, [0.5])
                 plt.scatter(*np.vstack(self.X)[-self.window:, :].T,
                             c=self.cols[np.hstack(self.y)[-self.window:].astype(int)], alpha=.8)
+
+                legend_elements = [matplotlib.lines.Line2D([0], [0], c='w', marker='o', lw=0,
+                                   markerfacecolor='g', markersize=6, label='Not Fraud'),
+                                   matplotlib.lines.Line2D([0], [0], c='w', marker='o', lw=0,
+                                   markerfacecolor='b', markersize=6, label='Fraud'), ]
+
+                plt.gca().legend(handles=legend_elements, loc='best')
                 ind += len(mod[-2])
                 plt.xlim([0, 1])
                 plt.ylim([0, 1])
@@ -568,11 +578,11 @@ class Plotter():
 
                 plt.subplot(122)
                 acc_plot = pd.Series(np.hstack(self.acc)).rolling(self.window).mean().values
-                plt.plot(acc_plot, c='g', label='accuracy')
+                plt.plot(acc_plot, c='g', label='accuracy', alpha=.6, linestyle='dashed')
 
                 plt.ylim([0, 1.05])
                 plt.xlim([0, len(np.hstack(self.acc))+100])
-                plt.title(f'{(acc_plot[-1]*100).round(2)}% -- Profit: ${self.cost[-1]}')
+                plt.title(f'{(acc_plot[-1]*100).round(2)}% -- Profit: ${self.cost[-1].round(2)}')
 
                 if plot_cost:
                     ax1 = plt.gca()
@@ -585,14 +595,14 @@ class Plotter():
 
                 f = plt.gcf()
 
-                model_name = str(pipeline.model.__class__).split('.')[-1].split("'")[0]
-                gener_name = gen_name
-                f.suptitle(f"Model: {model_name}\nDataSet: {gener_name}")
+                self.model_name = str(pipeline.model.__class__).split('.')[-1].split("'")[0]
+                self.gener_name = gen_name
+                f.suptitle(f"Model: {self.model_name}\nDataSet: {self.gener_name}")
 
                 if save_gif:
                     if not os.path.exists('tmp/'):
                         os.mkdir('tmp/')
-                    self.filenames.append(f'tmp/gif{model_name}_{gener_name}_{i}.png')
+                    self.filenames.append(f'tmp/gif{self.model_name}_{self.gener_name}_{i}.png')
                     f.savefig(self.filenames[-1])
 
                 display.clear_output(wait=True)
@@ -628,8 +638,8 @@ class Plotter():
         images = []
         for filename in self.filenames:
             images.append(imageio.imread(filename))
-        imageio.mimsave(f'{path}{model_name}_{gener_name}.gif', images)
+        imageio.mimsave(f'{path}{self.model_name}_{self.gener_name}.gif', images)
 
-        if os.path.exists(f'{path}{model_name}_{gener_name}.gif'):
+        if os.path.exists(f'{path}{self.model_name}_{self.gener_name}.gif'):
             for filename in self.filenames:
                 os.remove(filename)
