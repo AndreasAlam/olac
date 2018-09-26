@@ -456,7 +456,7 @@ class Plotter():
         self.filenames = []
         self.figsize = figsize
 
-    def get_grid():
+    def get_grid(self):
         """Return a grid that can be used
         to plot the decision function"""
         gridpoints = np.linspace(-10, 10, 250)
@@ -590,6 +590,8 @@ class Plotter():
                 f.suptitle(f"Model: {model_name}\nDataSet: {gener_name}")
 
                 if save_gif:
+                    if not os.path.exists('tmp/'):
+                        os.mkdir('tmp/')
                     self.filenames.append(f'tmp/gif{model_name}_{gener_name}_{i}.png')
                     f.savefig(self.filenames[-1])
 
@@ -597,17 +599,37 @@ class Plotter():
                 plt.show()
 
         if save_gif:
-            images = []
-            if not os.path.exists('tmp/'):
-                os.mkdir('tmp/')
-            for filename in self.filenames:
-                images.append(imageio.imread(filename))
-            imageio.mimsave(f'tmp/{model_name}_{gener_name}.gif', images)
+            self._save_gif(self.filenames, 'tmp/')
+            # images = []
 
-            if os.path.exists(f'tmp/{model_name}_{gener_name}.gif'):
-                for filename in self.filenames:
-                    os.remove(filename)
+            # for filename in self.filenames:
+            #     images.append(imageio.imread(filename))
+            # imageio.mimsave(f'tmp/{model_name}_{gener_name}.gif', images)
+
+            # if os.path.exists(f'tmp/{model_name}_{gener_name}.gif'):
+            #     for filename in self.filenames:
+            #           os.remove(filename)
 
         def performance(self, eval_data, train_data, window):
             """Plot the performance metrics of the model"""
             return performance(eval_data, train_data, window)
+
+        def _save_gif(self, filenames, path='tmp/', ):
+            """Combines output .png as a gif.
+
+            Parameters
+            ----------
+            filenames: list
+                list of filenames including the path to the files. i.e. tmp/image1.png
+
+            path: string
+                path to save the gif to
+            """
+            images = []
+            for filename in self.filenames:
+                images.append(imageio.imread(filename))
+            imageio.mimsave(f'{path}{model_name}_{gener_name}.gif', images)
+
+            if os.path.exists(f'{path}{model_name}_{gener_name}.gif'):
+                for filename in self.filenames:
+                    os.remove(filename)
