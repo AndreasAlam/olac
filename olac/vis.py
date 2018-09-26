@@ -443,6 +443,7 @@ def plot_linear_ls(x, y, window_size=10, constant=True, colour='r', label=None):
 
 class Plotter():
     """
+    Plotter class to save convenient plot functions
     """
     def __init__(self, window=100, figsize=(10,5)):
         self.X = []
@@ -456,6 +457,8 @@ class Plotter():
         self.figsize = figsize
 
     def get_grid():
+        """Return a grid that can be used
+        to plot the decision function"""
         gridpoints = np.linspace(-10, 10, 250)
         grid = []
         for y in gridpoints:
@@ -464,7 +467,40 @@ class Plotter():
         return np.array(grid)
 
     def plot_history(self, pipeline, test_set, save_gif=False, gen_name=None, trans=None, plot_cost=False):
-        plt.rcParams['figure.figsize']=self.figsize
+        """Plot the training of the model and plot the accuracy and (optionally)
+        the cost/profit over time.
+
+        Parameters
+        ----------
+
+        pipeline : Pipeline
+            Pipeline object used to run the scenario
+
+        test_set: list
+            output of the pipeline.run()
+
+        save_gif: boolean
+            Save as gif or not
+
+        gen_name: string
+            Name of the data_generator used. This will appear in the title and
+            the saved gif name
+
+        trans: Transformer
+            transformer used to transform the input for example sklearn.kernel_approximation.RBFSampler
+
+        plot_cost: boolean
+            Whether or not to plot the cost
+
+        budget: float/int
+            Starting budget for the cost plot. Default == 0
+
+        gain_factor: float/int
+            How much we earn from catching fraud compared to investigation cost. The total gain
+            is calculated as investigation_cost*gain_factor. The investigation cost is set to 1.
+        """
+
+        plt.rcParams['figure.figsize'] = self.figsize
 
         test_df = ut.queue_point_list_to_df(test_set)
 
@@ -571,3 +607,7 @@ class Plotter():
             if os.path.exists(f'tmp/{model_name}_{gener_name}.gif'):
                 for filename in self.filenames:
                     os.remove(filename)
+
+        def performance(self, eval_data, train_data, window):
+            """Plot the performance metrics of the model"""
+            return performance(eval_data, train_data, window)
