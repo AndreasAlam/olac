@@ -4,8 +4,14 @@ import seaborn as sns
 from IPython import display
 import matplotlib.pyplot as plt
 
+import imageio
+import pandas as pd
+
 from . import maths as mf
 from . import utils as ut
+
+from sklearn.base import clone
+import os
 
 # [RU] imported but unused
 # import imageio
@@ -433,3 +439,135 @@ def plot_linear_ls(x, y, window_size=10, constant=True, colour='r', label=None):
         alpha, beta = coefs[i]
         plt.plot(xi, alpha + beta * xi, c=colour, label=label)
     return coefs, ind
+
+
+class Plotter():
+    """
+    """
+    def __init__(self, window=100, figsize=(10,5)):
+        self.X = []
+        self.y = []
+        self.X_val = []
+        self.cost = [0]
+        self.acc = []
+        self.cols = np.array(['g','b'])
+        self.window = window
+        self.filenames = []
+        self.figsize = figsize
+
+    def get_grid():
+        gridpoints = np.linspace(-10, 10, 250)
+        grid = []
+        for y in gridpoints:
+            for x in gridpoints:
+                grid.append([x, y])
+        return np.array(grid)
+
+    def plot_history(self, pipeline, test_set, save_gif=False, gen_name=None, trans=None, plot_cost=False):
+        plt.rcParams['figure.figsize']=self.figsize
+
+        test_df = ut.queue_point_list_to_df(test_set)
+
+        y_true = test_df['y_true']
+        y_pred = test_df['y_pred']
+
+        acc2 = np.array_split(y_true == y_pred, len(pipeline.predictor.model_hist))
+        X_in = np.array_split(test_df[['x0', 'x1']].values, len(pipeline.predictor.model_hist))
+
+        y_true = np.array_split(test_df['y_true'], len(pipeline.predictor.model_hist))
+        y_pred = np.array_split(test_df['y_pred'], len(pipeline.predictor.model_hist))
+
+        if trans is not None:
+            gridt = trans.transform(self.get_grid())
+        else:
+            gridt = self.get_grid()
+
+        ind = 0
+
+        for i, mod in enumerate(pipeline.predictor.model_hist):
+            if i % 2 == 0:
+                new_model = clone(pipeline.model)
+                if hasattr(pipeline.model, 'coefs_'):
+                        new_model.coefs_, new_model.intercepts_, new_model.classes_,\
+                            new_model.n_outputs_, new_model.n_layers_, new_model.out_activation_,\
+                            new_model._label_binarizer = mod[:-2]
+                elif hasattr(pipeline.model, 'coef_'):
+                    new_model.coef_, new_model.intercept_, new_model.classes_ = mod[:-2]
+
+                self.X.append(mod[-2])
+                self.y.append(mod[-1].ravel())
+
+                self.cost.append(self.cost[-1] - len(np.hstack(self.y[-1]))+((np.hstack(self.y[-1]) == 1).sum()*2))
+
+                if trans is not None:
+                    Xt = trans.transform(np.vstack(self.X)[-self.window:, :])
+                else:
+                    Xt = self.X
+
+                try:
+                    Z = new_model.predict_proba(gridt)[:, 0].reshape(250, 250)
+                    yPred = new_model.predict(Xt)
+                except AttributeError:
+                    Z = new_model.decision_function(gridt).reshape(250, 250)
+                    yPred = new_model.predict(Xt)
+
+                plt.subplot(121)
+                plt.contourf(np.linspace(0, 1, 250),
+                             np.linspace(0, 1, 250),
+                             Z, 30, cmap='RdBu_r')
+                ax = plt.gca()
+                plt.colorbar(ax=ax)
+                plt.contour(np.linspace(0, 1, 250),
+                            np.linspace(0, 1, 250),
+                            Z, [0.5])
+                plt.scatter(*np.vstack(self.X)[-self.window:, :].T,
+                            c=self.cols[np.hstack(self.y)[-self.window:].astype(int)], alpha=.8)
+                ind += len(mod[-2])
+                plt.xlim([0, 1])
+                plt.ylim([0, 1])
+
+                plt.title('Epoch: '+str(i))
+
+                self.acc.append(np.hstack(self.y)[-self.window:] == yPred[-self.window:])
+
+                plt.subplot(122)
+                acc_plot = pd.Series(np.hstack(self.acc)).rolling(self.window).mean().values
+                plt.plot(acc_plot, c='g', label='accuracy')
+
+                plt.ylim([0, 1.05])
+                plt.xlim([0, len(np.hstack(self.acc))+100])
+                plt.title(f'{(acc_plot[-1]*100).round(2)}% -- Profit: ${self.cost[-1]}')
+
+                if plot_cost:
+                    ax1 = plt.gca()
+                    ax2 = ax1.twinx()
+    #                 ax2.plot(np.linspace(0, len(np.hstack(acc)), num=len(cost)), cost, c='b', label='Profit')
+                    clrs = sns.hls_palette(2)
+                    ax2.scatter(np.linspace(0, len(np.hstack(self.acc)), num=len(self.cost)), self.cost,
+                                c=np.array(clrs)[(np.array(self.cost) > 0).astype(int)], s=2, label='Profit')
+                plt.legend()
+
+                f = plt.gcf()
+
+                model_name = str(pipeline.model.__class__).split('.')[-1].split("'")[0]
+                gener_name = gen_name
+                f.suptitle(f"Model: {model_name}\nDataSet: {gener_name}")
+
+                if save_gif:
+                    self.filenames.append(f'tmp/gif{model_name}_{gener_name}_{i}.png')
+                    f.savefig(self.filenames[-1])
+
+                display.clear_output(wait=True)
+                plt.show()
+
+        if save_gif:
+            images = []
+            if not os.path.exists('tmp/'):
+                os.mkdir('tmp/')
+            for filename in self.filenames:
+                images.append(imageio.imread(filename))
+            imageio.mimsave(f'tmp/{model_name}_{gener_name}.gif', images)
+
+            if os.path.exists(f'tmp/{model_name}_{gener_name}.gif'):
+                for filename in self.filenames:
+                    os.remove(filename)
