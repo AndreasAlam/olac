@@ -610,26 +610,26 @@ class Plotter():
             #     for filename in self.filenames:
             #           os.remove(filename)
 
-        def performance(self, eval_data, train_data, window):
-            """Plot the performance metrics of the model"""
-            return performance(eval_data, train_data, window)
+    def performance(self, eval_data, train_data, window):
+        """Plot the performance metrics of the model"""
+        return performance(eval_data, train_data, window)
 
-        def _save_gif(self, filenames, path='tmp/', ):
-            """Combines output .png as a gif.
+    def _save_gif(self, filenames, path='tmp/', ):
+        """Combines output .png as a gif.
 
-            Parameters
-            ----------
-            filenames: list
-                list of filenames including the path to the files. i.e. tmp/image1.png
+        Parameters
+        ----------
+        filenames: list
+            list of filenames including the path to the files. i.e. tmp/image1.png
 
-            path: string
-                path to save the gif to
-            """
-            images = []
+        path: string
+            path to save the gif to
+        """
+        images = []
+        for filename in self.filenames:
+            images.append(imageio.imread(filename))
+        imageio.mimsave(f'{path}{model_name}_{gener_name}.gif', images)
+
+        if os.path.exists(f'{path}{model_name}_{gener_name}.gif'):
             for filename in self.filenames:
-                images.append(imageio.imread(filename))
-            imageio.mimsave(f'{path}{model_name}_{gener_name}.gif', images)
-
-            if os.path.exists(f'{path}{model_name}_{gener_name}.gif'):
-                for filename in self.filenames:
-                    os.remove(filename)
+                os.remove(filename)
