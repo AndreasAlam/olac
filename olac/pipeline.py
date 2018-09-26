@@ -11,6 +11,7 @@ from IPython import display
 import time
 from sklearn.base import clone
 
+
 from . import utils
 
 from queue import Queue
@@ -304,6 +305,7 @@ class DemoPipeline(Pipeline):
 
     def get_grid(self):
         gridpoints = np.linspace(0, 1, 250)
+
         grid = []
         for y in gridpoints:
             for x in gridpoints:
@@ -379,6 +381,7 @@ class DemoPipeline(Pipeline):
         assert self.predictor is not None
         if hasattr(self.predictor, 'transformer'):
             self.grid = self.predictor.transformer.transform(self.grid)
+
         while not self._stop_flag.is_set():
 
             try:
@@ -407,12 +410,12 @@ class DemoPipeline(Pipeline):
                     x_max = 10
 
                 time.sleep(self.sleep)
-                plt.contourf(np.linspace(0, 1, 250),
-                             np.linspace(0, 1, 250),
+
+                plt.contourf(np.linspace(x_min, x_max, 250),
+                             np.linspace(x_min, x_max, 250),
                              pred)
-                plt.title("Epoch {}".format(len(self._grid_history)))
+                plt.title(X.shape)
                 plt.scatter(*X.T, c=self.colors[y.astype(int)])
-                
                 plt.show()
 
                 display.display(plt.gcf())
@@ -893,7 +896,8 @@ class OfflinePredictor(GridPredictor, PredictorBase):
         # Get the new points from the queue
         new_points = pipeline.training_queue.get_all()  # training_queue is now empty
         if self.verbose:
-            print(f'Predictor:\t{len(new_points)} new points available, Adding to history...')
+            print(f'Predictor:\t{len(new_points)} new points available, re-training...')
+
 
         # Stack the points as an array to add to historical points
         add_points = np.vstack([np.hstack((p.point, p.true_label)) for p in new_points])

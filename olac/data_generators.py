@@ -131,6 +131,36 @@ def roving_balls(balls=2, steps=1000, period=1000, radius=5, vars=1,
 
 def dynamify_data(X, y=None, transition_rate=0.1, cluster_simul=1,
                   dbshift_args=tuple(), dbshift_kwargs=dict()):
+    """
+    Convert a static dataset into a dynamic one produced by a generator.
+
+    Parameters
+    ----------
+    X : ndarray
+        The input data
+
+    y : optional, ndarray, default None
+        The labels
+
+    transition_rate : float, default 0.1
+        The approximate rate at which new clusters will pop up
+
+    cluster_simul : int or float, default 1
+        If >1, the approximate number of simultaneously active clusters
+        If <1, the approximate fraction of simultaneously active clusters
+
+    dbshift_args : tuple, optional
+        Args to be passed to models.DBShift clusterer
+
+    dbshift_kwargs : dict, optional
+        Kwargs to be passed to models.DBShift clusterer
+
+    Yields
+    ------
+    np.ndarray
+        Data point of form [x1, x2, ..., xn, label]
+
+    """
 
     X = np.array(X)
 
