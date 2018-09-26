@@ -9,6 +9,7 @@ from . import cost_of_label
 import seaborn as sns
 from IPython import display
 import time
+from sklearn.base import clone
 
 from . import utils
 
@@ -302,7 +303,7 @@ class DemoPipeline(Pipeline):
         self._grid_history = []
 
     def get_grid(self):
-        gridpoints = np.linspace(-10, 10, 250)
+        gridpoints = np.linspace(0, 1, 250)
         grid = []
         for y in gridpoints:
             for x in gridpoints:
@@ -314,6 +315,7 @@ class DemoPipeline(Pipeline):
         Run the pipeline in demo mode.
         """
         # --- Print the pipeline descripton
+        t = time.time()
         if describe:
             self.describe()
         if mode == 'print':
@@ -332,6 +334,9 @@ class DemoPipeline(Pipeline):
             print("| START PIPELINE |")
             print("="*18)
             results = self.run_plot()
+
+        print("PIPELINE END ---")
+        print("Total time: {}".format(np.round(time.time()-t, 2)))
 
         return results
 
@@ -372,6 +377,8 @@ class DemoPipeline(Pipeline):
 
     def _plot_worker(self):
         assert self.predictor is not None
+        if hasattr(self.predictor, 'transformer'):
+            self.grid = self.predictor.transformer.transform(self.grid)
         while not self._stop_flag.is_set():
 
             try:
@@ -400,11 +407,12 @@ class DemoPipeline(Pipeline):
                     x_max = 10
 
                 time.sleep(self.sleep)
-                plt.contourf(np.linspace(x_min, x_max, 250),
-                             np.linspace(x_min, x_max, 250),
+                plt.contourf(np.linspace(0, 1, 250),
+                             np.linspace(0, 1, 250),
                              pred)
-                plt.title(X.shape)
+                plt.title("Epoch {}".format(len(self._grid_history)))
                 plt.scatter(*X.T, c=self.colors[y.astype(int)])
+                
                 plt.show()
 
                 display.display(plt.gcf())
@@ -879,28 +887,44 @@ class OfflinePredictor(GridPredictor, PredictorBase):
         Rertrain the model using all points available in the training queue
         plus all the points you've come across before using pipeline.model.fit.
         """
+        # Deep copy the model
+        # self.model = pipeline.model.deepcopy()
+
         # Get the new points from the queue
         new_points = pipeline.training_queue.get_all()  # training_queue is now empty
         if self.verbose:
-            print(f'Predictor:\t{len(new_points)} new points available, re-training...')
+            print(f'Predictor:\t{len(new_points)} new points available, Adding to history...')
 
         # Stack the points as an array to add to historical points
         add_points = np.vstack([np.hstack((p.point, p.true_label)) for p in new_points])
         try:
             # Get the historical points
             self.historic_points = np.vstack((self.historic_points, add_points))
+            if self.verbose:
+                print(f'Predictor: {len(add_points)} points added to history.\n. \
+                  Total nr of points: {len(self.historic_points)}')
         except ValueError:
             # If no historic points yet, set first batch as historical points
             self.historic_points = add_points
+            if self.verbose:
+                print(f'Predictor: {len(add_points)} points added to history.')
 
-        # Split into X and y
-        X_train = self.historic_points[:, :-1]
-        y_train = self.historic_points[:, -1]
+        # Split into X and y, only take last batch_size of points to retrain
+        X_train = self.historic_points[-self.batch_size:, :-1]
+        y_train = self.historic_points[-self.batch_size:, -1]
 
+        # if X_train.shape > self.batch_size:
         # Train the model
-        pipeline.model.fit(X_train, y_train)
+        self.model = clone(pipeline.model)
+        # pipeline.model.fit(X_train, y_train)
+        self.model.fit(X_train, y_train)
+        # self.model.fit(X_train, y_train)
         if self.verbose:
-            print("Trained model on {} points".format(len(self.historic_points)))
+            print("Predictor: Trained model on {} points".format(len(self.historic_points)))
+        else:
+            if self.verbose:
+                print(f'Predictor: Not enough points to train. \
+                    Current nr of points {len(self.historic_points)}')
 
     def do_prediction(self, pipeline, x,):
         """
@@ -909,13 +933,13 @@ class OfflinePredictor(GridPredictor, PredictorBase):
         """
         self.npoints.append(1)
         try:
-            y_pred = pipeline.model.predict([x])
-            if len(self.npoints) % self.batch_size == 0:
-                self.hist_grid.append(self.grid_predict(pipeline))
-            if hasattr(pipeline.model, 'predict_proba'):
-                prob = pipeline.model.predict_proba([x])
-            elif hasattr(pipeline.model, 'decision_function'):
-                prob = pipeline.model.decision_function([x])
+            y_pred = self.model.predict([x])
+            # if len(self.npoints) % self.batch_size == 0:
+            #     self.hist_grid.append(self.grid_predict(self))
+            if hasattr(self.model, 'predict_proba'):
+                prob = self.model.predict_proba([x])
+            elif hasattr(self.model, 'decision_function'):
+                prob = self.model.decision_function([x])
             else:
                 prob = np.nan
 
