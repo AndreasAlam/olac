@@ -4,6 +4,7 @@ import seaborn as sns
 from IPython import display
 import matplotlib.pyplot as plt
 import matplotlib
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 import imageio
 import pandas as pd
@@ -452,10 +453,12 @@ class Plotter():
         self.X_val = []
         self.cost = [0]
         self.acc = []
-        self.cols = np.array(['g','b'])
+        self.acc2 = []
+        self.cols = np.array(['g', 'b'])
         self.window = window
         self.filenames = []
         self.figsize = figsize
+
 
     def get_grid(self):
         """Return a grid that can be used
@@ -468,7 +471,7 @@ class Plotter():
         return np.array(grid)
 
     def plot_history(self, pipeline, test_set, save_gif=False, gen_name=None, trans=None,
-                     plot_cost=False, budget=0, gain_factor=2):
+                     plot_cost=False, budget=0, gain_factor=2, plot_step=0, sup_title=''):
         """Plot the training of the model and plot the accuracy and (optionally)
         the cost/profit over time.
 
@@ -500,6 +503,13 @@ class Plotter():
         gain_factor: float/int
             How much we earn from catching fraud compared to investigation cost. The total gain
             is calculated as investigation_cost*gain_factor. The investigation cost is set to 1.
+
+        plot_step: int
+            Every plot_step steps an image is saved for the gif. Long runs can be shortend by using a
+            higher plot_step
+
+        sup_title: string
+            Title of the entire plot
         """
 
         plt.rcParams['figure.figsize'] = self.figsize
@@ -511,6 +521,7 @@ class Plotter():
 
         acc2 = np.array_split(y_true == y_pred, len(pipeline.predictor.model_hist))
         X_in = np.array_split(test_df[['x0', 'x1']].values, len(pipeline.predictor.model_hist))
+        y_in = np.array_split(test_df[['y_true']].values, len(pipeline.predictor.model_hist))
 
         y_true = np.array_split(test_df['y_true'], len(pipeline.predictor.model_hist))
         y_pred = np.array_split(test_df['y_pred'], len(pipeline.predictor.model_hist))
@@ -523,7 +534,7 @@ class Plotter():
         ind = 0
 
         for i, mod in enumerate(pipeline.predictor.model_hist):
-            if i % 2 == 0:
+            if i % plot_step == 0:
                 new_model = clone(pipeline.model)
                 if hasattr(pipeline.model, 'coefs_'):
                         new_model.coefs_, new_model.intercepts_, new_model.classes_,\
@@ -551,53 +562,88 @@ class Plotter():
                     yPred = new_model.predict(Xt)
 
                 plt.subplot(121)
-                plt.contourf(np.linspace(0, 1, 250),
-                             np.linspace(0, 1, 250),
-                             Z, 30, cmap='RdBu_r')
-                ax = plt.gca()
-                plt.colorbar(ax=ax)
+                cpl = plt.contourf(np.linspace(0, 1, 250),
+                                   np.linspace(0, 1, 250),
+                                   Z, 30, cmap='RdBu_r', vmin=0.2, vmax=0.8)
+
+
+                # plt.colorbar(mappable=cpl, ax=ax, boundaries=np.arange(0, 1, .1))
                 plt.contour(np.linspace(0, 1, 250),
                             np.linspace(0, 1, 250),
                             Z, [0.5])
-                plt.scatter(*np.vstack(self.X)[-self.window:, :].T,
-                            c=self.cols[np.hstack(self.y)[-self.window:].astype(int)], alpha=.8)
+                ax = plt.gca()
+                divider = make_axes_locatable(ax)
+                ax_cb = divider.new_horizontal(size="5%", pad=0.05)
+                cb1 = matplotlib.colorbar.ColorbarBase(
+                    ax_cb, cmap='RdBu_r',
+                    norm=matplotlib.colors.Normalize(vmin=0, vmax=1), orientation='vertical')
+                plt.gcf().add_axes(ax_cb)
+
+                # -- plot unlabbeled points
+                ax.scatter(*X_in[i].T, c='k', s=2, alpha=.8)
+                ax.scatter(*X_in[i][y_in[i].ravel() == 0].T, c='g', s=3, alpha=.5)
+                ax.scatter(*X_in[i][y_in[i].ravel() == 1].T, c='b', s=3, alpha=.3)
+
+                # -- plot labelled points
+                ax.scatter(*np.vstack(self.X)[-self.window:, :].T,
+                           c=self.cols[np.hstack(self.y)[-self.window:].astype(int)], alpha=.8)
+                ax.scatter(*np.vstack(self.X)[-self.window:, :][np.hstack(self.y)[-self.window:] != yPred[-self.window:]].T,
+                           c='r', s=3, alpha=.8)
 
                 legend_elements = [matplotlib.lines.Line2D([0], [0], c='w', marker='o', lw=0,
                                    markerfacecolor='g', markersize=6, label='Not Fraud'),
                                    matplotlib.lines.Line2D([0], [0], c='w', marker='o', lw=0,
-                                   markerfacecolor='b', markersize=6, label='Fraud'), ]
+                                   markerfacecolor='b', markersize=6, label='Fraud'),
+                                   matplotlib.lines.Line2D([0], [0], c='w', marker='o', lw=0,
+                                   markerfacecolor='k', markersize=6, label='Unlabelled'), ]
 
-                plt.gca().legend(handles=legend_elements, loc='best')
+                ax.legend(handles=legend_elements, loc='lower right')
                 ind += len(mod[-2])
-                plt.xlim([0, 1])
-                plt.ylim([0, 1])
+                ax.set_xlim([0, 1])
+                ax.set_ylim([0, 1])
 
-                plt.title('Epoch: '+str(i))
+                ax.set_title('Epoch: '+str(i), fontsize=15)
 
                 self.acc.append(np.hstack(self.y)[-self.window:] == yPred[-self.window:])
+                self.acc2.append(np.hstack(acc2[i]))
 
                 plt.subplot(122)
                 acc_plot = pd.Series(np.hstack(self.acc)).rolling(self.window).mean().values
-                plt.plot(acc_plot, c='g', label='accuracy', alpha=.6, linestyle='dashed')
+                acc2_plot = pd.Series(np.hstack(self.acc2)).rolling(self.window).mean().values
+                plt.plot(np.linspace(0, len(acc_plot), num=len(acc_plot)), acc_plot, c='m', label='observed accuracy', alpha=.7, linestyle='dotted', lw=4)
+                plt.plot(np.linspace(0, len(acc_plot), num=len(acc2_plot)), acc2_plot, c='r', label='actual accuracy', alpha=.6, linestyle='dotted', lw=4)
 
                 plt.ylim([0, 1.05])
                 plt.xlim([0, len(np.hstack(self.acc))+100])
-                plt.title(f'{(acc_plot[-1]*100).round(2)}% -- Profit: ${self.cost[-1].round(2)}')
+                plt.title(f'{(acc_plot[-1]*100).round(2)}% -- Profit: ${self.cost[-1].round(2)}',
+                          fontsize=15)
 
+                leg_elements = [matplotlib.lines.Line2D([0], [0], c='w', marker='o', lw=0,
+                                markerfacecolor='m', markersize=6, label='Observerd Accuracy'), 
+                                matplotlib.lines.Line2D([0], [0], c='w', marker='o', lw=0,
+                                markerfacecolor='r', markersize=6, label='Validation set Accuracy'), ]
                 if plot_cost:
                     ax1 = plt.gca()
                     ax2 = ax1.twinx()
     #                 ax2.plot(np.linspace(0, len(np.hstack(acc)), num=len(cost)), cost, c='b', label='Profit')
                     clrs = sns.hls_palette(2)
+                    ax2.plot(np.linspace(0, len(np.hstack(self.acc)), num=len(self.cost)),
+                             self.cost, c='c', alpha=.3, lw=4)
                     ax2.scatter(np.linspace(0, len(np.hstack(self.acc)), num=len(self.cost)), self.cost,
-                                c=np.array(clrs)[(np.array(self.cost) > 0).astype(int)], s=2, label='Profit')
-                plt.legend()
+                                c=np.array(clrs)[(np.array(self.cost) > 0).astype(int)], s=4, label='Profit')
+                    leg_elements.append(matplotlib.lines.Line2D([0], [0], c='w', marker='o', lw=0,
+                                        markerfacecolor=clrs[1], markersize=6, label='Profit'),)
+
+                plt.legend(handles=leg_elements, loc='lower right')
 
                 f = plt.gcf()
 
                 self.model_name = str(pipeline.model.__class__).split('.')[-1].split("'")[0]
                 self.gener_name = gen_name
-                f.suptitle(f"Model: {self.model_name}\nDataSet: {self.gener_name}")
+                if sup_title == '':
+                    f.suptitle(f"Model: {self.model_name}\nDataSet: {self.gener_name}")
+                else:
+                    f.suptitle(sup_title, fontsize=20)
 
                 if save_gif:
                     if not os.path.exists('tmp/'):
