@@ -216,33 +216,41 @@ class Pipeline():
 
         return training_set, eval_set
 
-    def describe(pipeline):
+    def describe(self, output=True):
         """
         Describe the pipeline
         """
         for thing in ['model', 'predictor', 'labeller', 'data_generator']:
             if thing == 'data_generator':
-                print('='*20)
-                print("{}:\n{}\n  {}\n".format(thing.capitalize(),
-                                               '='*20,
-                                               pipeline.__getattribute__(thing).__name__))
-                print('Generator status: ', inspect.getgeneratorstate(
-                    pipeline.__getattribute__(thing)))
-                pprint.pprint(inspect.getgeneratorlocals(
-                    pipeline.__getattribute__(thing)))
+                name_of_thing = self.__getattribute__(thing).__name__
+
+                if output:
+                    print('='*20)
+                    print("{}:\n{}\n  {}\n".format(thing.capitalize(),
+                                                   '='*20,
+                                                   self.__getattribute__(thing).__name__))
+                    print('Generator status: ', inspect.getgeneratorstate(
+                        self.__getattribute__(thing)))
+                    pprint.pprint(inspect.getgeneratorlocals(
+                        self.__getattribute__(thing)))
 
             else:
-                print('='*20)
-                print("{}:\n{}\n  {}\n".format(thing.capitalize(),
-                                               '='*20,
-                                               '\n  '.join(
-                                        re.findall('(?<=\.)\w+',
-                                                   str(pipeline.__getattribute__(thing).__class__)))))
+                name_of_thing = re.findall('(?<=\.)\w+',
+                                           str(self.__getattribute__(thing).__class__))[-1]
+                if output:
+                    print('='*20)
+                    print("{}:\n{}\n  {}\n".format(thing.capitalize(),
+                                                   '='*20,
+                                                   '\n  '.join(
+                                            re.findall('(?<=\.)\w+',
+                                                       str(self.__getattribute__(thing).__class__)))))
 
-                print('Parameters:  ')
-                pprint.pprint(utils.get_params(pipeline.__getattribute__(thing)), indent=2)
-                print()
-        print('-'*80)
+                    print('Parameters:  ')
+                    pprint.pprint(utils.get_params(self.__getattribute__(thing)), indent=2)
+                    print()
+            setattr(self, thing+'_name', name_of_thing)
+        if output:
+            print('-'*80)
 
 
 class DemoPipeline(Pipeline):
@@ -936,6 +944,8 @@ class OfflinePredictor(GridPredictor, PredictorBase):
         return NaNs.
         """
         self.npoints.append(1)
+        if not hasattr(self, 'model'):
+            self.model = clone(pipeline.model)
         try:
             y_pred = self.model.predict([x])
             # if len(self.npoints) % self.batch_size == 0:
