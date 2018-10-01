@@ -1,32 +1,9 @@
 # Online Learning at Cost
-Classifying dynamic unbalanced data
+Data that changes over time can be an issue in regards to classification tasks in machine learning. Especially if new characteristics emerge within the same class. An example of this is machine learning applied to fraud detection in financial institutions. New kinds of fraud appear over time, as new ways to ‘cheat the system’ are invented, especially if current ways are being successfully detected or stopped.
 
-## Installation
-For convenience the repo contains a `Makefile`  that facilitates:
-* make venv - Virtual environment build & installation
-* make data - Data download
-* make requirements - Update requirements.txt
+A problem for ML is that the flexibility of most algorithms is not strong enough to keep up with these new types of the target-class appearing over time. Retraining is the a common way of dealing with these changes. However, successfully retraining your model to detect new types of your target-class highly depends on these new types of being labelled. Retrieving new labels is an expensive exercise as cases need to be investigated by the human in the loop. In addition, there is a risk of of introducing bias in your model by only investigating the most likely cases produced by the model.
 
-`make venv` assumes `homebrew` is installed and either `zsh` or `bash` is the default shell ($SHELL).
-If the above conditions are not met or if you want to use a different environment/package-manager please see the dependencies
-and manual installation section.
-Pyenv will automatically 'activate' the local environment when entering the directory. Moreover, the makefile install ipython kernel based on the local virtualenv.
-
-### Manual installation
-#### Dependencies
-1. Python >= 3.6.5
-2. pip >= 9.03
-3. Library requirements `pip install -r requirements.txt`
-
-#### Optional:
-1. [pyenv](https://github.com/pyenv/pyenv) - Simple Python version management
-2. [pyenv-virtualenv](https://github.com/pyenv/pyenv-virtualenv) - pyenv plugin
-3. Python 3.6.5 - `pyenv install 3.6.5`
-Set the environment
-4. `pyenv virtualenv 3.6.5 olac_base `
-5. `pyenv local olac_base`
-6. `pip install ipykernel`
-7. `ipython kernel install --user --name=olac_base`
+In this project we are investigating retraining strategies for models in production models in a cost-effective way, applied to toy-datasets, with a basis in fraud detection as a use case. We will do this by comparing ’traditional’ deep learning vs Online learning models. The goal of the project is to research optimal settings for labelling new data and providing feedback to a trained model, provided that we are trying balance the cost of obtaining new labels, with the cost of model decay over time.
 
 ## Data
 See Docs/datasets for the documentation and exploration of the datasets.
