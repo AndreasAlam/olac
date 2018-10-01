@@ -10,6 +10,8 @@ import seaborn as sns
 from IPython import display
 import time
 from sklearn.base import clone
+from copy import deepcopy
+
 
 
 from . import utils
@@ -963,3 +965,83 @@ class OfflinePredictor(GridPredictor, PredictorBase):
             prob = np.nan
 
         return y_pred, prob
+
+
+class NewPredictor(OnlinePredictor):
+    def __init__(self, verbose, transformer):
+        super().__init__()
+        self.model_hist = []
+        self.verbose = verbose
+        self.transformer = transformer
+        self.models = []
+        self.grid = self.get_grid()
+
+    def transform(self, X_train):
+        if hasattr(self.transformer, 'transform'):
+            return self.transformer.transform(X_train)
+        else:
+            return X_train
+
+    def train_pipeline_model(self, pipeline):
+        points = pipeline.training_queue.get_all()
+
+        X_train = np.vstack([np.array(p.point) for p in points])
+        y_train = np.array([p.true_label for p in points])
+
+        if self.verbose:
+            print(
+                f'Predictor:\t{len(points)} new points available, updating ...'
+            )
+
+        pipeline.model.partial_fit(self.transform(X_train), y_train, classes=[0, 1])
+        try:
+            mod = deepcopy(pipeline.model)
+            self.models.append(mod)
+            if hasattr(mod, 'coef_'):
+                self.model_hist.append((mod.coef_, mod.intercept_, mod.classes_, 
+                                        X_train, y_train))
+            elif hasattr(mod, 'coefs_'):
+                self.model_hist.append((mod.coefs_, mod.intercepts_.copy(),
+                                        mod.classes_.copy(), mod.n_outputs_,
+                                        mod.n_layers_, mod.out_activation_,
+                                        mod._label_binarizer, X_train, y_train))
+        except AttributeError:
+            pass
+
+    def get_grid(self):
+        gridpoints = np.linspace(-10, 10, 250)
+        grid = []
+        for y in gridpoints:
+            for x in gridpoints:
+                grid.append([x, y])
+        return np.array(grid)
+
+    def do_prediction(self, pipeline, x,):
+        """
+        Make a prediction. If the model has not yet been fit (burn-in phase),
+        return NaNs.
+        """
+        xt = self.transform([x])
+        try:
+            y_pred = pipeline.model.predict(xt)
+
+            # certainty measure not standard across sklearn
+            # prefer predict_proba, else take decision_function
+            if hasattr(pipeline.model, 'predict_proba'):
+                prob = pipeline.model.predict_proba(xt)
+
+            elif hasattr(pipeline.model, 'decision_function'):
+                prob = pipeline.model.decision_function(xt)
+
+            else:
+                prob = np.nan
+
+        except (sklearn.exceptions.NotFittedError, AssertionError):
+            # still burning in, return NaNs.
+            y_pred = np.nan
+            prob = np.nan
+
+        return y_pred, prob
+
+
+
