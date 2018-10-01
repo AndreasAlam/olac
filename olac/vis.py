@@ -470,8 +470,8 @@ class Plotter():
                 grid.append([x, y])
         return np.array(grid)
 
-    def plot_history(self, pipeline, test_set, save_gif=False, gen_name=None, trans=None,
-                     plot_cost=False, budget=0, gain_factor=2, plot_step=0, sup_title=''):
+    def plot_history(self, pipeline, test_set, train_set, save_gif=False, gen_name=None, trans=None,
+                     plot_cost=False, budget=0, gain_factor=2, plot_step=1, sup_title=''):
         """Plot the training of the model and plot the accuracy and (optionally)
         the cost/profit over time.
 
@@ -515,6 +515,7 @@ class Plotter():
         plt.rcParams['figure.figsize'] = self.figsize
 
         test_df = ut.queue_point_list_to_df(test_set)
+        train_df = ut.queue_point_list_to_df(train_set)
 
         y_true = test_df['y_true']
         y_pred = test_df['y_pred']
@@ -525,6 +526,12 @@ class Plotter():
 
         y_true = np.array_split(test_df['y_true'], len(pipeline.predictor.model_hist))
         y_pred = np.array_split(test_df['y_pred'], len(pipeline.predictor.model_hist))
+
+        self.cost = train_df['y_true'].astype(float)*gain_factor
+        self.cost = self.cost*np.random.normal(loc=2, size=len(train_df))
+        self.cost = self.cost - (train_df['y_true'] == 0).astype(float)
+        self.cost = self.cost.values.cumsum()
+        self.final_cost = self.cost[-1]
 
         if trans is not None:
             gridt = trans.transform(self.get_grid())
@@ -537,22 +544,26 @@ class Plotter():
             if i % plot_step == 0:
                 new_model = clone(pipeline.model)
                 if hasattr(pipeline.model, 'coefs_'):
-                        new_model.coefs_, new_model.intercepts_, new_model.classes_,\
-                            new_model.n_outputs_, new_model.n_layers_, new_model.out_activation_,\
-                            new_model._label_binarizer = mod[:-2]
+                    # print('Adding coefs_')
+                    new_model.coefs_, new_model.intercepts_, new_model.classes_,\
+                        new_model.n_outputs_, new_model.n_layers_, new_model.out_activation_,\
+                        new_model._label_binarizer = mod[:-2]
                 elif hasattr(pipeline.model, 'coef_'):
+                    # print('Adding coef_')
                     new_model.coef_, new_model.intercept_, new_model.classes_ = mod[:-2]
+                else:
+                    print('Failed to add anything!')
 
                 self.X.append(mod[-2])
                 self.y.append(mod[-1].ravel())
 
-                self.cost.append(self.cost[-1] - len(np.hstack(self.y[-1]))+((np.hstack(self.y[-1]) == 1).sum()*(
-                            np.random.normal()+1)*gain_factor))
+                # self.cost.append(self.cost[-1] - len(np.hstack(self.y[-1]))+((np.hstack(self.y[-1]) == 1).sum()*(
+                #             np.random.normal()+1)*gain_factor))
 
                 if trans is not None:
                     Xt = trans.transform(np.vstack(self.X)[-self.window:, :])
                 else:
-                    Xt = self.X
+                    Xt = np.vstack(self.X)[-self.window:, :]
 
                 try:
                     Z = new_model.predict_proba(gridt)[:, 0].reshape(250, 250)
@@ -610,12 +621,14 @@ class Plotter():
                 plt.subplot(122)
                 acc_plot = pd.Series(np.hstack(self.acc)).rolling(self.window).mean().values
                 acc2_plot = pd.Series(np.hstack(self.acc2)).rolling(self.window).mean().values
-                plt.plot(np.linspace(0, len(acc_plot), num=len(acc_plot)), acc_plot, c='m', label='observed accuracy', alpha=.7, linestyle='dotted', lw=4)
-                plt.plot(np.linspace(0, len(acc_plot), num=len(acc2_plot)), acc2_plot, c='r', label='actual accuracy', alpha=.6, linestyle='dotted', lw=4)
+                plt.plot(np.linspace(0, len(acc_plot), num=len(acc_plot)), acc_plot, c='m',
+                         label='observed accuracy', alpha=.7, lw=2)
+                plt.plot(np.linspace(0, len(acc_plot), num=len(acc2_plot)), acc2_plot, c='r',
+                         label='actual accuracy', alpha=.6, lw=2)
 
                 plt.ylim([0, 1.05])
-                plt.xlim([0, len(np.hstack(self.acc))+100])
-                plt.title(f'{(acc_plot[-1]*100).round(2)}% -- Profit: ${self.cost[-1].round(2)}',
+                plt.xlim([0, len(np.hstack(pipeline.predictor.model_hist))])
+                plt.title(f'Accuracy: {(acc_plot[-1]*100).round(2)}%',
                           fontsize=15)
 
                 leg_elements = [matplotlib.lines.Line2D([0], [0], c='w', marker='o', lw=0,
@@ -624,15 +637,30 @@ class Plotter():
                                 markerfacecolor='r', markersize=6, label='Validation set Accuracy'), ]
                 if plot_cost:
                     ax1 = plt.gca()
-                    ax2 = ax1.twinx()
+                    divider = make_axes_locatable(ax1)
+                    ax2 = divider.new_horizontal(size="20%", pad=0.05)
     #                 ax2.plot(np.linspace(0, len(np.hstack(acc)), num=len(cost)), cost, c='b', label='Profit')
-                    clrs = sns.hls_palette(2)
-                    ax2.plot(np.linspace(0, len(np.hstack(self.acc)), num=len(self.cost)),
-                             self.cost, c='c', alpha=.3, lw=4)
-                    ax2.scatter(np.linspace(0, len(np.hstack(self.acc)), num=len(self.cost)), self.cost,
-                                c=np.array(clrs)[(np.array(self.cost) > 0).astype(int)], s=4, label='Profit')
-                    leg_elements.append(matplotlib.lines.Line2D([0], [0], c='w', marker='o', lw=0,
-                                        markerfacecolor=clrs[1], markersize=6, label='Profit'),)
+                    # clrs = sns.hls_palette(2)
+                    if self.cost[i] > 0:
+                        ax2.bar(x=1, height=self.cost[i], width=4, color='g')
+                    if self.cost[i] < 0:
+                        ax2.bar(x=1, height=self.cost[i], width=4, color='r')
+                    ax2.set_xlim(0, 2)
+                    ax2.set_ylim(self.cost.min()+self.cost.min()*.3,
+                                 self.cost.max()+self.cost.max()*.3)
+                    ax2.set_title(f'Profit: ${self.cost[i].round(2)}')
+                    ax2.axhline(c='k', linestyle='dashed')
+                    ax2.tick_params(axis='y', bottom=False, right=True, left=False, top=False,
+                                    labelbottom=False, labelright=True, labelleft=False)
+                    plt.gcf().add_axes(ax2)
+                    # ax.
+
+                    # ax2.plot(np.linspace(0, len(np.hstack(self.acc)), num=len(self.cost)),
+                    #          self.cost, c='c', alpha=.3, lw=4)
+                    # ax2.scatter(np.linspace(0, len(np.hstack(self.acc)), num=len(self.cost)), self.cost,
+                    #             c=np.array(clrs)[(np.array(self.cost) > 0).astype(int)], s=4, label='Profit')
+                    # leg_elements.append(matplotlib.lines.Line2D([0], [0], c='w', marker='o', lw=0,
+                    #                     markerfacecolor=clrs[1], markersize=6, label='Profit'),)
 
                 plt.legend(handles=leg_elements, loc='lower right')
 
