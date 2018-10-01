@@ -2,6 +2,7 @@ import time
 import numpy as np
 import pandas as pd
 from scipy.stats import poisson
+import functools
 
 from keras.models import Model
 from keras.layers import Input, Dense
@@ -680,3 +681,26 @@ class EncodingGenerator():
                 y = last_n[-1,-1]
                 yield np.hstack([self.encode(X)[0], y])
 
+
+def scale_generator(original_generator):
+    @functools.wraps(original_generator)
+    def wrapper(x_min, x_max, dp0=0, dp1=1, *args, **kwargs):
+        or_output = original_generator(*args, **kwargs)
+        x_shift = x_min
+
+        dp = np.array((dp0, dp1))
+        x_min -= x_shift
+        x_max -= x_shift
+        for point in or_output:
+            point[:2] -= x_shift
+            point[:2] = dp[0] + (point[:2] - x_min)*(dp[1] - dp[0])/(x_max - x_min)
+            yield point
+    return wrapper
+
+
+@scale_generator
+def new_generator(generator, *args, **kwargs):
+    from . import data_generators
+
+    gen = eval(generator)(*args, **kwargs)
+    return gen
