@@ -447,7 +447,7 @@ class Plotter():
     """
     Plotter class to save convenient plot functions
     """
-    def __init__(self, window=100, figsize=(10,5)):
+    def __init__(self, window=100, figsize=(10, 5)):
         self.X = []
         self.y = []
         self.X_val = []
@@ -463,7 +463,7 @@ class Plotter():
     def get_grid(self):
         """Return a grid that can be used
         to plot the decision function"""
-        gridpoints = np.linspace(-10, 10, 250)
+        gridpoints = np.linspace(0, 1.2, 250)
         grid = []
         for y in gridpoints:
             for x in gridpoints:
@@ -573,14 +573,14 @@ class Plotter():
                     yPred = new_model.predict(Xt)
 
                 plt.subplot(121)
-                cpl = plt.contourf(np.linspace(0, 1, 250),
-                                   np.linspace(0, 1, 250),
+                cpl = plt.contourf(np.linspace(0, 1.2, 250),
+                                   np.linspace(0, 1.2, 250),
                                    Z, 30, cmap='RdBu_r', vmin=0.2, vmax=0.8)
 
 
                 # plt.colorbar(mappable=cpl, ax=ax, boundaries=np.arange(0, 1, .1))
-                plt.contour(np.linspace(0, 1, 250),
-                            np.linspace(0, 1, 250),
+                plt.contour(np.linspace(0, 1.2, 250),
+                            np.linspace(0, 1.2, 250),
                             Z, [0.5])
                 ax = plt.gca()
                 divider = make_axes_locatable(ax)
@@ -610,8 +610,8 @@ class Plotter():
 
                 ax.legend(handles=legend_elements, loc='lower right')
                 ind += len(mod[-2])
-                ax.set_xlim([0, 1])
-                ax.set_ylim([0, 1])
+                ax.set_xlim([0, 1.2])
+                ax.set_ylim([0, 1.2])
 
                 ax.set_title('Epoch: '+str(i), fontsize=15)
 
