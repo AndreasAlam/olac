@@ -37,7 +37,7 @@ mistune==0.8.3
 nbconvert==5.3.1
 nbformat==4.4.0
 networkx==2.1
-notebook==5.5.0
+notebook==5.7.2
 numpy==1.14.0
 numpydoc==0.7.0
 packaging==17.1
@@ -58,7 +58,7 @@ PyWavelets==0.5.2
 PyYAML==3.12
 pyzmq==17.0.0
 qtconsole==4.3.1
-requests==2.18.4
+requests==2.20.0
 scikit-image==0.13.1
 scikit-learn==0.19.1
 scipy==1.0.0
@@ -78,7 +78,7 @@ toolz==0.9.0
 tornado==5.0.2
 traitlets==4.3.2
 typing==3.6.4
-urllib3==1.22
+urllib3==1.23
 vega-datasets==0.5.0
 vega3==0.13.0
 wcwidth==0.1.7
